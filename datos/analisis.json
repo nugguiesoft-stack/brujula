@@ -1,0 +1,852 @@
+{
+ "estado": {
+  "actualizado": "2026-11-06T22:10:00+01:00",
+  "lugar": "Asturias (España)",
+  "resumen": "Tensión alta en el mundo, sin amenaza directa para Asturias. Lo que más pesa es la decisión de EE. UU. sobre reanudar la guerra con Irán, porque afectaría a los precios de la energía en España. Le siguen la amenaza nuclear rusa en el Báltico y la oleada de falsas amenazas de bomba en vuelos europeos, que alcanzó a Murcia. En banca, el cierre de Ueno en Paraguay y el hackeo a Binance no afectan a España, pero conviene vigilarlos.",
+  "notas": [
+   "Sin avisos de AEMET verificados para Asturias en esta actualización. Consulta AEMET o ES-Alert.",
+   "La probabilidad del 80 % de reanudación de la guerra es la estimación de un analista, no un dato oficial.",
+   "Las cifras de Polymarket y Kalshi no se consultaron en esta actualización.",
+   "La cifra de 6.300 millones del hackeo a Binance no está verificada en una fuente oficial."
+  ],
+  "metodo": 1
+ },
+ "eventos": [
+  {
+   "id": "iran-reanudacion",
+   "titulo": "EE. UU. decide si reanuda la guerra contra Irán",
+   "resumen": "Trump dijo el 5 nov que decidirá pronto si reanuda la acción militar, ahora que han pasado las elecciones de mitad de mandato. Irán envió una propuesta nuclear vía Catar, condicionada a sus siete exigencias para reabrir Ormuz. Un analista de Rapidan Energy estima un 80 % de probabilidad de que se reanuden los combates.",
+   "dominio": "belico",
+   "region": "Oriente Medio",
+   "lat": 32.4,
+   "lon": 53.7,
+   "S": 8,
+   "nivel": "oficial",
+   "P": 0.45,
+   "tendencia": "escala",
+   "cadena": "iran",
+   "fecha": "2026-11-05",
+   "fuentes": [
+    {
+     "n": "Just Security – Early Edition 6 nov",
+     "url": "https://justsecurity.org/163619/early-edition-november-6-2026"
+    },
+    {
+     "n": "Anadolu – Morning Briefing 6 nov",
+     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+    },
+    {
+     "n": "CNBC – petróleo y riesgo Irán, 6 nov",
+     "url": "https://www.cnbc.com/2026/11/06/oil-price-today-brent-wti.html"
+    }
+   ],
+   "vigilar": [
+    "Anuncio de la Casa Blanca o del Pentágono",
+    "Avisos de evacuación de embajadas en el Golfo",
+    "Cierre de espacio aéreo en Irán, Irak o el Golfo"
+   ],
+   "fiabilidad": "Declaraciones oficiales confirmadas por varios medios. La cifra del 80 % es la opinión de un analista, no un dato oficial.",
+   "zona": "oriente",
+   "origen": "analista"
+  },
+  {
+   "id": "ormuz-drones",
+   "titulo": "Irán afirma haber derribado dos drones de EE. UU. sobre Ormuz",
+   "resumen": "La Guardia Revolucionaria dice haber derribado dos drones de reconocimiento MQM-170 sobre la isla de Qeshm. Lo publica la agencia estatal iraní IRNA.",
+   "dominio": "belico",
+   "region": "Estrecho de Ormuz",
+   "lat": 26.8,
+   "lon": 55.9,
+   "S": 5,
+   "nivel": "fuente_unica",
+   "P": 0.4,
+   "tendencia": "escala",
+   "cadena": "iran",
+   "fecha": "2026-11-05",
+   "fuentes": [
+    {
+     "n": "Anadolu – Morning Briefing 6 nov",
+     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+    }
+   ],
+   "vigilar": [
+    "Confirmación o desmentido del Mando Central de EE. UU.",
+    "Respuesta militar estadounidense"
+   ],
+   "fiabilidad": "Afirmación de una sola parte. Sin confirmación independiente en las fuentes revisadas.",
+   "zona": "oriente",
+   "origen": "analista"
+  },
+  {
+   "id": "energia-precios",
+   "titulo": "Petróleo volátil y gasóleo caro en España",
+   "resumen": "El Brent cerró el 6 nov en 98,32 $ tras caer más de un 16 % en la semana, pero sigue más de un 50 % por encima de hace un año. El gasóleo en España rondaba 1,90 €/l la semana del 26 oct al 1 nov. El G7 y la AIE siguen liberando reservas de emergencia.",
+   "dominio": "energia",
+   "region": "España",
+   "lat": 43.36,
+   "lon": -5.85,
+   "S": 4,
+   "nivel": "confirmado",
+   "P": 1.0,
+   "tendencia": "estable",
+   "cadena": "iran",
+   "fecha": "2026-11-06",
+   "fuentes": [
+    {
+     "n": "CNBC – cierre Brent 6 nov",
+     "url": "https://www.cnbc.com/2026/11/06/oil-price-today-brent-wti.html"
+    },
+    {
+     "n": "Trading Economics – Brent",
+     "url": "https://tradingeconomics.com/commodity/brent-crude-oil"
+    },
+    {
+     "n": "fuel-prices.eu – España, semana 26 oct–1 nov",
+     "url": "https://www.fuel-prices.eu/news/spain-fuel-prices-weekly-recap-2026-11-01/"
+    }
+   ],
+   "vigilar": [
+    "Brent por encima de 110 $",
+    "Gasóleo en España por encima de 2 €/l",
+    "Anuncios de racionamiento o de nuevas liberaciones de reservas"
+   ],
+   "fiabilidad": "Datos de mercado de varias fuentes coincidentes.",
+   "zona": "espana",
+   "origen": "analista"
+  },
+  {
+   "id": "kaliningrado-nuclear",
+   "titulo": "Amenaza nuclear rusa sobre Kaliningrado",
+   "resumen": "Rusia avisó a la OTAN el 30 sep de que usaría todo su arsenal, incluido el nuclear, si se intenta aislar Kaliningrado. Putin lo reiteró después. La OTAN respondió que es una alianza defensiva y pidió que cesen las amenazas.",
+   "dominio": "nuclear",
+   "region": "Báltico",
+   "lat": 54.7,
+   "lon": 20.5,
+   "S": 7,
+   "nivel": "oficial",
+   "P": 0.75,
+   "tendencia": "estable",
+   "cadena": "baltico",
+   "fecha": "2026-09-30",
+   "fuentes": [
+    {
+     "n": "Al Jazeera – aviso nuclear ruso",
+     "url": "https://aljazeera.com/news/2026/9/30/russia-warns-nato-of-possible-nuclear-response-if-kaliningrad-is-cut-off"
+    },
+    {
+     "n": "Korea Times – aviso a la OTAN",
+     "url": "https://www.koreatimes.co.kr/world/20261001/russia-sends-nuclear-warning-to-nato-as-tensions-rise-in-the-baltic"
+    }
+   ],
+   "vigilar": [
+    "Bloqueo o incidente naval en el Báltico",
+    "Movimientos de fuerzas nucleares rusas",
+    "Cambios en el nivel de alerta de la OTAN"
+   ],
+   "fiabilidad": "Documento oficial ruso confirmado por la OTAN y varias agencias.",
+   "zona": "ue",
+   "origen": "analista"
+  },
+  {
+   "id": "baltico-hibrido",
+   "titulo": "Simulacros de evacuación en el Báltico y espías detenidos en Polonia",
+   "resumen": "Lituania y Letonia hacen simulacros conjuntos de evacuación transfronteriza para crisis a gran escala. Polonia detuvo a seis personas sospechosas de trabajar para la inteligencia rusa.",
+   "dominio": "ciber",
+   "region": "Báltico y Polonia",
+   "lat": 55.5,
+   "lon": 24.5,
+   "S": 4,
+   "nivel": "confirmado",
+   "P": 0.75,
+   "tendencia": "escala",
+   "cadena": "baltico",
+   "fecha": "2026-11-05",
+   "fuentes": [
+    {
+     "n": "Anadolu – Morning Briefing 6 nov",
+     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+    }
+   ],
+   "vigilar": [
+    "Simulacros que pasen a evacuaciones reales",
+    "Cierre de fronteras con Rusia o Bielorrusia"
+   ],
+   "fiabilidad": "Hechos públicos de gobiernos de la UE.",
+   "zona": "ue",
+   "origen": "analista"
+  },
+  {
+   "id": "ucrania",
+   "titulo": "Guerra en Ucrania y conversaciones de paz",
+   "resumen": "Sigue la guerra. Trump dice haber prometido un acuerdo de paz que «podría implicar a toda Europa» tras reunirse con el enviado del Kremlin. La Comisión Europea desembolsó 4.360 millones de euros a Ucrania.",
+   "dominio": "belico",
+   "region": "Ucrania",
+   "lat": 48.5,
+   "lon": 32.0,
+   "S": 6,
+   "nivel": "confirmado",
+   "P": 0.6,
+   "tendencia": "estable",
+   "cadena": null,
+   "fecha": "2026-11-05",
+   "fuentes": [
+    {
+     "n": "Just Security – Early Edition 6 nov",
+     "url": "https://justsecurity.org/163619/early-edition-november-6-2026"
+    },
+    {
+     "n": "Anadolu – Morning Briefing 6 nov",
+     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+    }
+   ],
+   "vigilar": [
+    "Ataques masivos sobre infraestructura energética",
+    "Anuncio formal de negociaciones"
+   ],
+   "fiabilidad": "Varias fuentes oficiales y de agencias.",
+   "zona": "europa",
+   "origen": "analista"
+  },
+  {
+   "id": "zaporiyia",
+   "titulo": "Central nuclear de Zaporiyia: riesgo de fondo",
+   "resumen": "La central sigue ocupada y ha perdido el suministro eléctrico externo varias veces (la 21.ª en julio de 2026). Sin incidentes nuevos en las fuentes revisadas esta semana.",
+   "dominio": "nuclear",
+   "region": "Ucrania",
+   "lat": 47.5,
+   "lon": 34.6,
+   "S": 4,
+   "nivel": "oficial",
+   "P": 0.6,
+   "tendencia": "estable",
+   "cadena": null,
+   "fecha": "2026-07-04",
+   "fuentes": [
+    {
+     "n": "AIR – pérdida de suministro n.º 21 (OIEA)",
+     "url": "https://newsonair.gov.in/iaea-says-ukraines-zaporizhzhia-nuclear-plant-loses-off-site-power-for-21st-time/"
+    }
+   ],
+   "vigilar": [
+    "Nuevo corte eléctrico externo",
+    "Comunicado urgente del OIEA",
+    "Subidas en la red europea de radiación EURDEP"
+   ],
+   "fiabilidad": "OIEA. Dato no actualizado esta semana.",
+   "zona": "europa",
+   "origen": "analista"
+  },
+  {
+   "id": "vuelos-amenazas",
+   "titulo": "Oleada de amenazas de bomba en vuelos europeos, también en España",
+   "resumen": "Al menos 18 vuelos en Europa recibieron amenazas de bomba, con aterrizajes de emergencia y escoltas militares. El 3 nov un Ryanair Manchester–Murcia activó los protocolos en España y el aeropuerto de Murcia suspendió operaciones dos horas. Ninguna amenaza resultó real. Polonia lo trata como amenaza híbrida.",
+   "dominio": "ciber",
+   "region": "Europa y España",
+   "lat": 37.8,
+   "lon": -1.1,
+   "S": 3,
+   "nivel": "confirmado",
+   "P": 1.0,
+   "tendencia": "escala",
+   "cadena": "aviacion",
+   "fecha": "2026-11-05",
+   "fuentes": [
+    {
+     "n": "Anadolu – Morning Briefing 6 nov",
+     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+    },
+    {
+     "n": "Catalan News – avión desviado a Murcia",
+     "url": "https://www.catalannews.com/society-science/item/at-least-seven-planes-across-europe-receive-bomb-threats-one-lands-in-murcia"
+    },
+    {
+     "n": "Aviation24 – vuelos afectados",
+     "url": "https://www.aviation24.be/airlines/multiple-bomb-threats-target-european-passenger-flights-prompting-diversions-and-fighter-jet-escort/amp/"
+    }
+   ],
+   "vigilar": [
+    "Atribución a un Estado o grupo",
+    "Amenazas en el aeropuerto de Asturias",
+    "Amenaza que resulte real"
+   ],
+   "fiabilidad": "Confirmado por autoridades de varios países. Autoría desconocida.",
+   "zona": "espana",
+   "origen": "analista"
+  },
+  {
+   "id": "yemen-saudi",
+   "titulo": "Hutíes contra Arabia Saudí y Mar Rojo",
+   "resumen": "Varios países condenaron un intento de ataque con misil balístico hutí sobre la región de Medina. La OMS cifra en 1.771 los muertos en Yemen desde agosto. Los ataques afectan a la navegación del Mar Rojo.",
+   "dominio": "belico",
+   "region": "Yemen / Arabia Saudí",
+   "lat": 20.5,
+   "lon": 42.5,
+   "S": 5,
+   "nivel": "oficial",
+   "P": 0.35,
+   "tendencia": "escala",
+   "cadena": "iran",
+   "fecha": "2026-11-05",
+   "fuentes": [
+    {
+     "n": "Anadolu – Morning Briefing 6 nov",
+     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+    },
+    {
+     "n": "Khaleej Times – metralla en La Meca y Medina",
+     "url": "https://www.khaleejtimes.com/world/gulf/saudi-falling-shrapnel-houthi-attack-makkah-madinah"
+    }
+   ],
+   "vigilar": [
+    "Ataques a petroleros en el Mar Rojo",
+    "Cierre del paso de Bab el-Mandeb"
+   ],
+   "fiabilidad": "Saudíes informan; los hutíes niegan algunos ataques.",
+   "zona": "oriente",
+   "origen": "analista"
+  },
+  {
+   "id": "mercados",
+   "titulo": "Desplome bursátil en EE. UU.",
+   "resumen": "El Dow Jones cayó un 3,44 %, su peor día desde abril de 2025, y el índice del miedo VIX subió un 61,9 % hasta 26,89. El Nasdaq cayó más de un 5 % el 5 nov.",
+   "dominio": "banca",
+   "region": "EE. UU.",
+   "lat": 40.7,
+   "lon": -74.0,
+   "S": 3,
+   "nivel": "confirmado",
+   "P": 0.6,
+   "tendencia": "escala",
+   "cadena": null,
+   "fecha": "2026-11-05",
+   "fuentes": [
+    {
+     "n": "Anadolu – Morning Briefing 6 nov",
+     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+    },
+    {
+     "n": "Just Security – Early Edition 6 nov",
+     "url": "https://justsecurity.org/163619/early-edition-november-6-2026"
+    }
+   ],
+   "vigilar": [
+    "Contagio a bolsas europeas",
+    "Restricciones bancarias o corralitos"
+   ],
+   "fiabilidad": "Datos de mercado.",
+   "zona": "mundo",
+   "origen": "analista"
+  },
+  {
+   "id": "francia-protestas",
+   "titulo": "Protestas masivas en Francia por el coste de la vida",
+   "resumen": "Cientos de miles de personas protestaron por salarios y precios. Más de 400 detenidos y más de 50 policías heridos.",
+   "dominio": "social",
+   "region": "Francia",
+   "lat": 46.6,
+   "lon": 2.4,
+   "S": 3,
+   "nivel": "confirmado",
+   "P": 0.8,
+   "tendencia": "estable",
+   "cadena": null,
+   "fecha": "2026-11-05",
+   "fuentes": [
+    {
+     "n": "Anadolu – Morning Briefing 6 nov",
+     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+    }
+   ],
+   "vigilar": [
+    "Bloqueos de transporte o refinerías",
+    "Contagio a España"
+   ],
+   "fiabilidad": "Cifras oficiales francesas.",
+   "zona": "ue",
+   "origen": "analista"
+  },
+  {
+   "id": "taiwan-bloqueo",
+   "titulo": "China ensaya un bloqueo de puertos de Taiwán",
+   "resumen": "Maniobras chinas que simulan bloquear puertos de Taiwán, con efectos en rutas aéreas regionales.",
+   "dominio": "belico",
+   "region": "Taiwán",
+   "lat": 23.7,
+   "lon": 121.0,
+   "S": 5,
+   "nivel": "fuente_unica",
+   "P": 0.2,
+   "tendencia": "estable",
+   "cadena": null,
+   "fecha": "2026-11-03",
+   "fuentes": [
+    {
+     "n": "India Sea Trade News – 3 nov",
+     "url": "https://indiaseatradenews.com/?p=135321"
+    }
+   ],
+   "vigilar": [
+    "Bloqueo real de rutas marítimas",
+    "Alertas de viaje de gobiernos"
+   ],
+   "fiabilidad": "Una sola fuente encontrada para esta semana. Pendiente de confirmar.",
+   "zona": "mundo",
+   "origen": "analista"
+  },
+  {
+   "id": "jordania",
+   "titulo": "Ataque terrorista en Amán",
+   "resumen": "Jordania informa de un policía muerto y un agente herido en un «ataque terrorista» en la capital.",
+   "dominio": "belico",
+   "region": "Jordania",
+   "lat": 31.95,
+   "lon": 35.9,
+   "S": 3,
+   "nivel": "oficial",
+   "P": 0.35,
+   "tendencia": "estable",
+   "cadena": null,
+   "fecha": "2026-11-05",
+   "fuentes": [
+    {
+     "n": "Anadolu – Morning Briefing 6 nov",
+     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+    }
+   ],
+   "vigilar": [
+    "Nuevos atentados en la región"
+   ],
+   "fiabilidad": "Comunicado oficial jordano.",
+   "zona": "oriente",
+   "origen": "analista"
+  },
+  {
+   "id": "nilo-occidental",
+   "titulo": "Virus del Nilo Occidental en Países Bajos",
+   "resumen": "12 muertes y 77 infecciones este año, según el instituto de salud neerlandés RIVM.",
+   "dominio": "sanitario",
+   "region": "Países Bajos",
+   "lat": 52.1,
+   "lon": 5.3,
+   "S": 2,
+   "nivel": "confirmado",
+   "P": 0.6,
+   "tendencia": "estable",
+   "cadena": null,
+   "fecha": "2026-11-05",
+   "fuentes": [
+    {
+     "n": "Anadolu – Morning Briefing 6 nov",
+     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+    }
+   ],
+   "vigilar": [
+    "Casos en España",
+    "Avisos del ECDC"
+   ],
+   "fiabilidad": "Autoridad sanitaria oficial.",
+   "zona": "ue",
+   "origen": "analista"
+  },
+  {
+   "id": "sismicidad",
+   "titulo": "Sismicidad global sin eventos graves",
+   "resumen": "No aparecen terremotos de magnitud 7 o más esta semana en las fuentes revisadas. El mayor cercano a España fue un M5,1 en Creta el 2 nov.",
+   "dominio": "natural",
+   "region": "Mediterráneo",
+   "lat": 35.0,
+   "lon": 25.7,
+   "S": 1.5,
+   "nivel": "varios_medios",
+   "P": 0.5,
+   "tendencia": "estable",
+   "cadena": null,
+   "fecha": "2026-11-02",
+   "fuentes": [
+    {
+     "n": "NewsNow – terremotos",
+     "url": "https://www.newsnow.com/ca/World/Natural+Disasters/Earthquakes?type=ln"
+    }
+   ],
+   "vigilar": [
+    "Terremoto de M6+ en el Mediterráneo o el Atlántico",
+    "Avisos de tsunami"
+   ],
+   "fiabilidad": "Revisión por agregadores, no directamente en USGS.",
+   "zona": "mediterraneo",
+   "origen": "analista"
+  },
+  {
+   "id": "ueno-paraguay",
+   "titulo": "Intervenido Ueno, el mayor banco digital de Paraguay",
+   "resumen": "El banco central de Paraguay abrió el 3 nov la resolución de Ueno Bank porque su solvencia cayó por debajo de la mitad del mínimo legal. Unos 3 millones de clientes se quedaron sin app ni tarjetas. Los depósitos están garantizados hasta unos 38.000 dólares por persona. Hay ocho órdenes de detención y dimitió el presidente del país. No fue un hackeo.",
+   "dominio": "banca",
+   "region": "Paraguay",
+   "lat": -25.3,
+   "lon": -57.6,
+   "S": 3,
+   "nivel": "confirmado",
+   "P": 0.2,
+   "zona": "mundo",
+   "tendencia": "estable",
+   "cadena": null,
+   "fecha": "2026-11-03",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "AP vía AJC – Paraguay interviene Ueno",
+     "url": "https://www.ajc.com/news/2026/11/paraguay-seizes-major-digital-bank-tied-to-president-leaving-millions-of-customers-in-limbo/"
+    },
+    {
+     "n": "Pasquale Pillitteri – 3 millones de clientes sin app",
+     "url": "https://pasqualepillitteri.it/es/news/29965/ueno-bank-bloqueado-paraguay-3-millones-clientes"
+    },
+    {
+     "n": "The Star (Reuters) – dimite el jefe del banco central",
+     "url": "https://www.thestar.com.my/news/world/2026/11/04/paraguay039s-central-bank-chief-resigns-at-president039s-request-as-digital-lender-crisis-deepens"
+    }
+   ],
+   "vigilar": [
+    "Contagio a otros bancos digitales",
+    "Retiradas masivas de depósitos en la región"
+   ],
+   "fiabilidad": "Confirmado por el banco central y agencias internacionales."
+  },
+  {
+   "id": "binance-hackeo",
+   "titulo": "Hackeo a Binance atribuido a Corea del Norte",
+   "resumen": "Dos firmas de ciberseguridad atribuyen a Corea del Norte un hackeo a Binance, el mayor exchange de criptomonedas. Se publica una cifra de 6.300 millones de dólares robados y salidas de 12.000 millones en siete días.",
+   "dominio": "ciber",
+   "region": "Global",
+   "lat": 39.0,
+   "lon": 125.75,
+   "S": 4,
+   "nivel": "varios_medios",
+   "P": 0.45,
+   "zona": "mundo",
+   "tendencia": "estable",
+   "cadena": null,
+   "fecha": "2026-10-30",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "La República – Corea del Norte y Binance",
+     "url": "https://www.larepublica.co/globoeconomia/paraguay-toma-el-control-del-banco-ueno-mientras-el-regulador-jefe-planea-renunciar-4516597"
+    },
+    {
+     "n": "Pasquale Pillitteri – cifras del hackeo",
+     "url": "https://pasqualepillitteri.it/es/news/29965/ueno-bank-bloqueado-paraguay-3-millones-clientes"
+    }
+   ],
+   "vigilar": [
+    "Ataques a bancos o pasarelas de pago europeos",
+    "Avisos de INCIBE"
+   ],
+   "fiabilidad": "Atribución de empresas privadas. Las cifras no están verificadas en una fuente oficial."
+  }
+ ],
+ "cadenas": [
+  {
+   "id": "iran",
+   "titulo": "Guerra de Irán → Ormuz → energía en España",
+   "estado": "Pausa frágil; decisión inminente",
+   "pasos": [
+    {
+     "fecha": "2026-02-28",
+     "texto": "EE. UU. e Israel atacan Irán. Empieza la guerra.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-03",
+     "texto": "Irán cierra Ormuz y ataca instalaciones de gas de Catar. La AIE libera un récord de 400 millones de barriles.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-06/10",
+     "texto": "Treguas y cierres intermitentes de Ormuz. Los hutíes atacan Arabia Saudí.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-10-02",
+     "texto": "El G7 acuerda liberar 100 millones de barriles más.",
+     "nivel": "oficial"
+    },
+    {
+     "fecha": "2026-11-05",
+     "texto": "Trump decidirá «pronto» si reanuda los ataques. Irán propone vía Catar. Irán dice derribar drones de EE. UU.",
+     "nivel": "oficial"
+    }
+   ],
+   "siguiente": [
+    "Si EE. UU. reanuda los ataques: el Brent volvería a subir y, con él, el gasóleo y los precios en España",
+    "Si avanza la propuesta vía Catar: posible reapertura de Ormuz y bajada de precios"
+   ]
+  },
+  {
+   "id": "baltico",
+   "titulo": "Rusia–OTAN en el Báltico",
+   "estado": "Tensión estable",
+   "pasos": [
+    {
+     "fecha": "2026-09-30",
+     "texto": "Rusia envía a la OTAN un aviso nuclear sobre Kaliningrado.",
+     "nivel": "oficial"
+    },
+    {
+     "fecha": "2026-10",
+     "texto": "Putin reitera la amenaza. La OTAN mantiene su ejercicio nuclear anual Steadfast Noon.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-11-05",
+     "texto": "Lituania y Letonia hacen simulacros de evacuación. Polonia detiene a seis presuntos espías rusos.",
+     "nivel": "confirmado"
+    }
+   ],
+   "siguiente": [
+    "Incidente naval o aéreo en el Báltico",
+    "Cierre de fronteras o del espacio aéreo"
+   ]
+  },
+  {
+   "id": "aviacion",
+   "titulo": "Amenazas híbridas en la aviación europea",
+   "estado": "En aumento",
+   "pasos": [
+    {
+     "fecha": "2026-09-30",
+     "texto": "Intento de secuestro en un vuelo de flydubai a Tel Aviv.",
+     "nivel": "varios_medios"
+    },
+    {
+     "fecha": "2026-10",
+     "texto": "Alertas de secuestro y bomba en vuelos de Corendon y Austrian.",
+     "nivel": "varios_medios"
+    },
+    {
+     "fecha": "2026-11-02",
+     "texto": "Un Wizz Air se desvía a Budapest por amenaza de bomba.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-11-03",
+     "texto": "7 o más vuelos amenazados en un día, uno de ellos en Murcia.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-11-05",
+     "texto": "La cifra sube a al menos 18 vuelos.",
+     "nivel": "confirmado"
+    }
+   ],
+   "siguiente": [
+    "Atribución oficial",
+    "Amenazas en aeropuertos del norte de España"
+   ]
+  }
+ ],
+ "escenarios": [
+  {
+   "titulo": "EE. UU. reanuda los ataques contra Irán",
+   "prob": "80 % según Rapidan Energy (opinión de un analista)",
+   "impacto": "Indirecto en Asturias: más subidas de combustible, electricidad y transporte. Sin riesgo militar directo previsto en las fuentes revisadas.",
+   "senales": [
+    "Ultimátum público",
+    "Movimiento de portaaviones",
+    "Evacuación de embajadas"
+   ]
+  },
+  {
+   "titulo": "Acuerdo con Irán y reapertura de Ormuz",
+   "prob": "Sin estimación verificada",
+   "impacto": "Bajada del petróleo y alivio de precios en semanas.",
+   "senales": [
+    "Respuesta de EE. UU. a la propuesta vía Catar",
+    "Aumento del tráfico de petroleros en Ormuz"
+   ]
+  },
+  {
+   "titulo": "Escalada Rusia–OTAN en el Báltico",
+   "prob": "Sin estimación verificada",
+   "impacto": "España es miembro de la OTAN y tiene cazas desplegados en Lituania. Riesgo de ciberataques y sabotajes en España.",
+   "senales": [
+    "Incidente militar directo",
+    "Activación del artículo 4 o 5 de la OTAN"
+   ]
+  }
+ ],
+ "fuentes": {
+  "grupos": [
+   {
+    "nombre": "Comprobadas hoy: gratis y sin registro",
+    "items": [
+     {
+      "n": "GDELT DOC 2.0",
+      "uso": "Noticias de todo el mundo, también prensa local, en 65 idiomas",
+      "acceso": "Sin clave. Límite: 1 consulta cada 5 s",
+      "url": "https://blog.gdeltproject.org/gallery-mode-now-available-doc-2-0-api/"
+     },
+     {
+      "n": "USGS Terremotos",
+      "uso": "Sismos en tiempo real, con alerta de tsunami",
+      "acceso": "Sin clave. Se actualiza cada minuto",
+      "url": "https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/2.5_day.geojson"
+     },
+     {
+      "n": "GDACS (ONU/UE)",
+      "uso": "Alertas de desastres naturales verde/naranja/roja",
+      "acceso": "RSS público",
+      "url": "https://www.gdacs.org/"
+     },
+     {
+      "n": "NOAA SWPC",
+      "uso": "Tormentas solares que pueden provocar apagones",
+      "acceso": "JSON sin clave",
+      "url": "https://www.spaceweather.gov/content/data-access"
+     },
+     {
+      "n": "Polymarket (API Gamma)",
+      "uso": "Probabilidades de mercado de guerra, ataques y crisis",
+      "acceso": "Sin clave para leer",
+      "url": "https://docs.polymarket.com/market-data/overview"
+     },
+     {
+      "n": "Kalshi",
+      "uso": "Mercado regulado de predicciones",
+      "acceso": "Datos de mercado sin clave",
+      "url": "https://docs.kalshi.com/getting_started"
+     },
+     {
+      "n": "Bluesky",
+      "uso": "Cuentas de periodistas y organismos",
+      "acceso": "Perfiles y publicaciones sin clave. La búsqueda tiene restricciones",
+      "url": "https://dev.to/northgrid-data/pull-a-bluesky-profile-and-recent-posts-with-the-public-api-no-login-no-key-f89"
+     },
+     {
+      "n": "Telegram (vista web t.me/s)",
+      "uso": "Canales públicos de alertas, milicias y ministerios",
+      "acceso": "Sin cuenta, solo canales con vista previa",
+      "url": "https://apify.com/codingfrontend/telegram-channel-scraper"
+     },
+     {
+      "n": "Red Eléctrica REData",
+      "uso": "Demanda y generación eléctrica en España, para detectar apagones",
+      "acceso": "API GET pública según su documentación",
+      "url": "https://www.ree.es/en/apidatos"
+     }
+    ]
+   },
+   {
+    "nombre": "Gratis con registro o clave",
+    "items": [
+     {
+      "n": "AEMET OpenData",
+      "uso": "Avisos meteorológicos oficiales de Asturias (CAP)",
+      "acceso": "Clave gratuita por email",
+      "url": "https://opendata.aemet.es/centrodedescargas/altaUsuario"
+     },
+     {
+      "n": "ACLED",
+      "uso": "Base de datos de conflictos armados",
+      "acceso": "Registro gratuito, uso limitado y no comercial",
+      "url": "https://acleddata.com/download/35302"
+     },
+     {
+      "n": "ReliefWeb (ONU OCHA)",
+      "uso": "Informes humanitarios y de desastres",
+      "acceso": "Gratis, pero exige un «appname» aprobado desde nov 2025",
+      "url": "https://apidoc.reliefweb.int/"
+     },
+     {
+      "n": "OpenSky Network",
+      "uso": "Tráfico aéreo: cierres de espacio aéreo y vuelos militares visibles",
+      "acceso": "400 créditos/día anónimo, 4.000 registrado; no comercial",
+      "url": "https://geekflare.com/dev/flight-data-api/"
+     },
+     {
+      "n": "Cloudflare Radar",
+      "uso": "Caídas de internet y ciberataques DDoS por país",
+      "acceso": "API gratuita con token",
+      "url": "https://blog.cloudflare.com/announcing-cloudflare-radar-outage-center"
+     },
+     {
+      "n": "Reddit",
+      "uso": "Comunidades de última hora y testimonios",
+      "acceso": "100 consultas/min no comercial con OAuth; alta con aprobación manual",
+      "url": "https://octolens.com/blog/reddit-api-pricing"
+     },
+     {
+      "n": "Google Gemini",
+      "uso": "IA gratuita para la futura app",
+      "acceso": "Nivel gratuito para modelos Flash, con límites",
+      "url": "https://tinkerllm.com/blog/gemini-api-free-tier-limits-rate-quotas/"
+     },
+     {
+      "n": "EURDEP (UE)",
+      "uso": "Radiación ambiental en ~5.000 estaciones europeas",
+      "acceso": "Mapa público. Sin descarga ni función de alerta",
+      "url": "https://remon.jrc.ec.europa.eu/About/Rad-Data-Exchange"
+     }
+    ]
+   },
+   {
+    "nombre": "Descartadas: de pago",
+    "items": [
+     {
+      "n": "X (Twitter)",
+      "uso": "Cuentas oficiales y de última hora",
+      "acceso": "Sin lectura gratuita desde feb 2026; pago por uso",
+      "url": "https://apiserpent.com/blog/free-twitter-x-api"
+     },
+     {
+      "n": "ADS-B Exchange",
+      "uso": "Vuelos militares sin filtrar",
+      "acceso": "API de pago",
+      "url": "https://flyitalyadsb.com/en/dati/confronto/"
+     }
+    ]
+   },
+   {
+    "nombre": "Pendientes de comprobar",
+    "items": [
+     {
+      "n": "INCIBE-CERT y CCN-CERT",
+      "uso": "Avisos de ciberseguridad en España",
+      "acceso": "Sin verificar",
+      "url": ""
+     },
+     {
+      "n": "Protección Civil y DSN",
+      "uso": "Alertas y situación nacional",
+      "acceso": "Sin verificar",
+      "url": ""
+     },
+     {
+      "n": "MAEC, Departamento de Estado y FCDO",
+      "uso": "Avisos de viaje y evacuaciones de embajadas",
+      "acceso": "Sin verificar",
+      "url": ""
+     },
+     {
+      "n": "Meteoalarm, EMSC, Copernicus EMS y NASA FIRMS",
+      "uso": "Avisos europeos, sismos, emergencias e incendios",
+      "acceso": "Sin verificar",
+      "url": ""
+     },
+     {
+      "n": "OMS, ECDC y OIEA",
+      "uso": "Brotes sanitarios y sucesos nucleares",
+      "acceso": "Sin verificar",
+      "url": ""
+     },
+     {
+      "n": "Avisos náuticos NAVAREA y NOTAM",
+      "uso": "Zonas de lanzamiento de misiles y cierres",
+      "acceso": "Sin verificar",
+      "url": ""
+     }
+    ]
+   }
+  ]
+ }
+}

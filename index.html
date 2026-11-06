@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d1318">
+<title>Brújula de Emergencia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="estilo.css">
+</head>
+<body>
+<main class="wrap">
+  <header class="head">
+    <div>
+      <h1>Brújula de Emergencia</h1>
+      <p class="muted small">Asturias · España · Mundo</p>
+    </div>
+    <div class="scan">
+      <button type="button" id="rescan" class="btn-ghost">Escanear ahora</button>
+      <p class="stamp" id="stamp">Iniciando…</p>
+    </div>
+  </header>
+
+  <div class="progress" id="progress" aria-hidden="true"><i></i></div>
+
+  <section class="alerts" id="alerts" aria-live="polite"></section>
+
+  <section class="gauges" aria-label="Índices de riesgo">
+    <article class="panel gauge-box" data-scope="asturias">
+      <h2>Asturias</h2>
+      <svg class="gauge" viewBox="0 0 320 206" role="img"></svg>
+      <p class="level">—</p>
+      <svg class="spark" viewBox="0 0 240 40" aria-hidden="true"></svg>
+    </article>
+    <article class="panel gauge-box" data-scope="espana">
+      <h2>España</h2>
+      <svg class="gauge" viewBox="0 0 320 206" role="img"></svg>
+      <p class="level">—</p>
+      <svg class="spark" viewBox="0 0 240 40" aria-hidden="true"></svg>
+    </article>
+    <article class="panel gauge-box" data-scope="global">
+      <h2>Escalada global</h2>
+      <svg class="gauge" viewBox="0 0 320 206" role="img"></svg>
+      <p class="level">—</p>
+      <svg class="spark" viewBox="0 0 240 40" aria-hidden="true"></svg>
+    </article>
+  </section>
+  <p class="muted small center">0 = calma · 10 = peligro inminente. «Escalada global» mide el riesgo de que los conflictos vayan a más, estén donde estén.</p>
+
+  <section class="panel" style="display:grid;gap:14px" aria-labelledby="h-res">
+    <h2 id="h-res">Análisis</h2>
+    <p id="takeaway" class="takeaway">—</p>
+    <div class="domains" id="domains"></div>
+    <div id="risks" class="risks"></div>
+    <ul class="notes" id="notes"></ul>
+  </section>
+
+  <section class="panel" aria-labelledby="h-mapa">
+    <h2 id="h-mapa" style="margin-bottom:10px">Mapa de focos</h2>
+    <div class="map" id="map">
+      <svg viewBox="0 0 1000 403" id="mapsvg" role="img" aria-label="Mapa mundial con los focos activos">
+        <path id="land" fill="#1d2933" stroke="#2b3a46" stroke-width=".6"></path>
+        <g id="dots"></g>
+      </svg>
+      <div class="tip" id="tip"></div>
+    </div>
+    <p class="muted small" style="margin-top:8px">Pulsa un punto para ver el suceso.</p>
+  </section>
+
+  <section class="panel rumors" aria-labelledby="h-rum">
+    <h2 id="h-rum">Rumores sin contrastar</h2>
+    <p class="small warn-text">Noticias alarmantes publicadas por una o dos fuentes. Falta confirmarlas. No suben el índice hasta que otras fuentes las recojan.</p>
+    <div id="rumors" class="events"></div>
+  </section>
+
+  <div class="cols">
+    <section aria-labelledby="h-ev" style="display:grid;gap:12px;align-content:start">
+      <h2 id="h-ev">Sucesos</h2>
+      <div class="filters" id="filters" role="group" aria-label="Filtrar sucesos"></div>
+      <div class="events" id="events"></div>
+    </section>
+    <div style="display:grid;gap:18px;align-content:start">
+      <section class="panel" aria-labelledby="h-ch" style="display:grid;gap:10px">
+        <h2 id="h-ch">Escaladas en seguimiento</h2>
+        <div id="chains" style="display:grid;gap:18px"></div>
+      </section>
+      <section class="panel" aria-labelledby="h-sc" style="display:grid;gap:10px">
+        <h2 id="h-sc">Qué puede pasar</h2>
+        <div class="scen" id="scen"></div>
+      </section>
+      <section class="panel" aria-labelledby="h-mk" style="display:grid;gap:10px">
+        <h2 id="h-mk">Lo que apuestan los mercados</h2>
+        <p class="muted small">Probabilidades de mercados de predicción (Polymarket). Son apuestas de dinero, no previsiones oficiales.</p>
+        <div id="markets" class="markets"></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="panel" aria-labelledby="h-log" style="display:grid;gap:10px">
+    <h2 id="h-log">Bitácora</h2>
+    <p class="muted small">Se guarda en este navegador cada vez que abres la página.</p>
+    <ol id="log" class="log"></ol>
+  </section>
+
+  <section class="panel" aria-labelledby="h-src" style="display:grid;gap:12px">
+    <h2 id="h-src">Estado de las fuentes</h2>
+    <div id="srcstatus" class="srcstatus"></div>
+    <details>
+      <summary>Catálogo de fuentes revisadas</summary>
+      <div id="sources" style="display:grid;gap:16px;margin-top:12px"></div>
+    </details>
+  </section>
+
+  <section class="panel">
+    <details>
+      <summary>Cómo se calcula</summary>
+      <div class="method">
+        <p>La página combina dos capas. La <b>capa del analista</b> son sucesos revisados a mano, con fuentes. La <b>capa automática</b> se consulta en internet cada vez que abres la página.</p>
+        <p>Cada suceso puntúa: <b>gravedad × confianza × cercanía × tendencia</b>.</p>
+        <table>
+          <tr><th>Factor</th><th>Valores</th></tr>
+          <tr><td>Gravedad</td><td>0–10. Uso nuclear 10, guerra entre potencias 9, bombardeos 6–8, ciberataque a banca o infraestructura 5, amenazas falsas 3.</td></tr>
+          <tr><td>Confianza</td><td>Rumor 0,15 · Fuente única 0,35 · Medios locales 0,45 · Varios medios 0,65 · Oficial 0,85 · Confirmado 1. En la capa automática depende de cuántos medios distintos lo publican y de si hay webs oficiales.</td></tr>
+          <tr><td>Cercanía</td><td>Asturias: Asturias 1 · resto de España 0,85 · UE 0,7 · Europa 0,6 · Mediterráneo 0,5 · Oriente Medio 0,4 · resto 0,2. España: igual, con España 1 y UE 0,75. Escalada global: siempre 1.</td></tr>
+          <tr><td>Tendencia</td><td>Escala 1,15 · Estable 1 · Se calma 0,85.</td></tr>
+        </table>
+        <p>Cada índice suma el suceso más fuerte, el 35 % del segundo y el 15 % del resto, y lo comprime a una escala de 0 a 10. Un rumor aislado aporta como mucho 1 punto.</p>
+        <p>Suelos automáticos: un suceso confirmado de gravedad 9 o más en la UE pone el índice de España y Asturias en 9 como mínimo.</p>
+        <p class="muted">Escala: 0–2 Calma · 2–4 Vigilancia · 4–6 Tensión · 6–8 Alerta · 8–10 Emergencia. Es una herramienta de orientación. Ante una emergencia, sigue siempre a ES-Alert, el 112 y Protección Civil.</p>
+      </div>
+    </details>
+  </section>
+</main>
+<script src="land.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
