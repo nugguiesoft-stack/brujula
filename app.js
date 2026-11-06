@@ -657,7 +657,7 @@ function classifyPost(text) {
 }
 
 /* --- red: todo pasa por el intermediario de Cloudflare si está configurado --- */
-const PROXY_DEFAULT = "";   // se rellenará con la dirección del Worker
+const PROXY_DEFAULT = "https://brujula.nugguiesoft.workers.dev";   // se rellenará con la dirección del Worker
 function proxyUrl() { return store.get("brujula.proxy", "") || PROXY_DEFAULT; }
 async function pget(url, asJson = true, timeout = 20000) {
   const p = proxyUrl();
