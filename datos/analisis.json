@@ -1,12 +1,12 @@
 {
  "estado": {
-  "actualizado": "2026-11-06T22:10:00+01:00",
+  "actualizado": "2026-11-07T00:40:00+01:00",
   "lugar": "Asturias (España)",
-  "resumen": "Tensión alta en el mundo, sin amenaza directa para Asturias. Lo que más pesa es la decisión de EE. UU. sobre reanudar la guerra con Irán, porque afectaría a los precios de la energía en España. Le siguen la amenaza nuclear rusa en el Báltico y la oleada de falsas amenazas de bomba en vuelos europeos, que alcanzó a Murcia. En banca, el cierre de Ueno en Paraguay y el hackeo a Binance no afectan a España, pero conviene vigilarlos.",
+  "resumen": "Sin amenaza directa para Asturias, pero la tensión sube. La noche del 6 nov hubo explosiones en Qeshm (Ormuz) y una alerta militar en el sur de Irán, mientras EE. UU. decide si reanuda la guerra. Irán amenaza con atacar bases de EE. UU. en Europa si eso ocurre; los expertos ven esa amenaza limitada al sureste de Europa. En España, huelga general el miércoles 11-N. Varias publicaciones de X que circulan esta noche son exageradas, antiguas o sin confirmar: revisa «Verificación de publicaciones».",
   "notas": [
-   "Sin avisos de AEMET verificados para Asturias en esta actualización. Consulta AEMET o ES-Alert.",
+   "Sin avisos de AEMET verificados para Asturias. Consulta AEMET o ES-Alert.",
    "La probabilidad del 80 % de reanudación de la guerra es la estimación de un analista, no un dato oficial.",
-   "Las cifras de Polymarket y Kalshi no se consultaron en esta actualización.",
+   "El «Código 100» iraní viene de una sola fuente OSINT.",
    "La cifra de 6.300 millones del hackeo a Binance no está verificada en una fuente oficial."
   ],
   "metodo": 1
@@ -543,6 +543,109 @@
     "Avisos de INCIBE"
    ],
    "fiabilidad": "Atribución de empresas privadas. Las cifras no están verificadas en una fuente oficial."
+  },
+  {
+   "id": "iran-amenaza-europa",
+   "titulo": "Irán amenaza con atacar bases de EE. UU. en Europa si se reanuda la guerra",
+   "resumen": "Responsables y diputados iraníes y la prensa dura del régimen avisan de que, si EE. UU. vuelve a atacar, podrían golpear bases e instalaciones estadounidenses en Europa. Un diputado llegó a decir que si dejan a su pueblo a oscuras, ellos dejarán a oscuras al de los atacantes. Expertos citados por la prensa británica ven la amenaza real pero limitada: los misiles iraníes alcanzarían sobre todo el sureste de Europa (Bulgaria, Grecia, Chipre).",
+   "dominio": "belico",
+   "region": "Europa",
+   "lat": 42.7,
+   "lon": 25.5,
+   "zona": "ue",
+   "S": 5,
+   "nivel": "oficial",
+   "tendencia": "escala",
+   "cadena": "iran",
+   "fecha": "2026-11-03",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "Iran International – amenazas que llegan a Europa",
+     "url": "https://www.iranintl.com/en/202611036564"
+    },
+    {
+     "n": "APA (cita a The Times) – bases de EE. UU. en Europa",
+     "url": "https://en.apa.az/europe/iran-threatens-us-bases-in-europe-if-trump-orders-new-strikes-533615"
+    },
+    {
+     "n": "Israel National News – alcance limitado según RUSI",
+     "url": "https://www.israelnationalnews.com/news/431920"
+    }
+   ],
+   "vigilar": [
+    "Ataques reales a bases en Bulgaria, Grecia o Chipre",
+    "Cambios en el nivel de alerta de bases en España (Rota, Morón)",
+    "Sabotajes a cables submarinos"
+   ],
+   "fiabilidad": "Declaraciones de responsables iraníes recogidas por varios medios. La lista de «15 objetivos en 9 países» que circula en X no está verificada."
+  },
+  {
+   "id": "qeshm-explosiones",
+   "titulo": "Explosiones en Qeshm (Ormuz) y alerta militar en el sur de Irán",
+   "resumen": "Medios de la Guardia Revolucionaria informaron la noche del 6 nov de explosiones en Qeshm y Bandar Khamir y de dos misiles sobre la isla, sin decir su origen. El Mando Central de EE. UU. calificó la zona de «relativamente tranquila». Cuentas OSINT difundieron una alerta «Código 100» de dispersión para fuerzas militares del sur de Irán. El 2 nov EE. UU. ya había hecho «ataques defensivos» en Qeshm.",
+   "dominio": "belico",
+   "region": "Estrecho de Ormuz",
+   "lat": 26.85,
+   "lon": 55.9,
+   "zona": "oriente",
+   "S": 6,
+   "nivel": "varios_medios",
+   "tendencia": "escala",
+   "cadena": "iran",
+   "fecha": "2026-11-06",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "Iran International – directo 6 nov (Tasnim, Fars, CENTCOM)",
+     "url": "https://www.iranintl.com/en/liveblog/202610312594"
+    },
+    {
+     "n": "Al Jazeera – EE. UU. ataca Qeshm (3 nov)",
+     "url": "https://www.aljazeera.com/news/2026/11/3/us-hits-qeshm-island-pezeshkian-signals-more-diplomacy-iran-war-latest"
+    },
+    {
+     "n": "Shin/FromIran – «Código 100» (fuente OSINT)",
+     "url": "https://sh1n.org/tweets/as-explained-before-this-is-for-military-forces-2118823640489939251"
+    }
+   ],
+   "vigilar": [
+    "Confirmación del Pentágono o de Irán sobre el origen de los misiles",
+    "Evacuaciones civiles en Hormozgán",
+    "Avisos de embajadas en el Golfo"
+   ],
+   "fiabilidad": "Las explosiones las dan medios oficiales iraníes. El «Código 100» viene de una sola fuente OSINT y, según su propio autor, afecta a fuerzas militares, no a civiles."
+  },
+  {
+   "id": "huelga-11n",
+   "titulo": "Huelga general en España el miércoles 11 de noviembre",
+   "resumen": "CCOO, UGT y otros sindicatos convocan 24 horas de huelga general en toda España por la vivienda, los salarios y los precios. Es la primera huelga general estatal conjunta de CCOO y UGT desde 2012 y llega a menos de tres semanas de las elecciones generales del 29 de noviembre. Puede afectar a transporte, administraciones y servicios, con servicios mínimos.",
+   "dominio": "social",
+   "region": "España",
+   "lat": 43.36,
+   "lon": -5.85,
+   "zona": "espana",
+   "S": 3,
+   "nivel": "confirmado",
+   "tendencia": "estable",
+   "cadena": null,
+   "fecha": "2026-11-11",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "Euronews – huelga general del 11 de noviembre",
+     "url": "https://es.euronews.com/2026/10/07/huelga-general-vivienda-espana-11-noviembre-ccoo-ugt"
+    },
+    {
+     "n": "El Demócrata – quién convoca y por qué",
+     "url": "https://www.democrata.es/actualidad/huelga-general-11-noviembre-quien-convoca-cuanto-dura-cuales-son-motivos/"
+    }
+   ],
+   "vigilar": [
+    "Servicios mínimos en Asturias",
+    "Cortes de carreteras y transporte el 11-N"
+   ],
+   "fiabilidad": "Convocatoria registrada ante el Ministerio de Trabajo."
   }
  ],
  "cadenas": [
@@ -575,6 +678,11 @@
      "fecha": "2026-11-05",
      "texto": "Trump decidirá «pronto» si reanuda los ataques. Irán propone vía Catar. Irán dice derribar drones de EE. UU.",
      "nivel": "oficial"
+    },
+    {
+     "fecha": "2026-11-06",
+     "texto": "Explosiones en Qeshm y alerta militar en el sur de Irán. Irán amenaza con golpear bases de EE. UU. en Europa.",
+     "nivel": "varios_medios"
     }
    ],
    "siguiente": [
@@ -848,5 +956,94 @@
     ]
    }
   ]
- }
+ },
+ "verificaciones": [
+  {
+   "cuenta": "Dr Charlie Ward (@Drcharlie…)",
+   "dice": "«MOMENTS AGO»: Trump publica que la mayoría de aliados de la OTAN no quieren implicarse en la operación contra Irán.",
+   "veredicto": "descontextualizado",
+   "explica": "El mensaje de Trump es real, pero lo publicó el 17 de marzo de 2026. Se está difundiendo ahora como si fuera nuevo.",
+   "fuentes": [
+    {
+     "n": "Fox News – publicación de Trump",
+     "url": "https://www.foxnews.com/politics/trump-says-most-nato-allies-dont-want-get-involved-iran-operation-us-never-needed-help"
+    },
+    {
+     "n": "Global Banking & Finance (Reuters) – fecha 17 de marzo",
+     "url": "https://www.globalbankingandfinance.com/nato-countries-dont-want-get-involved-iran-operation-trump/"
+    }
+   ]
+  },
+  {
+   "cuenta": "UK Report (@UK_REPT)",
+   "dice": "«Código 100», máxima alerta, en provincias del sur de Irán con evacuaciones y dispersión de personal.",
+   "veredicto": "parcial",
+   "explica": "Lo publica una única fuente OSINT (FromIran), que aclara que afecta a fuerzas militares. Coincide con explosiones reales en Qeshm la misma noche, confirmadas por medios iraníes. No hay confirmación oficial del «Código 100».",
+   "fuentes": [
+    {
+     "n": "Shin/FromIran – origen del dato",
+     "url": "https://sh1n.org/tweets/as-explained-before-this-is-for-military-forces-2118823640489939251"
+    },
+    {
+     "n": "Iran International – explosiones en Qeshm",
+     "url": "https://www.iranintl.com/en/liveblog/202610312594"
+    }
+   ]
+  },
+  {
+   "cuenta": "«Sheikh Mansour» (cuenta con check azul)",
+   "dice": "«Esto no es un ejercicio»: Irán lanzará misiles hacia Europa (15 objetivos en 9 países) si EE. UU. ataca de nuevo.",
+   "veredicto": "parcial",
+   "explica": "Es cierto que responsables iraníes amenazan con atacar bases de EE. UU. en Europa. El mapa con 15 objetivos no tiene fuente, «esto no es un ejercicio» es exageración, y no consta que la cuenta sea la del jeque real.",
+   "fuentes": [
+    {
+     "n": "Iran International – amenazas a Europa",
+     "url": "https://www.iranintl.com/en/202611036564"
+    }
+   ]
+  },
+  {
+   "cuenta": "Coffe Report (@CoffeReport)",
+   "dice": "Solicitudes sospechosas generadas por IA a empresas de agua, calefacción y colegios de Dinamarca, según la cadena DR.",
+   "veredicto": "sin_confirmar",
+   "explica": "No he encontrado la noticia original de DR. Es verosímil, porque Dinamarca ya atribuyó a Rusia ciberataques a una empresa de agua, pero falta la fuente.",
+   "fuentes": [
+    {
+     "n": "Infonews (AP) – antecedente: Rusia y el agua en Dinamarca",
+     "url": "https://infonews.ca/news/7470178/denmark-blames-russia-for-cyberattacks-ahead-of-elections-and-on-water-utility"
+    }
+   ]
+  },
+  {
+   "cuenta": "Negocios TV (@negocios_tv)",
+   "dice": "Pánico bancario en Japón: un apagón paraliza más de 100 bancos y bloquea el efectivo.",
+   "veredicto": "sin_confirmar",
+   "explica": "No aparece en ningún medio que haya encontrado. Solo lo publica este canal de YouTube. Trátalo como rumor.",
+   "fuentes": []
+  },
+  {
+   "cuenta": "Área Militar (@areamilitarof)",
+   "dice": "La OTAN anuncia el envío de fuerzas al Mar Negro y aumenta el riesgo de Tercera Guerra Mundial.",
+   "veredicto": "sin_confirmar",
+   "explica": "No hay anuncio de la OTAN de estos días. Los grupos navales de la OTAN entran en el Mar Negro con regularidad. El titular y la miniatura son sensacionalistas.",
+   "fuentes": [
+    {
+     "n": "Defensa.com – presencia habitual de la OTAN en el Mar Negro (junio 2026)",
+     "url": "https://www.defensa.com/otan-y-europa/otan-encabezada-espana-vuelve-mar-negro"
+    }
+   ]
+  },
+  {
+   "cuenta": "El Comercio (@elcomercio_es)",
+   "dice": "Huelga general el 11 de noviembre.",
+   "veredicto": "confirmado",
+   "explica": "Convocada por CCOO y UGT para el miércoles 11 de noviembre, 24 horas, en toda España.",
+   "fuentes": [
+    {
+     "n": "Euronews – huelga general",
+     "url": "https://es.euronews.com/2026/10/07/huelga-general-vivienda-espana-11-noviembre-ccoo-ugt"
+    }
+   ]
+  }
+ ]
 }

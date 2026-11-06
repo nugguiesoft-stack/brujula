@@ -113,3 +113,19 @@ details summary{cursor:pointer;font-family:var(--f-display);font-size:19px;lette
 .empty{padding:12px;text-align:center;color:var(--muted);font-size:14px}
 @media (prefers-reduced-motion:no-preference){.needle{transition:transform .9s cubic-bezier(.2,.8,.2,1)}}
 @media(max-width:759px){.gauge{max-width:220px}.gauge-box{padding:12px}}
+.buzon{display:grid;gap:10px;border-color:#2f5b7a}
+.buzon textarea{width:100%;min-height:70px;resize:vertical;font:inherit;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:10px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{font:inherit;font-weight:600;color:#1b1206;background:var(--accent);border:0;border-radius:8px;padding:8px 16px;cursor:pointer}
+.btn:disabled{opacity:.5;cursor:default}
+.checks{display:grid;gap:10px}
+.ck{background:var(--panel-2);border-radius:8px;padding:10px 12px;display:grid;gap:5px;font-size:14px;border-left:4px solid var(--muted)}
+.ck .who{font-size:13px;color:var(--muted)}
+.vd{font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px;justify-self:start}
+.vd.confirmado{background:#16352a;color:var(--ok)} .ck.confirmado{border-left-color:var(--ok)}
+.vd.parcial{background:#33300f;color:var(--watch)} .ck.parcial{border-left-color:var(--watch)}
+.vd.sin_confirmar{background:#35230f;color:var(--tense)} .ck.sin_confirmar{border-left-color:var(--tense)}
+.vd.descontextualizado,.vd.falso{background:#3a1218;color:var(--alert)} .ck.descontextualizado,.ck.falso{border-left-color:var(--alert)}
+.chip.mine{border-color:#2f5b7a;color:#8cc4ea}
+.flags{display:flex;flex-wrap:wrap;gap:6px}
+.flag{font-size:12px;color:var(--tense);border:1px dashed var(--tense);border-radius:999px;padding:1px 8px}

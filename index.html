@@ -9,6 +9,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="estilo.css">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icono-192.png">
+<link rel="apple-touch-icon" href="icono-192.png">
 </head>
 <body>
 <main class="wrap">
@@ -73,6 +76,21 @@
     <h2 id="h-rum">Rumores sin contrastar</h2>
     <p class="small warn-text">Noticias alarmantes publicadas por una o dos fuentes. Falta confirmarlas. No suben el índice hasta que otras fuentes las recojan.</p>
     <div id="rumors" class="events"></div>
+  </section>
+
+  <section class="panel buzon" aria-labelledby="h-buz" id="buzon">
+    <h2 id="h-buz">Buzón: analiza lo que ves en redes</h2>
+    <p class="small muted">Pega aquí un enlace de X o el texto de una publicación. También puedes instalar esta web en el móvil y usar «Compartir» desde X: la Brújula aparecerá en la lista.</p>
+    <label for="post-in" class="small">Enlace o texto</label>
+    <textarea id="post-in" placeholder="https://x.com/usuario/status/… o el texto del mensaje"></textarea>
+    <div class="row"><button type="button" id="post-go" class="btn">Analizar</button><button type="button" id="install" class="btn-ghost" hidden>Instalar en el móvil</button></div>
+    <div id="post-out" class="events"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="h-ver" style="display:grid;gap:10px">
+    <h2 id="h-ver">Verificación de publicaciones</h2>
+    <p class="small muted">Publicaciones de redes revisadas por el analista.</p>
+    <div id="checks" class="checks"></div>
   </section>
 
   <div class="cols">

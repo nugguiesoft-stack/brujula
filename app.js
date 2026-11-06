@@ -414,7 +414,7 @@ function renderAll() {
     const key = scope === "asturias" ? "a" : scope === "espana" ? "e" : "g";
     drawSpark(box.querySelector(".spark"), store.get("brujula.log", []).slice(0, 30).reverse().map((x) => +x[key] || 0));
   });
-  renderAlerts(evs); renderAnalysis(evs); renderMap(evs); renderRumors(); renderFilters(); renderEvents(); renderChains(); renderScen(); renderLog();
+  renderAlerts(evs); renderAnalysis(evs); renderMap(evs); renderRumors(); renderFilters(); renderEvents(); renderChains(); renderScen(); renderLog(); renderChecks();
 }
 
 function renderAlerts(evs) {
@@ -458,7 +458,7 @@ function renderMap(evs) {
   const [hx, hy] = xy(HOME[0], HOME[1]);
   g.append(s("circle", { cx: hx, cy: hy, r: 5, fill: "none", stroke: css("--accent"), "stroke-width": 2 }));
   const home = s("text", { x: hx - 8, y: hy - 8, "text-anchor": "end", "font-size": 13, fill: css("--accent") }); home.textContent = "Tú"; g.append(home);
-  const items = [...evs.map((e) => [e, false]), ...ST.rumors.map((e) => [e, true])]
+  const items = [...evs.map((e) => [e, false]), ...ST.rumors.map((e) => [e, true]), ...buzonAsRumors().map((e) => [e, true])]
     .filter(([e]) => e.lat != null && e.lon != null && isFinite(+e.lat)).sort((a, b) => contrib(a[0]) - contrib(b[0]));
   for (const [e, isRumor] of items) {
     const [x, y] = xy(+e.lat, +e.lon), c = contrib(e, "global"), col = isRumor ? css("--watch") : sevColor(contrib(e)), r = 3.5 + Math.min(c, 9) * 1.1;
@@ -478,7 +478,7 @@ function eventCard(e, isRumor) {
   const head = h("button", { type: "button", class: "ev-head", "aria-expanded": String(open) },
     h("div", { class: "ev-top" }, h("h3", null, e.titulo), h("span", { class: "score", title: "Puntuación para Asturias" }, num(c, 2))),
     h("div", { class: "chips" },
-      h("span", { class: "chip " + (e.origen === "auto" ? "auto" : "ana") }, e.origen === "auto" ? "Automático" : "Analista"),
+      h("span", { class: "chip " + (e.origen === "auto" ? "auto" : e.origen === "mio" ? "mine" : "ana") }, e.origen === "auto" ? "Automático" : e.origen === "mio" ? "Aportado por ti" : "Analista"),
       h("span", { class: "chip" }, DOMNAME[e.dominio] || e.dominio),
       e.region ? h("span", { class: "chip" }, e.region) : null,
       h("span", { class: "chip" }, `Gravedad ${num(e.S, e.S % 1 ? 1 : 0)}`),
@@ -505,7 +505,7 @@ function eventCard(e, isRumor) {
 
 function renderRumors() {
   const box = $("rumors"); box.replaceChildren();
-  const list = [...ST.rumors].sort((a, b) => b.S - a.S).slice(0, 12);
+  const list = [...buzonAsRumors().filter((x) => x.nivel === "rumor"), ...[...ST.rumors].sort((a, b) => b.S - a.S)].slice(0, 14);
   if (!list.length) box.append(h("p", { class: "empty" }, ST.scanAt ? "No hay rumores alarmantes en las últimas 24 h." : "Se mostrarán tras el escaneo."));
   for (const e of list) box.append(eventCard(e, true));
 }
@@ -564,12 +564,125 @@ function renderSources() {
     h("div", { class: "src-list" }, ...g.items.map((it) => { const u = safeUrl(it.url); return h("div", { class: "src" }, u ? h("a", { href: u, target: "_blank", rel: "noopener" }, h("b", null, it.n)) : h("b", null, it.n), h("span", { class: "small" }, it.uso), h("span", { class: "small muted" }, it.acceso)); }))));
 }
 
+/* ===================== Verificación de publicaciones ===================== */
+const VERD = { confirmado: "Confirmado", parcial: "Parcialmente cierto", sin_confirmar: "Sin confirmar", descontextualizado: "Antiguo o sacado de contexto", falso: "Falso" };
+function renderChecks() {
+  const box = $("checks"); box.replaceChildren();
+  const list = ST.ana?.verificaciones || [];
+  if (!list.length) { box.append(h("p", { class: "empty" }, "Todavía no hay publicaciones revisadas.")); return; }
+  for (const c of list) box.append(h("div", { class: "ck " + c.veredicto },
+    h("span", { class: "vd " + c.veredicto }, VERD[c.veredicto] || c.veredicto),
+    h("span", { class: "who" }, c.cuenta), h("b", null, c.dice), h("span", null, c.explica),
+    (c.fuentes || []).length ? h("div", { class: "srcs" }, ...c.fuentes.map((f) => { const u = safeUrl(f.url); return u ? h("a", { href: u, target: "_blank", rel: "noopener" }, f.n) : h("span", null, f.n); })) : null));
+}
+
+/* ===================== Buzón: publicaciones aportadas ===================== */
+const DOMKW = [
+  ["nuclear", 8, /nuclear|yodo|iodine|radiac|radiation|atómic|atomic/i],
+  ["banca", 5, /\bbanc|\bbank|corralito|efectivo|cash|cajero|atm\b|pánico bancario|bank run|depósit/i],
+  ["ciber", 5, /hack|ciber|cyber|ransomware|ddos|malware|infraestructura crítica|critical infrastructure/i],
+  ["belico", 6, /misil|missile|ataque|attack|strike|bombard|guerra|\bwar\b|invasi|tropas|troops|ejército|army|dron|drone|otan|nato|militar|military|evacua/i],
+  ["energia", 4, /petróleo|\boil\b|\bgas\b|apagón|blackout|combustible|fuel|electricidad|power outage|gasolina|diésel/i],
+  ["social", 3, /huelga|general strike|protesta|protest|disturbios|riots|manifestaci/i],
+  ["sanitario", 4, /virus|brote|outbreak|pandemi|epidemi|contagio/i],
+  ["natural", 4, /terremoto|earthquake|tsunami|inundaci|flood|incendio|wildfire|temporal|huracán|hurricane/i]
+];
+const HYPE = [
+  [/breaking|just in|última hora|ultima hora|urgente|🚨|⚠️|this is not a drill|no es un ejercicio/i, "Lenguaje de alarma"],
+  [/tercera guerra mundial|world war (3|iii|three)|wwiii|fin del mundo/i, "Titular apocalíptico"],
+  [/reportedly|según fuentes|se informa|rumou?r|unconfirmed|sin confirmar|allegedly|supuestamente/i, "La propia publicación no lo confirma"],
+  [/youtu\.?be/i, "Enlaza a un vídeo, no a una fuente"]
+];
+function tokens(s) { return new Set((s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").match(/[a-z0-9]{5,}/g) || []); }
+function classifyPost(text) {
+  let dominio = "social", S = 2;
+  for (const [d, base, re] of DOMKW) if (re.test(text)) { dominio = d; S = base; break; }
+  for (const [re, v] of BOOST) if (re.test(text)) S = v >= 6 ? Math.max(S, v) : Math.min(10, S + v);
+  const pl = placeOf(text, "");
+  const flags = HYPE.filter(([re]) => re.test(text)).map(([, t]) => t);
+  // ¿coincide con algún suceso que ya conocemos?
+  const tk = tokens(text); let best = null, bestScore = 0;
+  for (const e of allEvents()) {
+    let sc = 0;
+    if (pl.name && e.region && (e.region.includes(pl.name) || pl.name === e.region)) sc += 2;
+    if (e.dominio === dominio) sc += 1;
+    const et = tokens((e.titulo || "") + " " + (e.resumen || ""));
+    for (const t of tk) if (et.has(t)) sc += 0.5;
+    if (sc > bestScore) { bestScore = sc; best = e; }
+  }
+  const match = bestScore >= 3.5 ? best : null;
+  const nivel = match && (NIV[match.nivel]?.[0] ?? 0) >= 0.65 ? "medios_locales" : "rumor";
+  return { dominio, S, pl, flags, match, nivel };
+}
+function xId(s) { const m = /(?:x|twitter|fxtwitter|vxtwitter|fixupx)\.com\/([A-Za-z0-9_]+)\/status(?:es)?\/(\d+)/i.exec(s || ""); return m ? { user: m[1], id: m[2] } : null; }
+async function readX(ref) {
+  const d = await getJSON(`https://api.fxtwitter.com/2/status/${ref.id}?lang=es`, 15000);
+  const st = d.status || d.tweet || {};
+  return {
+    text: st.translation?.text || st.text || "", original: st.text || "",
+    author: st.author ? `${st.author.name || ""} (@${st.author.screen_name || ref.user})` : "@" + ref.user,
+    date: st.created_timestamp ? new Date(st.created_timestamp * 1000).toISOString() : (st.created_at || null),
+    views: st.views ?? null
+  };
+}
+async function analyzeInput(raw, sharedTitle) {
+  raw = (raw || "").trim(); if (!raw) return;
+  const ref = xId(raw);
+  const item = { id: "mio-" + Date.now(), t: Date.now(), raw, url: (/(https?:\/\/\S+)/.exec(raw) || [])[1] || null, author: null, text: raw, date: null, read: null };
+  if (ref) {
+    try { const x = await readX(ref); Object.assign(item, { text: x.text || raw, original: x.original, author: x.author, date: x.date, read: "ok" }); }
+    catch (e) { item.read = "err"; }
+  } else if (sharedTitle) item.text = sharedTitle + " " + raw;
+  const c = classifyPost(item.text);
+  Object.assign(item, { dominio: c.dominio, S: c.S, region: c.pl.name, lat: c.pl.lat, lon: c.pl.lon, zona: c.pl.zona, flags: c.flags, nivel: c.nivel, matchTitle: c.match?.titulo || null });
+  if (item.date && Date.now() - new Date(item.date) > 7 * 864e5) item.flags.push("Publicación antigua: " + fecha(item.date));
+  const list = store.get("brujula.buzon", []); list.unshift(item); store.set("brujula.buzon", list.slice(0, 50));
+  renderBuzon(); renderAll();
+}
+function buzonAsRumors() {
+  return store.get("brujula.buzon", []).map((b) => ({
+    id: b.id, origen: "mio", titulo: (b.author ? b.author + ": " : "") + (b.text || "").slice(0, 110) + ((b.text || "").length > 110 ? "…" : ""),
+    resumen: b.text, dominio: b.dominio, region: b.region, lat: b.lat, lon: b.lon, zona: b.zona, S: b.S, nivel: b.nivel, tendencia: "estable",
+    fecha: b.date || new Date(b.t).toISOString(),
+    fuentes: b.url ? [{ n: "Publicación original", url: b.url }] : [],
+    fiabilidad: (b.matchTitle ? `Relacionado con un suceso conocido: «${b.matchTitle}». El dato concreto de la publicación sigue sin verificar.` : "No coincide con ningún suceso confirmado. Trátalo como rumor.") +
+      (b.read === "err" ? " No se pudo leer el texto del post; pega también el texto." : ""),
+    flags: b.flags, mine: true
+  }));
+}
+function renderBuzon() {
+  const box = $("post-out"); box.replaceChildren();
+  const list = buzonAsRumors();
+  for (const e of list.slice(0, 10)) {
+    const card = eventCard(e, true);
+    const q = encodeURIComponent((e.resumen || "").replace(/https?:\/\/\S+/g, "").slice(0, 120));
+    const extra = h("div", { class: "row", style: "padding:0 14px 12px" },
+      (e.flags || []).length ? h("div", { class: "flags" }, ...e.flags.map((f) => h("span", { class: "flag" }, f))) : null,
+      h("a", { href: `https://news.google.com/search?q=${q}&hl=es&gl=ES&ceid=ES:es`, target: "_blank", rel: "noopener", class: "small" }, "Buscar confirmación en Google Noticias"),
+      h("button", { type: "button", class: "btn-ghost" }, "Quitar"));
+    extra.querySelector("button").addEventListener("click", () => { store.set("brujula.buzon", store.get("brujula.buzon", []).filter((b) => b.id !== e.id)); renderBuzon(); renderAll(); });
+    card.append(extra); box.append(card);
+  }
+}
+let installPrompt = null;
+window.addEventListener("beforeinstallprompt", (ev) => { ev.preventDefault(); installPrompt = ev; const b = $("install"); if (b) b.hidden = false; });
+
 /* ===================== Arranque ===================== */
 async function init() {
   $("rescan").addEventListener("click", () => scan(true));
+  $("post-go").addEventListener("click", async () => { const b = $("post-go"); b.disabled = true; b.textContent = "Analizando…"; await analyzeInput($("post-in").value); $("post-in").value = ""; b.disabled = false; b.textContent = "Analizar"; });
+  $("install").addEventListener("click", async () => { if (!installPrompt) return; installPrompt.prompt(); installPrompt = null; $("install").hidden = true; });
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
   try { ST.ana = await getJSON("datos/analisis.json?v=" + Math.floor(Date.now() / 600000)); }
   catch (e) { ST.ana = { eventos: [], estado: { resumen: "No se pudo cargar el análisis del analista." } }; }
-  renderAll(); renderSources(); renderMarkets();
+  renderAll(); renderSources(); renderMarkets(); renderBuzon();
+  const qs = new URLSearchParams(location.search);
+  const shared = [qs.get("url"), qs.get("text")].filter(Boolean).join(" ");
+  if (shared) {
+    history.replaceState(null, "", location.pathname);
+    $("buzon").scrollIntoView({ block: "start" });
+    await analyzeInput(shared, qs.get("title"));
+  }
   scan(false);
 }
 init();
