@@ -174,7 +174,7 @@ const ST = {
   sources: {},          // estado de cada fuente
   scanAt: null, scanning: false, filter: "todos", open: new Set()
 };
-const allEvents = () => [...(ST.ana?.eventos || []), ...ST.auto];
+const allEvents = () => [...(ST.ana?.eventos || []), ...ST.auto, ...buzonAsEvents()];
 function setSource(id, name, state, msg) { ST.sources[id] = { name, state, msg, t: new Date() }; renderSources(); }
 
 /* ===================== Fuentes automáticas ===================== */
@@ -213,7 +213,7 @@ async function scanGdelt(prevCounts) {
     const url = "https://api.gdeltproject.org/api/v2/doc/doc?query=" + encodeURIComponent(th.q) +
       "&mode=artlist&maxrecords=120&format=json&timespan=24h&sort=datedesc";
     try {
-      const data = await getJSON(url);
+      const data = await pget(url);
       const arts = Array.isArray(data.articles) ? data.articles : [];
       // agrupar por lugar
       const groups = new Map();
@@ -343,7 +343,8 @@ async function scan(force) {
   ST.scanning = true; $("rescan").disabled = true; renderStamp();
   const prev = store.get("brujula.prev", {});
   setProgress(0.02);
-  await Promise.all([scanUSGS(), scanNOAA(), scanPolymarket()]);
+  await Promise.all([scanUSGS(), scanNOAA(), scanPolymarket(), scanWatched()]);
+  recheckRumors();
   await scanGdelt(prev);
   store.set("brujula.prev", prev);
   ST.scanAt = new Date(); ST.scanning = false; $("rescan").disabled = false; setProgress(1);
@@ -505,7 +506,7 @@ function eventCard(e, isRumor) {
 
 function renderRumors() {
   const box = $("rumors"); box.replaceChildren();
-  const list = [...buzonAsRumors().filter((x) => x.nivel === "rumor"), ...[...ST.rumors].sort((a, b) => b.S - a.S)].slice(0, 14);
+  const list = [...buzonAsRumors(), ...[...ST.rumors].sort((a, b) => b.S - a.S)].slice(0, 14);
   if (!list.length) box.append(h("p", { class: "empty" }, ST.scanAt ? "No hay rumores alarmantes en las últimas 24 h." : "Se mostrarán tras el escaneo."));
   for (const e of list) box.append(eventCard(e, true));
 }
@@ -553,7 +554,7 @@ function renderLog() {
 }
 function renderSources() {
   const box = $("srcstatus"); box.replaceChildren();
-  const order = ["usgs", "noaa", "poly", ...THEMES.map((t) => "gdelt-" + t.id)];
+  const order = ["usgs", "noaa", "poly", "vigiladas", ...THEMES.map((t) => "gdelt-" + t.id)];
   for (const k of order) {
     const v = ST.sources[k]; if (!v) continue;
     box.append(h("div", { class: "st " + v.state }, h("i"), h("span", null, v.name), h("span", { class: "small muted" }, v.state === "err" ? "Error: " + v.msg : v.msg)));
@@ -577,6 +578,8 @@ function renderChecks() {
 }
 
 /* ===================== Buzón: publicaciones aportadas ===================== */
+/* Al compartir un post: se lee, se valora la cuenta, se busca confirmación en Google Noticias y GDELT,
+   se le da un nivel y una puntuación, y la cuenta (y su web) pasan a vigilarse en cada escaneo. */
 const DOMKW = [
   ["nuclear", 8, /nuclear|yodo|iodine|radiac|radiation|atómic|atomic/i],
   ["banca", 5, /\bbanc|\bbank|corralito|efectivo|cash|cajero|atm\b|pánico bancario|bank run|depósit/i],
@@ -593,16 +596,56 @@ const HYPE = [
   [/reportedly|según fuentes|se informa|rumou?r|unconfirmed|sin confirmar|allegedly|supuestamente/i, "La propia publicación no lo confirma"],
   [/youtu\.?be/i, "Enlaza a un vídeo, no a una fuente"]
 ];
+/* Directorio de cuentas conocidas. tipo: oficial · medio · agregador · video. peso: 0–1 */
+const DIRECTORIO = {
+  centcom: { nombre: "Mando Central de EE. UU. (CENTCOM)", tipo: "oficial", peso: 0.9, web: "centcom.mil" },
+  nato: { nombre: "OTAN", tipo: "oficial", peso: 0.9, web: "nato.int" },
+  iaeaorg: { nombre: "OIEA", tipo: "oficial", peso: 0.95, web: "iaea.org" },
+  who: { nombre: "OMS", tipo: "oficial", peso: 0.9, web: "who.int" },
+  eu_commission: { nombre: "Comisión Europea", tipo: "oficial", peso: 0.9, web: "ec.europa.eu" },
+  defensagob: { nombre: "Ministerio de Defensa de España", tipo: "oficial", peso: 0.9, web: "defensa.gob.es" },
+  dsngob: { nombre: "Departamento de Seguridad Nacional", tipo: "oficial", peso: 0.9, web: "dsn.gob.es" },
+  interiorgob: { nombre: "Ministerio del Interior", tipo: "oficial", peso: 0.9, web: "interior.gob.es" },
+  aemet_esp: { nombre: "AEMET", tipo: "oficial", peso: 0.95, web: "aemet.es" },
+  ignspain: { nombre: "Instituto Geográfico Nacional", tipo: "oficial", peso: 0.95, web: "ign.es" },
+  incibe: { nombre: "INCIBE", tipo: "oficial", peso: 0.9, web: "incibe.es" },
+  idf: { nombre: "Ejército de Israel", tipo: "oficial", peso: 0.7, web: "idf.il" },
+  whitehouse: { nombre: "Casa Blanca", tipo: "oficial", peso: 0.75, web: "whitehouse.gov" },
+  reuters: { nombre: "Reuters", tipo: "medio", peso: 0.85, web: "reuters.com" },
+  ap: { nombre: "Associated Press", tipo: "medio", peso: 0.85, web: "apnews.com" },
+  afp: { nombre: "AFP", tipo: "medio", peso: 0.85, web: "afp.com" },
+  bbcbreaking: { nombre: "BBC", tipo: "medio", peso: 0.8, web: "bbc.com" },
+  efenoticias: { nombre: "Agencia EFE", tipo: "medio", peso: 0.8, web: "efe.com" },
+  europapress: { nombre: "Europa Press", tipo: "medio", peso: 0.75, web: "europapress.es" },
+  rtve: { nombre: "RTVE", tipo: "medio", peso: 0.75, web: "rtve.es" },
+  elcomercio_es: { nombre: "El Comercio (Asturias)", tipo: "medio", peso: 0.7, web: "elcomercio.es" },
+  uk_rept: { nombre: "UK Report", tipo: "agregador", peso: 0.3, nota: "Agregador de última hora sin fuente propia." },
+  coffereport: { nombre: "Coffe Report", tipo: "agregador", peso: 0.3, nota: "Agregador; el 7 nov no se pudo localizar la fuente que citaba." },
+  areamilitarof: { nombre: "Área Militar", tipo: "video", peso: 0.2, nota: "Canal de vídeo con titulares sensacionalistas." },
+  negocios_tv: { nombre: "Negocios TV", tipo: "video", peso: 0.25, nota: "El 7 nov difundió un «pánico bancario» que ningún medio recogía." }
+};
+const TIPO_TXT = { oficial: "Cuenta oficial", medio: "Medio de comunicación", agregador: "Agregador de noticias", video: "Canal de vídeo", desconocida: "Cuenta desconocida" };
+const STOP = new Set("about after again against because before being could their there these those which while would should según sobre entre desde hasta donde cuando porque había tiene están puede pueden también ahora todos todas hacia contra durante mientras nuevo nueva nuevos nuevas según other people breaking reportedly según noticia última anuncia announces report reports".split(" "));
+
 function tokens(s) { return new Set((s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").match(/[a-z0-9]{5,}/g) || []); }
+function keyTerms(text) {
+  const clean = (text || "").replace(/https?:\/\/\S+/g, " ").replace(/[#@]\w+/g, " ");
+  const caps = (clean.match(/\b[A-ZÁÉÍÓÚÑ][\wÁÉÍÓÚÑáéíóúñ-]{3,}/g) || []).filter((w) => !STOP.has(w.toLowerCase()));
+  const words = (clean.match(/[\wáéíóúñÁÉÍÓÚÑ]{6,}/g) || []).map((w) => w.toLowerCase()).filter((w) => !STOP.has(w));
+  const freq = new Map();
+  for (const w of caps) freq.set(w, (freq.get(w) || 0) + 3);
+  for (const w of words) freq.set(w, (freq.get(w) || 0) + 1);
+  return [...freq.entries()].sort((a, b) => b[1] - a[1]).map(([w]) => w).filter((w, i, a) => a.findIndex((x) => x.toLowerCase() === w.toLowerCase()) === i).slice(0, 5);
+}
 function classifyPost(text) {
   let dominio = "social", S = 2;
   for (const [d, base, re] of DOMKW) if (re.test(text)) { dominio = d; S = base; break; }
   for (const [re, v] of BOOST) if (re.test(text)) S = v >= 6 ? Math.max(S, v) : Math.min(10, S + v);
   const pl = placeOf(text, "");
   const flags = HYPE.filter(([re]) => re.test(text)).map(([, t]) => t);
-  // ¿coincide con algún suceso que ya conocemos?
   const tk = tokens(text); let best = null, bestScore = 0;
   for (const e of allEvents()) {
+    if (e.origen === "mio") continue;
     let sc = 0;
     if (pl.name && e.region && (e.region.includes(pl.name) || pl.name === e.region)) sc += 2;
     if (e.dominio === dominio) sc += 1;
@@ -610,58 +653,225 @@ function classifyPost(text) {
     for (const t of tk) if (et.has(t)) sc += 0.5;
     if (sc > bestScore) { bestScore = sc; best = e; }
   }
-  const match = bestScore >= 3.5 ? best : null;
-  const nivel = match && (NIV[match.nivel]?.[0] ?? 0) >= 0.65 ? "medios_locales" : "rumor";
-  return { dominio, S, pl, flags, match, nivel };
+  return { dominio, S, pl, flags, match: bestScore >= 3.5 ? best : null };
 }
+
+/* --- red: todo pasa por el intermediario de Cloudflare si está configurado --- */
+const PROXY_DEFAULT = "";   // se rellenará con la dirección del Worker
+function proxyUrl() { return store.get("brujula.proxy", "") || PROXY_DEFAULT; }
+async function pget(url, asJson = true, timeout = 20000) {
+  const p = proxyUrl();
+  const target = p ? p.replace(/\/$/, "") + "/?u=" + encodeURIComponent(url) : url;
+  const ctl = new AbortController(); const t = setTimeout(() => ctl.abort(), timeout);
+  try {
+    const r = await fetch(target, { signal: ctl.signal });
+    const txt = await r.text();
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    if (!asJson) return txt;
+    try { return JSON.parse(txt); } catch { throw new Error(txt.slice(0, 80) || "Respuesta no válida"); }
+  } finally { clearTimeout(t); }
+}
+async function googleNews(q, lang = "es") {
+  const ed = lang === "es" ? "hl=es&gl=ES&ceid=ES:es" : "hl=en-US&gl=US&ceid=US:en";
+  const xml = await pget(`https://news.google.com/rss/search?q=${encodeURIComponent(q)}&${ed}`, false, 15000);
+  const doc = new DOMParser().parseFromString(xml, "text/xml");
+  return [...doc.querySelectorAll("item")].slice(0, 30).map((it) => {
+    const src = it.querySelector("source");
+    return { title: it.querySelector("title")?.textContent || "", url: it.querySelector("link")?.textContent || "",
+      date: it.querySelector("pubDate")?.textContent || "", source: src?.textContent || "", sourceUrl: src?.getAttribute("url") || "" };
+  });
+}
+
+/* --- leer X (FxTwitter) --- */
 function xId(s) { const m = /(?:x|twitter|fxtwitter|vxtwitter|fixupx)\.com\/([A-Za-z0-9_]+)\/status(?:es)?\/(\d+)/i.exec(s || ""); return m ? { user: m[1], id: m[2] } : null; }
 async function readX(ref) {
-  const d = await getJSON(`https://api.fxtwitter.com/2/status/${ref.id}?lang=es`, 15000);
+  const d = await pget(`https://api.fxtwitter.com/2/status/${ref.id}?lang=es`, true, 15000);
   const st = d.status || d.tweet || {};
+  const a = st.author || {};
   return {
     text: st.translation?.text || st.text || "", original: st.text || "",
-    author: st.author ? `${st.author.name || ""} (@${st.author.screen_name || ref.user})` : "@" + ref.user,
-    date: st.created_timestamp ? new Date(st.created_timestamp * 1000).toISOString() : (st.created_at || null),
-    views: st.views ?? null
+    handle: (a.screen_name || ref.user || "").toLowerCase(), author: a.name || ref.user,
+    followers: a.followers ?? null, joined: a.joined || a.created_at || null, website: a.website?.url || a.website || null,
+    date: st.created_timestamp ? new Date(st.created_timestamp * 1000).toISOString() : (st.created_at || null)
   };
 }
+
+/* --- credibilidad de la cuenta --- */
+function accountCredibility(x) {
+  const k = (x.handle || "").toLowerCase(), dir = DIRECTORIO[k];
+  if (dir) return { ...dir, handle: k, motivo: dir.nota || TIPO_TXT[dir.tipo] };
+  let peso = 0.35; const motivos = [];
+  if (x.followers != null) {
+    if (x.followers > 500000) { peso += 0.1; motivos.push("Muchos seguidores (no garantiza fiabilidad)"); }
+    if (x.followers < 2000) { peso -= 0.1; motivos.push("Pocos seguidores"); }
+  }
+  if (x.joined) { const age = (Date.now() - new Date(x.joined)) / 864e5; if (age < 180) { peso -= 0.15; motivos.push("Cuenta creada hace menos de 6 meses"); } }
+  const site = x.website ? (safeUrl(x.website) ? new URL(x.website).hostname.replace(/^www\./, "") : null) : null;
+  if (site && OFFICIAL.test(site)) { peso = 0.85; motivos.push("Enlaza a una web oficial"); return { nombre: x.author, tipo: "oficial", peso, web: site, handle: k, motivo: motivos.join(" · ") }; }
+  return { nombre: x.author, tipo: "desconocida", peso: Math.max(0.1, peso), web: site, handle: k, motivo: motivos.join(" · ") || "Cuenta sin historial en la Brújula" };
+}
+
+/* --- comprobación en otras fuentes --- */
+async function corroborate(text, original) {
+  const terms = keyTerms(text), termsEn = original && original !== text ? keyTerms(original) : [];
+  const out = { terms, hits: [], official: false, old: false, error: null };
+  if (terms.length < 2) return out;
+  const seen = new Set();
+  const consider = (arr, tset) => {
+    for (const a of arr) {
+      const tt = tokens(a.title); let n = 0;
+      for (const t of tset) if (tt.has(t)) n++;
+      if (n < 2) continue;
+      const key = (a.source || a.url).toLowerCase(); if (seen.has(key)) continue; seen.add(key);
+      a.isOfficial = OFFICIAL.test(a.sourceUrl || a.url || "");
+      if (a.isOfficial) out.official = true;
+      out.hits.push(a);
+    }
+  };
+  try {
+    const q = terms.slice(0, 3).join(" ") + " when:3d";
+    consider(await googleNews(q, "es"), tokens(terms.join(" ")));
+    if (termsEn.length >= 2) consider(await googleNews(termsEn.slice(0, 3).join(" ") + " when:3d", "en"), tokens(termsEn.join(" ")));
+    if (out.hits.length === 0) {
+      const old = await googleNews(terms.slice(0, 3).join(" "), "es");
+      const tset = tokens(terms.join(" "));
+      const oldHits = old.filter((a) => { const tt = tokens(a.title); let n = 0; for (const t of tset) if (tt.has(t)) n++; return n >= 2; });
+      if (oldHits.length && oldHits.every((a) => Date.now() - new Date(a.date) > 7 * 864e5)) out.old = true;
+    }
+  } catch (e) { out.error = String(e.message || e); }
+  return out;
+}
+function levelFromCheck(cred, chk, match) {
+  const n = chk.hits.length;
+  let nivel = n >= 6 ? "confirmado" : n >= 3 ? "varios_medios" : n >= 1 ? "medios_locales" : "rumor";
+  if (chk.official) nivel = n >= 3 ? "confirmado" : "oficial";
+  if (cred.tipo === "oficial" && cred.peso >= 0.85) nivel = n >= 2 ? "confirmado" : "oficial";
+  if (nivel === "rumor" && match && (NIV[match.nivel]?.[0] ?? 0) >= 0.65) nivel = "fuente_unica";
+  return nivel;
+}
+function verdictOf(nivel, chk, flags) {
+  if (chk.old) return "descontextualizado";
+  if (nivel === "confirmado" || nivel === "oficial") return "confirmado";
+  if (nivel === "varios_medios" || nivel === "medios_locales") return "parcial";
+  return "sin_confirmar";
+}
+
+/* --- fuentes aprendidas --- */
+function learnSource(cred) {
+  if (!cred.handle) return;
+  const list = store.get("brujula.vigiladas", []);
+  if (list.some((s) => s.handle === cred.handle)) return;
+  list.unshift({ handle: cred.handle, nombre: cred.nombre, tipo: cred.tipo, peso: cred.peso, web: cred.web || null, t: Date.now() });
+  store.set("brujula.vigiladas", list.slice(0, 40));
+}
+async function scanWatched() {
+  const list = store.get("brujula.vigiladas", []).filter((s) => s.tipo === "oficial" || s.tipo === "medio" || s.peso >= 0.5).slice(0, 8);
+  if (!list.length) return;
+  setSource("vigiladas", "Fuentes que vigilas", "wait", "Consultando…");
+  const evs = []; let ok = 0;
+  for (const s of list) {
+    const q = s.web ? `site:${s.web} when:1d` : `"${s.nombre}" when:1d`;
+    try {
+      const items = await googleNews(q, s.web && /\.(es|gob\.es)$/.test(s.web) ? "es" : "en");
+      ok++;
+      for (const a of items.slice(0, 6)) {
+        const c = classifyPost(a.title);
+        if (c.S < 5) continue;
+        evs.push({ id: "vig-" + s.handle + "-" + tokens(a.title).size + "-" + a.title.length, origen: "auto", tema: "vigiladas",
+          titulo: `${s.nombre}: ${a.title}`, resumen: a.title, dominio: c.dominio, region: c.pl.name, lat: c.pl.lat, lon: c.pl.lon, zona: c.pl.zona,
+          S: c.S, nivel: s.tipo === "oficial" ? "oficial" : "fuente_unica", tendencia: "estable", fecha: a.date ? new Date(a.date).toISOString() : null,
+          fuentes: [{ n: a.source || s.nombre, url: a.url }], fiabilidad: `Publicado por una fuente que vigilas (${TIPO_TXT[s.tipo] || s.tipo}).` });
+      }
+    } catch (e) { /* se informa abajo */ }
+  }
+  ST.auto = [...ST.auto.filter((x) => x.tema !== "vigiladas"), ...evs.slice(0, 15)];
+  setSource("vigiladas", "Fuentes que vigilas", ok ? "ok" : "err", ok ? `${list.length} fuentes, ${evs.length} titulares de alerta` : "No se pudo consultar Google Noticias (falta el intermediario)");
+}
+async function recheckRumors() {
+  const list = store.get("brujula.buzon", []); let changed = false;
+  for (const b of list.filter((x) => x.nivel === "rumor" && Date.now() - x.t < 72 * 36e5).slice(0, 4)) {
+    const chk = await corroborate(b.text, b.original);
+    if (chk.error || chk.terms.length < 2 || b.unread) continue;
+    const nivel = levelFromCheck(b.cred || {}, chk, null);
+    if (nivel !== b.nivel) { Object.assign(b, { nivel, hits: chk.hits.slice(0, 6), veredicto: verdictOf(nivel, chk, b.flags), checkedAt: Date.now() }); changed = true; }
+  }
+  if (changed) { store.set("brujula.buzon", list); renderBuzon(); renderAll(); }
+}
+
+/* --- análisis completo de una aportación --- */
 async function analyzeInput(raw, sharedTitle) {
   raw = (raw || "").trim(); if (!raw) return;
+  const status = $("post-status"); const say = (t) => { if (status) status.textContent = t; };
   const ref = xId(raw);
-  const item = { id: "mio-" + Date.now(), t: Date.now(), raw, url: (/(https?:\/\/\S+)/.exec(raw) || [])[1] || null, author: null, text: raw, date: null, read: null };
+  const item = { id: "mio-" + Date.now(), t: Date.now(), raw, url: (/(https?:\/\/\S+)/.exec(raw) || [])[1] || null, text: raw, read: null };
+  let x = { handle: ref?.user?.toLowerCase() || null, author: ref?.user || null };
   if (ref) {
-    try { const x = await readX(ref); Object.assign(item, { text: x.text || raw, original: x.original, author: x.author, date: x.date, read: "ok" }); }
-    catch (e) { item.read = "err"; }
+    say("Leyendo la publicación…");
+    try { x = await readX(ref); Object.assign(item, { text: x.text || raw, original: x.original, author: x.author, handle: x.handle, date: x.date, read: "ok" }); }
+    catch (e) { item.read = "err"; item.handle = x.handle; item.author = x.author; }
   } else if (sharedTitle) item.text = sharedTitle + " " + raw;
   const c = classifyPost(item.text);
-  Object.assign(item, { dominio: c.dominio, S: c.S, region: c.pl.name, lat: c.pl.lat, lon: c.pl.lon, zona: c.pl.zona, flags: c.flags, nivel: c.nivel, matchTitle: c.match?.titulo || null });
-  if (item.date && Date.now() - new Date(item.date) > 7 * 864e5) item.flags.push("Publicación antigua: " + fecha(item.date));
-  const list = store.get("brujula.buzon", []); list.unshift(item); store.set("brujula.buzon", list.slice(0, 50));
-  renderBuzon(); renderAll();
+  say("Valorando la cuenta…");
+  const cred = accountCredibility(x);
+  say("Buscando confirmación en otros medios…");
+  const chk = await corroborate(item.text, item.original);
+  const unread = item.read === "err" && item.text.replace(/https?:\/\/\S+/g, "").trim().length < 25;
+  const nivel = unread ? "rumor" : levelFromCheck(cred, chk, c.match);
+  const flags = [...c.flags];
+  if (unread) flags.push("No se pudo leer el post: no se puede valorar");
+  if (item.date && Date.now() - new Date(item.date) > 7 * 864e5) flags.push("Publicación antigua: " + fecha(item.date));
+  if (chk.old) flags.push("Lo que cuenta ya se publicó hace más de una semana");
+  Object.assign(item, { unread, dominio: c.dominio, S: c.S, region: c.pl.name, lat: c.pl.lat, lon: c.pl.lon, zona: c.pl.zona, flags, nivel,
+    cred, hits: chk.hits.slice(0, 6), terms: chk.terms, checkError: chk.error, matchTitle: c.match?.titulo || null,
+    veredicto: verdictOf(nivel, chk, flags), checkedAt: Date.now() });
+  learnSource(cred);
+  const list = store.get("brujula.buzon", []); list.unshift(item); store.set("brujula.buzon", list.slice(0, 60));
+  say("");
+  renderBuzon(); renderWatched(); renderAll();
 }
-function buzonAsRumors() {
-  return store.get("brujula.buzon", []).map((b) => ({
-    id: b.id, origen: "mio", titulo: (b.author ? b.author + ": " : "") + (b.text || "").slice(0, 110) + ((b.text || "").length > 110 ? "…" : ""),
-    resumen: b.text, dominio: b.dominio, region: b.region, lat: b.lat, lon: b.lon, zona: b.zona, S: b.S, nivel: b.nivel, tendencia: "estable",
-    fecha: b.date || new Date(b.t).toISOString(),
-    fuentes: b.url ? [{ n: "Publicación original", url: b.url }] : [],
-    fiabilidad: (b.matchTitle ? `Relacionado con un suceso conocido: «${b.matchTitle}». El dato concreto de la publicación sigue sin verificar.` : "No coincide con ningún suceso confirmado. Trátalo como rumor.") +
-      (b.read === "err" ? " No se pudo leer el texto del post; pega también el texto." : ""),
-    flags: b.flags, mine: true
-  }));
+function buzonItems() {
+  return store.get("brujula.buzon", []).map((b) => {
+    const hits = b.hits || [];
+    const fiab = [
+      b.cred ? `Cuenta: ${TIPO_TXT[b.cred.tipo] || b.cred.tipo}${b.cred.motivo ? " (" + b.cred.motivo + ")" : ""}.` : "",
+      hits.length ? `La recogen ${hits.length} medio(s) en los últimos 3 días${hits.some((h) => h.isOfficial) ? ", incluida una web oficial" : ""}.` : (b.checkError ? "No se pudo buscar confirmación (falta el intermediario de Cloudflare)." : "Ningún medio la recoge todavía."),
+      b.matchTitle ? `Relacionada con: «${b.matchTitle}».` : "",
+      b.read === "err" ? "No se pudo leer el texto del post; pega también el texto." : ""
+    ].filter(Boolean).join(" ");
+    return {
+      id: b.id, origen: "mio", titulo: (b.author ? b.author + ": " : "") + (b.text || "").slice(0, 110) + ((b.text || "").length > 110 ? "…" : ""),
+      resumen: b.text, dominio: b.dominio, region: b.region, lat: b.lat, lon: b.lon, zona: b.zona, S: b.S, nivel: b.nivel, tendencia: "estable",
+      fecha: b.date || new Date(b.t).toISOString(), veredicto: b.veredicto,
+      fuentes: [...(b.url ? [{ n: "Publicación original", url: b.url }] : []), ...hits.map((a) => ({ n: `${a.source} · ${a.title}`, url: a.url }))],
+      fiabilidad: fiab, flags: b.flags || []
+    };
+  });
 }
+const buzonAsRumors = () => buzonItems().filter((e) => e.nivel === "rumor" || e.nivel === "fuente_unica");
+const buzonAsEvents = () => buzonItems().filter((e) => !(e.nivel === "rumor" || e.nivel === "fuente_unica"));
 function renderBuzon() {
   const box = $("post-out"); box.replaceChildren();
-  const list = buzonAsRumors();
-  for (const e of list.slice(0, 10)) {
-    const card = eventCard(e, true);
+  for (const e of buzonItems().slice(0, 10)) {
+    const card = eventCard(e, e.nivel === "rumor" || e.nivel === "fuente_unica");
     const q = encodeURIComponent((e.resumen || "").replace(/https?:\/\/\S+/g, "").slice(0, 120));
+    card.querySelector(".ev-head").prepend(h("span", { class: "vd " + e.veredicto }, VERD[e.veredicto] || ""));
     const extra = h("div", { class: "row", style: "padding:0 14px 12px" },
-      (e.flags || []).length ? h("div", { class: "flags" }, ...e.flags.map((f) => h("span", { class: "flag" }, f))) : null,
-      h("a", { href: `https://news.google.com/search?q=${q}&hl=es&gl=ES&ceid=ES:es`, target: "_blank", rel: "noopener", class: "small" }, "Buscar confirmación en Google Noticias"),
+      e.flags.length ? h("div", { class: "flags" }, ...e.flags.map((f) => h("span", { class: "flag" }, f))) : null,
+      h("a", { href: `https://news.google.com/search?q=${q}&hl=es&gl=ES&ceid=ES:es`, target: "_blank", rel: "noopener", class: "small" }, "Buscar en Google Noticias"),
       h("button", { type: "button", class: "btn-ghost" }, "Quitar"));
     extra.querySelector("button").addEventListener("click", () => { store.set("brujula.buzon", store.get("brujula.buzon", []).filter((b) => b.id !== e.id)); renderBuzon(); renderAll(); });
     card.append(extra); box.append(card);
+  }
+}
+function renderWatched() {
+  const box = $("watched"); if (!box) return; box.replaceChildren();
+  const list = store.get("brujula.vigiladas", []);
+  if (!list.length) { box.append(h("p", { class: "empty" }, "Cada cuenta que compartas se añadirá aquí y se vigilará en cada escaneo.")); return; }
+  for (const s of list) {
+    const row = h("div", { class: "st ok" }, h("i"), h("span", null, `${s.nombre} (@${s.handle})`, h("br"), h("span", { class: "small muted" }, `${TIPO_TXT[s.tipo] || s.tipo}${s.web ? " · " + s.web : ""}`)),
+      h("button", { type: "button", class: "btn-ghost" }, "Dejar de vigilar"));
+    row.querySelector("button").addEventListener("click", () => { store.set("brujula.vigiladas", store.get("brujula.vigiladas", []).filter((x) => x.handle !== s.handle)); renderWatched(); });
+    box.append(row);
   }
 }
 let installPrompt = null;
@@ -671,11 +881,13 @@ window.addEventListener("beforeinstallprompt", (ev) => { ev.preventDefault(); in
 async function init() {
   $("rescan").addEventListener("click", () => scan(true));
   $("post-go").addEventListener("click", async () => { const b = $("post-go"); b.disabled = true; b.textContent = "Analizando…"; await analyzeInput($("post-in").value); $("post-in").value = ""; b.disabled = false; b.textContent = "Analizar"; });
+  $("proxy-in").value = store.get("brujula.proxy", "");
+  $("proxy-save").addEventListener("click", () => { const v = $("proxy-in").value.trim(); store.set("brujula.proxy", v); $("proxy-msg").textContent = v ? "Guardado. Pulsa «Escanear ahora»." : "Borrado."; });
   $("install").addEventListener("click", async () => { if (!installPrompt) return; installPrompt.prompt(); installPrompt = null; $("install").hidden = true; });
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
   try { ST.ana = await getJSON("datos/analisis.json?v=" + Math.floor(Date.now() / 600000)); }
   catch (e) { ST.ana = { eventos: [], estado: { resumen: "No se pudo cargar el análisis del analista." } }; }
-  renderAll(); renderSources(); renderMarkets(); renderBuzon();
+  renderAll(); renderSources(); renderMarkets(); renderBuzon(); renderWatched();
   const qs = new URLSearchParams(location.search);
   const shared = [qs.get("url"), qs.get("text")].filter(Boolean).join(" ");
   if (shared) {

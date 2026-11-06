@@ -84,7 +84,13 @@
     <label for="post-in" class="small">Enlace o texto</label>
     <textarea id="post-in" placeholder="https://x.com/usuario/status/… o el texto del mensaje"></textarea>
     <div class="row"><button type="button" id="post-go" class="btn">Analizar</button><button type="button" id="install" class="btn-ghost" hidden>Instalar en el móvil</button></div>
+    <p id="post-status" class="small" style="color:var(--accent)" aria-live="polite"></p>
     <div id="post-out" class="events"></div>
+    <details>
+      <summary>Cuentas que vigilas</summary>
+      <p class="small muted" style="margin:8px 0">Cada cuenta que compartes queda aquí. En cada escaneo se buscan sus últimas publicaciones y las de su web en Google Noticias.</p>
+      <div id="watched" class="srcstatus"></div>
+    </details>
   </section>
 
   <section class="panel" aria-labelledby="h-ver" style="display:grid;gap:10px">
@@ -125,6 +131,11 @@
   <section class="panel" aria-labelledby="h-src" style="display:grid;gap:12px">
     <h2 id="h-src">Estado de las fuentes</h2>
     <div id="srcstatus" class="srcstatus"></div>
+    <div style="display:grid;gap:6px">
+      <label for="proxy-in" class="small">Dirección del intermediario de Cloudflare</label>
+      <div class="row"><input id="proxy-in" type="url" placeholder="https://brujula-proxy.tu-cuenta.workers.dev" style="flex:1;min-width:200px;font:inherit;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px"><button type="button" id="proxy-save" class="btn-ghost">Guardar</button></div>
+      <p id="proxy-msg" class="small muted"></p>
+    </div>
     <details>
       <summary>Catálogo de fuentes revisadas</summary>
       <div id="sources" style="display:grid;gap:16px;margin-top:12px"></div>
