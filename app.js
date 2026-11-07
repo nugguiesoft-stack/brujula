@@ -505,7 +505,7 @@ async function scan(force) {
   ST.scanning = true; $("rescan").disabled = true; renderStamp();
   const prev = store.get("brujula.prev", {});
   setProgress(0.02);
-  await Promise.all([scanUSGS(), scanNOAA(), scanPolymarket(), scanWatched()]);
+  await Promise.all([scanUSGS(), scanNOAA(), scanPolymarket(), scanWatched(), scanUcrania()]);
   recheckRumors();
   await Promise.all([scanGdelt(prev), scanPrensaYOrganismos()]);
   store.set("brujula.prev", prev);
@@ -716,7 +716,7 @@ function renderLog() {
 }
 function renderSources() {
   const box = $("srcstatus"); box.replaceChildren();
-  const base = ["usgs", "noaa", "poly", "of-aemet", "of-gdacs", "of-usstate", "of-alemania", ...GRUPOS.map((g) => "grp-" + g.id), "vigiladas", ...THEMES.map((t) => "gdelt-" + t.id)];
+  const base = ["usgs", "noaa", "poly", "ucrania", "of-aemet", "of-gdacs", "of-usstate", "of-alemania", ...GRUPOS.map((g) => "grp-" + g.id), "vigiladas", ...THEMES.map((t) => "gdelt-" + t.id)];
   const order = [...base, ...Object.keys(ST.sources).filter((k) => !base.includes(k))];
   for (const k of order) {
     const v = ST.sources[k]; if (!v) continue;
@@ -785,9 +785,13 @@ const DIRECTORIO = {
   uk_rept: { nombre: "UK Report", tipo: "agregador", peso: 0.3, nota: "Agregador de última hora sin fuente propia." },
   coffereport: { nombre: "Coffe Report", tipo: "agregador", peso: 0.3, nota: "Agregador; el 7 nov no se pudo localizar la fuente que citaba." },
   areamilitarof: { nombre: "Área Militar", tipo: "video", peso: 0.2, nota: "Canal de vídeo con titulares sensacionalistas." },
-  negocios_tv: { nombre: "Negocios TV", tipo: "video", peso: 0.25, nota: "El 7 nov difundió un «pánico bancario» que ningún medio recogía." }
+  negocios_tv: { nombre: "Negocios TV", tipo: "video", peso: 0.25, nota: "El 7 nov difundió un «pánico bancario» que ningún medio recogía." },
+  nasaspacealerts: { nombre: "NASA Space Alerts", tipo: "oficial", peso: 0.9, web: "science.nasa.gov", nota: "Cuenta oficial de la NASA: sol, asteroides y meteoros." },
+  coinbureau: { nombre: "Coin Bureau", tipo: "medio", peso: 0.55, telegram: "CoinBureau", nota: "Medio de criptomonedas y finanzas; útil para crisis de mercados, no para hechos geopolíticos." },
+  israelforces_: { nombre: "Israel Force", tipo: "agregador", peso: 0.2, nota: "NO es el ejército israelí (la cuenta oficial es @IDF). Agregador alarmista." },
+  grok: { nombre: "Grok (IA de X)", tipo: "ia", peso: 0.15, nota: "Respuesta de una IA: puede equivocarse. Nunca cuenta como confirmación." }
 };
-const TIPO_TXT = { oficial: "Cuenta oficial", medio: "Medio de comunicación", agregador: "Agregador de noticias", video: "Canal de vídeo", desconocida: "Cuenta desconocida" };
+const TIPO_TXT = { ia: "Inteligencia artificial", oficial: "Cuenta oficial", medio: "Medio de comunicación", agregador: "Agregador de noticias", video: "Canal de vídeo", desconocida: "Cuenta desconocida" };
 const STOP = new Set("about after again against because before being could their there these those which while would should según sobre entre desde hasta donde cuando porque había tiene están puede pueden también ahora todos todas hacia contra durante mientras nuevo nueva nuevos nuevas según other people breaking reportedly según noticia última anuncia announces report reports".split(" "));
 
 function tokens(s) { return new Set((s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").match(/[a-z0-9]{5,}/g) || []); }
@@ -934,8 +938,46 @@ function learnWeb(url) {
   const tipo = known ? known.tipo : OFFICIAL.test(host) ? "oficial" : "medio";
   learnSource({ handle: "web:" + host, nombre: known ? known.nombre : host, tipo, peso: known ? known.peso : tipo === "oficial" ? 0.85 : 0.55, web: host });
 }
+const VIGILADAS_BASE = [
+  { handle: "tg:air_alert_ua", nombre: "Alertas aéreas de Ucrania (canal oficial «Повітряна тривога»)", tipo: "oficial", peso: 0.9, telegram: "air_alert_ua", especial: "ucrania" },
+  { handle: "coinbureau", nombre: "Coin Bureau", tipo: "medio", peso: 0.55, telegram: "CoinBureau" }
+];
+function seedVigiladas() {
+  const list = store.get("brujula.vigiladas", []);
+  let changed = false;
+  for (const b of VIGILADAS_BASE) if (!list.some((x) => x.handle === b.handle)) { list.push({ ...b, t: Date.now() }); changed = true; }
+  if (changed) store.set("brujula.vigiladas", list);
+}
+/* Ucrania: cuenta regiones en alerta aérea ahora mismo a partir del canal oficial */
+async function scanUcrania() {
+  setSource("ucrania", "Ucrania · Alertas aéreas (oficial)", "wait", "Consultando…");
+  try {
+    const ch = await readTelegram("air_alert_ua");
+    const activas = new Map();
+    for (const m of ch.msgs.slice().reverse()) { // de más antiguo a más reciente
+      if (!reciente(m.date, 12)) continue;
+      const reg = (m.text.match(/#([\p{L}_]+)/u) || [])[1] || "";
+      if (!reg) continue;
+      if (/відбій/i.test(m.text)) activas.delete(reg);
+      else if (/тривог/i.test(m.text)) activas.set(reg, m.date);
+    }
+    const n = activas.size;
+    const evs = [];
+    if (n) {
+      const S = n >= 15 ? 6 : n >= 8 ? 5 : 3;
+      evs.push({ id: "ucrania-alertas", origen: "auto", tema: "ucrania", titulo: `Ucrania: ${n} zona(s) en alerta aérea ahora`,
+        resumen: `Zonas con alerta activa: ${[...activas.keys()].slice(0, 12).join(", ").replace(/_/g, " ")}. ${n >= 15 ? "Indica un ataque masivo." : ""}`,
+        dominio: "belico", region: "Ucrania", lat: 49, lon: 32, zona: "europa", S, nivel: "oficial", tendencia: n >= 15 ? "escala" : "estable",
+        fecha: [...activas.values()].sort().at(-1), fuentes: [{ n: "Canal oficial «Повітряна тривога»", url: "https://t.me/air_alert_ua" }],
+        fiabilidad: "Canal oficial de alertas aéreas de Ucrania (Ajax Systems con datos de la administración ucraniana). Las alertas son habituales: solo suben el índice si son masivas." });
+    }
+    ST.auto = [...ST.auto.filter((x) => x.tema !== "ucrania"), ...evs];
+    setSource("ucrania", "Ucrania · Alertas aéreas (oficial)", "ok", n ? `${n} zona(s) en alerta ahora` : "Sin alertas activas");
+  } catch (e) { setSource("ucrania", "Ucrania · Alertas aéreas (oficial)", "err", String(e.message || e).slice(0, 80)); }
+}
 async function scanWatched() {
-  const list = store.get("brujula.vigiladas", []).filter((s) => s.telegram || s.tipo === "oficial" || s.tipo === "medio" || s.peso >= 0.5).slice(0, 12);
+  seedVigiladas();
+  const list = store.get("brujula.vigiladas", []).filter((s) => !s.especial).filter((s) => s.telegram || s.tipo === "oficial" || s.tipo === "medio" || s.peso >= 0.5).slice(0, 12);
   if (!list.length) return;
   setSource("vigiladas", "Fuentes que vigilas", "wait", "Consultando…");
   const evs = []; let ok = 0;
