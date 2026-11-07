@@ -838,9 +838,16 @@ async function pget(url, asJson = true, timeout = 20000) {
     try { return JSON.parse(txt); } catch { throw new Error(txt.slice(0, 80) || "Respuesta no válida"); }
   } finally { clearTimeout(t); }
 }
+// Google Noticias corta (503/429) si recibe muchas consultas seguidas: se hacen de una en una, con pausa.
+let GN_COLA = Promise.resolve();
+function gnTurno(fn) { const p = GN_COLA.then(fn, fn); GN_COLA = p.then(() => sleep(1500), () => sleep(1500)); return p; }
 async function googleNews(q, lang = "es") {
   const ed = lang === "es" ? "hl=es&gl=ES&ceid=ES:es" : "hl=en-US&gl=US&ceid=US:en";
-  const xml = await pget(`https://news.google.com/rss/search?q=${encodeURIComponent(q)}&${ed}`, false, 15000);
+  const url = `https://news.google.com/rss/search?q=${encodeURIComponent(q)}&${ed}`;
+  const xml = await gnTurno(async () => {
+    try { return await pget(url, false, 20000); }
+    catch (e) { if (!/50[23]|429/.test(String(e.message))) throw e; await sleep(6000); return pget(url, false, 20000); }
+  });
   const doc = new DOMParser().parseFromString(xml, "text/xml");
   return [...doc.querySelectorAll("item")].slice(0, 30).map((it) => {
     const src = it.querySelector("source");
