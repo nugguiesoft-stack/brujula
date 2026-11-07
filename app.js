@@ -349,6 +349,150 @@ async function scanPolymarket() {
 }
 
 /* ===================== Escaneo completo ===================== */
+/* ===================== Fuentes oficiales y prensa (vía intermediario) ===================== */
+const KW_ES = 'alerta OR emergencia OR ataque OR misil OR amenaza OR evacuación OR explosión OR apagón OR ciberataque OR nuclear OR terremoto OR atentado OR movilización';
+const KW_EN = 'alert OR emergency OR attack OR missile OR threat OR evacuation OR explosion OR blackout OR cyberattack OR nuclear OR earthquake OR terror OR mobilization';
+const GRUPOS = [
+  { id: "of-es", titulo: "Organismos oficiales de España", tipo: "oficial", lang: "es", kw: KW_ES,
+    sites: ["interior.gob.es", "proteccioncivil.es", "dsn.gob.es", "lamoncloa.gob.es", "defensa.gob.es", "exteriores.gob.es", "policia.es", "guardiacivil.es", "incibe.es", "112asturias.es", "asturias.es"] },
+  { id: "of-int", titulo: "OTAN, ONU, OIEA, OMS y UE", tipo: "oficial", lang: "en", kw: KW_EN,
+    sites: ["nato.int", "news.un.org", "un.org", "iaea.org", "who.int", "consilium.europa.eu", "ec.europa.eu", "eeas.europa.eu"] },
+  { id: "of-gob", titulo: "Gobiernos: EE. UU., Reino Unido, Francia, Alemania", tipo: "oficial", lang: "en", kw: KW_EN,
+    sites: ["whitehouse.gov", "state.gov", "defense.gov", "war.gov", "centcom.mil", "gov.uk", "diplomatie.gouv.fr", "elysee.fr", "auswaertiges-amt.de", "bundesregierung.de"] },
+  { id: "pr-es", titulo: "Prensa española", tipo: "medio", lang: "es", kw: KW_ES,
+    sites: ["elpais.com", "abc.es", "eldebate.com", "elmundo.es", "rtve.es", "efe.com", "europapress.es", "cnnespanol.cnn.com", "elconfidencial.com"] },
+  { id: "pr-ast", titulo: "Prensa asturiana", tipo: "medio", lang: "es",
+    kw: 'alerta OR emergencia OR evacuación OR incendio OR explosión OR apagón OR temporal OR inundación OR accidente OR desaparecido OR ciberataque',
+    sites: ["lne.es", "elcomercio.es", "rtpa.es", "migijon.com", "asturias24.es"] },
+  { id: "pr-int", titulo: "Prensa internacional", tipo: "medio", lang: "en", kw: KW_EN,
+    sites: ["reuters.com", "apnews.com", "bbc.com", "cnn.com", "aljazeera.com", "france24.com", "dw.com", "theguardian.com"] },
+  { id: "tertulias", titulo: "Programas de debate (Horizonte…)", tipo: "tertulia", lang: "es", kw: "",
+    sites: ["cuatro.com/horizonte", "mediasetinfinity.mediaset.es"], extra: "Horizonte" }
+];
+
+async function scanGrupo(g) {
+  const sid = "grp-" + g.id;
+  setSource(sid, g.titulo, "wait", "Consultando…");
+  const sites = "(" + g.sites.map((s) => "site:" + s).join(" OR ") + ")";
+  const q = [sites, g.extra || "", g.kw ? "(" + g.kw + ")" : "", "when:1d"].filter(Boolean).join(" ");
+  try {
+    const items = await googleNews(q, g.lang);
+    const groups = new Map();
+    for (const it of items) {
+      const a = gnToArt(it); if (!a.title) continue;
+      const c = classifyPost(a.title);
+      if (g.tipo !== "tertulia" && c.S < (g.tipo === "oficial" ? 3 : 4)) continue;
+      const key = g.id + "|" + c.dominio + "|" + c.pl.name;
+      if (!groups.has(key)) groups.set(key, { c, arts: [] });
+      groups.get(key).arts.push(a);
+    }
+    const evs = [], rum = [];
+    for (const [key, x] of groups) {
+      const doms = new Set(x.arts.map((a) => a.domain));
+      const nivel = g.tipo === "oficial" ? "oficial" : g.tipo === "tertulia" ? "rumor" : levelFromCount(doms.size + 1, 1, false);
+      const S = Math.max(...x.arts.map((a) => classifyPost(a.title).S));
+      const latest = x.arts.map((a) => gdeltDate(a.seendate)).filter(Boolean).sort().at(-1);
+      const ev = { id: "grp-" + key.replace(/[^a-z0-9]+/gi, "-").toLowerCase(), origen: "auto", tema: sid,
+        titulo: `${g.titulo}: ${x.arts[0].title}`, resumen: x.arts[0].title, dominio: x.c.dominio, region: x.c.pl.name,
+        lat: x.c.pl.lat, lon: x.c.pl.lon, zona: x.c.pl.zona, S, nivel, tendencia: "estable", fecha: latest, n: doms.size,
+        fuentes: x.arts.slice(0, 10).map((a) => ({ n: `${a.domain} · ${a.title}`, url: a.url })),
+        fiabilidad: g.tipo === "oficial" ? `Publicado en web oficial (${[...doms].join(", ")}).`
+          : g.tipo === "tertulia" ? "Programa de debate o especulación: se trata como rumor hasta que lo confirme otra fuente."
+          : `${doms.size} medio(s): ${[...doms].join(", ")}.` };
+      (nivel === "rumor" ? rum : evs).push(ev);
+    }
+    ST.auto = [...ST.auto.filter((x) => x.tema !== sid), ...evs.slice(0, 12)];
+    ST.rumors = [...ST.rumors.filter((x) => x.tema !== sid), ...rum.slice(0, 6)];
+    setSource(sid, g.titulo, "ok", `${items.length} titulares, ${evs.length + rum.length} de alerta`);
+  } catch (e) { setSource(sid, g.titulo, "err", String(e.message || e).slice(0, 80)); }
+}
+
+function rssItems(xml) {
+  const doc = new DOMParser().parseFromString(xml, "text/xml");
+  return [...doc.querySelectorAll("item, entry")].map((it) => ({
+    title: it.querySelector("title")?.textContent?.trim() || "",
+    desc: (it.querySelector("description, summary, content")?.textContent || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
+    url: it.querySelector("link")?.getAttribute("href") || it.querySelector("link")?.textContent?.trim() || "",
+    date: it.querySelector("pubDate, updated, published")?.textContent || ""
+  }));
+}
+const reciente = (d, h = 72) => { const t = new Date(d); return !isNaN(t) && Date.now() - t < h * 36e5; };
+function evOficial(tema, fuente, titulo, desc, url, S, dominio, fecha) {
+  const c = classifyPost(titulo + " " + desc);
+  return { id: tema + "-" + (titulo + url).replace(/[^a-z0-9]+/gi, "").slice(-40).toLowerCase(), origen: "auto", tema,
+    titulo: `${fuente}: ${titulo}`, resumen: desc.slice(0, 240) || titulo, dominio: dominio || c.dominio, region: c.pl.name,
+    lat: c.pl.lat, lon: c.pl.lon, zona: c.pl.zona, S, nivel: "oficial", tendencia: "estable",
+    fecha: fecha && !isNaN(new Date(fecha)) ? new Date(fecha).toISOString() : null,
+    fuentes: [{ n: fuente, url }], fiabilidad: `Aviso oficial publicado por ${fuente}.` };
+}
+
+async function scanOficiales() {
+  const tareas = [
+    ["aemet", "AEMET · Avisos meteorológicos", async () => {
+      const its = rssItems(await pget("https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/rss/CAP_AFAE_wah_RSS.xml", false, 20000));
+      const out = [];
+      for (const it of its) {
+        const txt = it.title + " " + it.desc;
+        const rojo = /rojo|red/i.test(txt), naranja = /naranja|orange/i.test(txt);
+        const ast = /asturias/i.test(txt);
+        if (!(rojo || (naranja && ast))) continue;
+        out.push(evOficial("aemet", "AEMET", it.title, it.desc, it.url, rojo ? (ast ? 6 : 4) : 3, "natural", it.date));
+      }
+      return [out, `${its.length} avisos; ${out.length} naranja/rojo relevantes`];
+    }],
+    ["gdacs", "GDACS · Desastres (ONU/UE)", async () => {
+      const its = rssItems(await pget("https://www.gdacs.org/xml/rss.xml", false, 20000));
+      const out = its.filter((it) => /^(red|orange)/i.test(it.title) && reciente(it.date, 96))
+        .map((it) => evOficial("gdacs", "GDACS", it.title, it.desc, it.url, /^red/i.test(it.title) ? 5 : 3, "natural", it.date));
+      return [out, `${its.length} sucesos; ${out.length} naranja/rojo`];
+    }],
+    ["usstate", "EE. UU. · Avisos de viaje", async () => {
+      const its = rssItems(await pget("https://travel.state.gov/_res/rss/TAsTWs.xml", false, 20000));
+      const out = its.filter((it) => /level [34]/i.test(it.title) && reciente(it.date, 96))
+        .map((it) => evOficial("usstate", "Departamento de Estado EE. UU.", it.title, it.desc, it.url, /level 4/i.test(it.title) ? 5 : 3,
+          /terror|armed conflict|war|unrest|kidnap/i.test(it.desc) ? "belico" : "social", it.date));
+      return [out, `${its.length} países; ${out.length} subidos a nivel 3–4 en 4 días`];
+    }],
+    ["alemania", "Alemania · Avisos de viaje", async () => {
+      const d = await pget("https://www.auswaertiges-amt.de/opendata/travelwarning", true, 20000);
+      const r = d.response || {}; const out = [];
+      for (const [k, v] of Object.entries(r)) {
+        if (!v || typeof v !== "object" || !v.title) continue;
+        const t = (v.lastModified || 0) * 1000;
+        if (Date.now() - t > 96 * 36e5) continue;
+        if (!(v.warning || v.partialWarning || v.situationWarning || v.situationPartWarning)) continue;
+        out.push(evOficial("alemania", "Ministerio de Exteriores de Alemania", v.title, v.warning ? "Aviso de viaje (Reisewarnung)" : "Aviso de viaje parcial",
+          "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit", v.warning ? 5 : 3, "belico", new Date(t).toISOString()));
+      }
+      return [out, `${out.length} avisos nuevos o cambiados en 4 días`];
+    }]
+  ];
+  await Promise.all(tareas.map(async ([id, nombre, fn]) => {
+    setSource("of-" + id, nombre, "wait", "Consultando…");
+    try { const [evs, msg] = await fn(); ST.auto = [...ST.auto.filter((x) => x.tema !== id), ...evs.slice(0, 10)]; setSource("of-" + id, nombre, "ok", msg); }
+    catch (e) { setSource("of-" + id, nombre, "err", String(e.message || e).slice(0, 80)); }
+  }));
+}
+
+async function scanPrensaYOrganismos() {
+  await scanOficiales();
+  for (const g of GRUPOS) { await scanGrupo(g); renderAll(); await sleep(800); }
+}
+
+/* --- canales de Telegram públicos (t.me/s/…) --- */
+async function readTelegram(handle) {
+  const html = await pget(`https://t.me/s/${handle}`, false, 20000);
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const msgs = [...doc.querySelectorAll(".tgme_widget_message")].map((m) => ({
+    text: (m.querySelector(".tgme_widget_message_text")?.textContent || "").trim(),
+    date: m.querySelector("time")?.getAttribute("datetime") || "",
+    url: m.getAttribute("data-post") ? "https://t.me/" + m.getAttribute("data-post") : `https://t.me/${handle}`
+  })).filter((m) => m.text);
+  const title = doc.querySelector(".tgme_channel_info_header_title")?.textContent?.trim() || handle;
+  if (!msgs.length && !doc.querySelector(".tgme_channel_info")) throw new Error("Canal no encontrado o privado");
+  return { title, msgs: msgs.reverse() };
+}
+
 async function scan(force) {
   if (ST.scanning) return;
   const cache = store.get("brujula.cache", null);
@@ -363,7 +507,7 @@ async function scan(force) {
   setProgress(0.02);
   await Promise.all([scanUSGS(), scanNOAA(), scanPolymarket(), scanWatched()]);
   recheckRumors();
-  await scanGdelt(prev);
+  await Promise.all([scanGdelt(prev), scanPrensaYOrganismos()]);
   store.set("brujula.prev", prev);
   ST.scanAt = new Date(); ST.scanning = false; $("rescan").disabled = false; setProgress(1);
   setTimeout(() => setProgress(0), 800);
@@ -779,18 +923,27 @@ function learnSource(cred) {
   if (!cred.handle) return;
   const list = store.get("brujula.vigiladas", []);
   if (list.some((s) => s.handle === cred.handle)) return;
-  list.unshift({ handle: cred.handle, nombre: cred.nombre, tipo: cred.tipo, peso: cred.peso, web: cred.web || null, t: Date.now() });
+  list.unshift({ handle: cred.handle, nombre: cred.nombre, tipo: cred.tipo, peso: cred.peso, web: cred.web || null, telegram: cred.telegram || null, t: Date.now() });
   store.set("brujula.vigiladas", list.slice(0, 40));
 }
+function learnWeb(url) {
+  let host; try { host = new URL(url).hostname.replace(/^www\./, ""); } catch { return; }
+  if (/(^|\.)(google|x|twitter|t|youtube|youtu|facebook|instagram|tiktok|bit)\.(com|co|me|be|ly)$/.test(host) || host === "t.me") return;
+  const known = Object.values(DIRECTORIO).find((d) => d.web && host.endsWith(d.web));
+  const tipo = known ? known.tipo : OFFICIAL.test(host) ? "oficial" : "medio";
+  learnSource({ handle: "web:" + host, nombre: known ? known.nombre : host, tipo, peso: known ? known.peso : tipo === "oficial" ? 0.85 : 0.55, web: host });
+}
 async function scanWatched() {
-  const list = store.get("brujula.vigiladas", []).filter((s) => s.tipo === "oficial" || s.tipo === "medio" || s.peso >= 0.5).slice(0, 8);
+  const list = store.get("brujula.vigiladas", []).filter((s) => s.telegram || s.tipo === "oficial" || s.tipo === "medio" || s.peso >= 0.5).slice(0, 12);
   if (!list.length) return;
   setSource("vigiladas", "Fuentes que vigilas", "wait", "Consultando…");
   const evs = []; let ok = 0;
   for (const s of list) {
     const q = s.web ? `site:${s.web} when:1d` : `"${s.nombre}" when:1d`;
     try {
-      const items = await googleNews(q, s.web && /\.(es|gob\.es)$/.test(s.web) ? "es" : "en");
+      const items = s.telegram
+        ? (await readTelegram(s.telegram)).msgs.filter((m) => reciente(m.date, 24)).map((m) => ({ title: m.text.slice(0, 220), url: m.url, date: m.date, source: s.nombre }))
+        : await googleNews(q, s.web && /\.(es|gob\.es)$/.test(s.web) ? "es" : "en");
       ok++;
       for (const a of items.slice(0, 6)) {
         const c = classifyPost(a.title);
@@ -828,6 +981,17 @@ async function analyzeInput(raw, sharedTitle) {
     try { x = await readX(ref); Object.assign(item, { text: x.text || raw, original: x.original, author: x.author, handle: x.handle, date: x.date, read: "ok" }); }
     catch (e) { item.read = "err"; item.handle = x.handle; item.author = x.author; }
   } else if (sharedTitle) item.text = sharedTitle + " " + raw;
+  const tg = /t\.me\/(?:s\/)?([A-Za-z0-9_]{4,})(?:\/(\d+))?/i.exec(raw);
+  if (tg && !ref) {
+    say("Leyendo el canal de Telegram…");
+    try {
+      const ch = await readTelegram(tg[1]);
+      const m = (tg[2] && ch.msgs.find((x) => x.url.endsWith("/" + tg[2]))) || ch.msgs[0];
+      if (m) Object.assign(item, { text: m.text, date: m.date, read: "ok" });
+      Object.assign(item, { author: ch.title, handle: "tg:" + tg[1].toLowerCase() });
+      x = { handle: "tg:" + tg[1].toLowerCase(), author: ch.title };
+    } catch (e) { item.read = "err"; x = { handle: "tg:" + tg[1].toLowerCase(), author: tg[1] }; }
+  }
   const c = classifyPost(item.text);
   say("Valorando la cuenta…");
   const cred = accountCredibility(x);
@@ -842,7 +1006,9 @@ async function analyzeInput(raw, sharedTitle) {
   Object.assign(item, { unread, dominio: c.dominio, S: c.S, region: c.pl.name, lat: c.pl.lat, lon: c.pl.lon, zona: c.pl.zona, flags, nivel,
     cred, hits: chk.hits.slice(0, 6), terms: chk.terms, checkError: chk.error, matchTitle: c.match?.titulo || null,
     veredicto: verdictOf(nivel, chk, flags), checkedAt: Date.now() });
+  if (tg && !ref) cred.telegram = tg[1];
   learnSource(cred);
+  if (!ref && !tg && item.url) learnWeb(item.url);
   const list = store.get("brujula.buzon", []); list.unshift(item); store.set("brujula.buzon", list.slice(0, 60));
   say("");
   renderBuzon(); renderWatched(); renderAll();
