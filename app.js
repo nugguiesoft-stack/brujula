@@ -1,4 +1,4 @@
-const VERSION = "7 nov 2026 · 21:20";
+const VERSION = "7 nov 2026 · 22:45";
 /* Brújula de Emergencia — se ejecuta entero en el navegador.
    Capa del analista: datos/analisis.json (revisado a mano).
    Capa automática: GDELT, USGS, NOAA y Polymarket, consultados al abrir la página. */
@@ -138,8 +138,14 @@ function pScope(e, scope) {
   if (e.impacto_espana) p = Math.max(p, 0.9);
   return p;
 }
+// Lo antiguo pesa menos: un suceso sin novedades en semanas no debe mandar en el índice de hoy.
+function edad(e) {
+  if (!e.fecha) return 1;
+  const d = (Date.now() - new Date(e.fecha)) / 864e5;
+  return isNaN(d) || d <= 3 ? 1 : d <= 14 ? 0.85 : d <= 45 ? 0.7 : 0.5;
+}
 function contrib(e, scope = "asturias") {
-  const c = (+e.S || 0) * (NIV[e.nivel]?.[0] ?? 0.35) * pScope(e, scope) * (TEND[e.tendencia]?.[0] ?? 1);
+  const c = (+e.S || 0) * (NIV[e.nivel]?.[0] ?? 0.35) * pScope(e, scope) * (TEND[e.tendencia]?.[0] ?? 1) * edad(e);
   return e.nivel === "rumor" ? Math.min(c, 1) : c;
 }
 function indice(evs, scope) {
@@ -561,6 +567,149 @@ async function readTelegram(handle) {
   return { title, msgs: msgs.reverse() };
 }
 
+/* ===================== Fuentes nuevas (estudio de herramientas similares) ===================== */
+/* Sismos cercanos (EMSC, centro sismológico euromediterráneo): completa a USGS con terremotos pequeños cerca de casa */
+async function scanEMSC() {
+  setSource("emsc", "EMSC · Sismos cerca de Asturias", "wait", "Consultando…");
+  try {
+    const start = new Date(Date.now() - 48 * 36e5).toISOString().slice(0, 19);
+    const d = await pget(`https://www.seismicportal.eu/fdsnws/event/1/query?format=json&minmag=3&limit=300&start=${start}`, true, 20000);
+    const evs = [];
+    for (const f of d.features || []) {
+      const p = f.properties || {}; const lat = +p.lat, lon = +p.lon, M = +p.mag;
+      const dist = km(HOME[0], HOME[1], lat, lon);
+      if (!(dist < 300 && M >= 3) && !(dist < 1200 && M >= 4.5)) continue;
+      const S = M >= 6 ? 6 : M >= 5 ? 4 : M >= 4 ? 3 : 2;
+      evs.push({ id: "emsc-" + p.unid, origen: "auto", tema: "emsc", titulo: `Terremoto M${M.toFixed(1)} · ${p.flynn_region || "zona sin nombre"}`,
+        resumen: `A ${Math.round(dist)} km de Oviedo. Profundidad ${p.depth ?? "?"} km.`, dominio: "natural", region: p.flynn_region || "Sismo",
+        lat, lon, zona: dist < 250 ? "asturias" : dist < 900 ? "espana" : "europa", S, nivel: "oficial", tendencia: "estable", fecha: p.time,
+        fuentes: [{ n: "EMSC – ficha del terremoto", url: `https://www.emsc-csem.org/Earthquake_information/earthquake.php?id=${p.source_id || ""}` }],
+        fiabilidad: "Dato instrumental del Centro Sismológico Euromediterráneo (EMSC)." });
+    }
+    ST.auto = [...ST.auto.filter((x) => x.tema !== "emsc"), ...evs.slice(0, 8)];
+    setSource("emsc", "EMSC · Sismos cerca de Asturias", "ok", `${(d.features || []).length} sismos M3+ en 48 h; ${evs.length} cerca`);
+  } catch (e) { setSource("emsc", "EMSC · Sismos cerca de Asturias", "err", String(e.message || e).slice(0, 80)); }
+}
+
+/* Apagón: compara la demanda eléctrica real con la prevista (Red Eléctrica). Una caída brusca indica un corte grande. */
+async function scanREE() {
+  const id = "ree", nombre = "Red Eléctrica · Detector de apagón";
+  setSource(id, nombre, "wait", "Consultando…");
+  try {
+    const now = new Date(), ini = new Date(now - 6 * 36e5);
+    const f = (d) => d.toISOString().slice(0, 16);
+    const d = await pget(`https://apidatos.ree.es/es/datos/demanda/demanda-tiempo-real?start_date=${f(ini)}&end_date=${f(now)}&time_trunc=hour`, true, 20000);
+    const series = (d.included || []).map((s) => ({ t: (s.attributes?.title || s.type || "").toLowerCase(), v: s.attributes?.values || [] }));
+    const real = series.find((s) => /real/.test(s.t)), prev = series.find((s) => /prevista/.test(s.t)) || series.find((s) => /programada/.test(s.t));
+    if (!real || !real.v.length || !prev) throw new Error("Formato no reconocido");
+    const last = real.v[real.v.length - 1];
+    const ref = prev.v.find((x) => x.datetime === last.datetime) || prev.v[prev.v.length - 1];
+    const ratio = ref?.value ? last.value / ref.value : 1;
+    const evs = [];
+    if (ratio < 0.85) {
+      const S = ratio < 0.6 ? 8 : ratio < 0.75 ? 6 : 4;
+      evs.push({ id: "ree-apagon", origen: "auto", tema: "ree", titulo: `Posible apagón: la demanda eléctrica cae al ${Math.round(ratio * 100)} % de lo previsto`,
+        resumen: `Demanda real ${Math.round(last.value)} MW frente a ${Math.round(ref.value)} MW previstos (${new Date(last.datetime).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })}). Una caída así suele indicar un corte masivo.`,
+        dominio: "energia", region: "Península (incluida Asturias)", lat: 40.4, lon: -3.7, zona: "asturias", S, nivel: "oficial", tendencia: "escala", fecha: last.datetime,
+        fuentes: [{ n: "Red Eléctrica – demanda en tiempo real", url: "https://demanda.ree.es/visiona/peninsula/demandaqh/tablas" }],
+        fiabilidad: "Dato oficial de Red Eléctrica. Puede haber retrasos de unos minutos." });
+    }
+    ST.auto = [...ST.auto.filter((x) => x.tema !== "ree"), ...evs];
+    setSource(id, nombre, "ok", `Demanda ${Math.round(last.value)} MW (${Math.round(ratio * 100)} % de lo previsto)` + (evs.length ? " · ¡caída anómala!" : " · normal"));
+  } catch (e) { setSource(id, nombre, "err", String(e.message || e).slice(0, 80)); }
+}
+
+/* Cortes de internet a escala de país (IODA, Georgia Tech). Un corte nacional suele acompañar a guerras, ciberataques o apagones. */
+const PAIS_ES = { ES: "España", PT: "Portugal", FR: "Francia", IR: "Irán", IL: "Israel", UA: "Ucrania", RU: "Rusia", IQ: "Irak", SY: "Siria", LB: "Líbano", YE: "Yemen", SA: "Arabia Saudí", AE: "Emiratos", QA: "Catar", KW: "Kuwait", BH: "Baréin", JO: "Jordania", PL: "Polonia", LT: "Lituania", LV: "Letonia", EE: "Estonia", FI: "Finlandia", DE: "Alemania", IT: "Italia", GB: "Reino Unido", MA: "Marruecos", DZ: "Argelia", TW: "Taiwán", CN: "China", KP: "Corea del Norte", KR: "Corea del Sur", VE: "Venezuela", PK: "Pakistán", IN: "India", BY: "Bielorrusia", MD: "Moldavia", RO: "Rumanía" };
+async function scanIODA() {
+  const id = "ioda", nombre = "IODA · Cortes de internet por país";
+  setSource(id, nombre, "wait", "Consultando…");
+  try {
+    const until = Math.floor(Date.now() / 1000), from = until - 24 * 3600;
+    const d = await pget(`https://api.ioda.inetintel.cc.gatech.edu/v2/outages/events?from=${from}&until=${until}&entityType=country&limit=100`, true, 25000);
+    const raw = Array.isArray(d.data) ? d.data : Array.isArray(d.data?.events) ? d.data.events : [];
+    const byC = new Map();
+    for (const ev of raw) {
+      const code = (ev.location || ev.entity?.code || "").split("/").pop().toUpperCase().slice(0, 2);
+      if (!code) continue;
+      const sc = +ev.score || 0;
+      if (!byC.has(code) || byC.get(code).score < sc) byC.set(code, { code, score: sc, start: ev.start, dur: ev.duration, name: ev.location_name || ev.entity?.name });
+    }
+    const evs = [];
+    for (const o of [...byC.values()].sort((a, b) => b.score - a.score)) {
+      const nm = PAIS_ES[o.code] || o.name || o.code;
+      const cerca = ["ES", "PT", "FR"].includes(o.code);
+      if (!cerca && !PAIS_ES[o.code]) continue;
+      const pl = placeOf(nm, "");
+      evs.push({ id: "ioda-" + o.code, origen: "auto", tema: "ioda", titulo: `Corte de internet detectado en ${nm}`,
+        resumen: `IODA detecta una caída de conectividad a escala nacional${o.dur ? ` de unos ${Math.round(o.dur / 60)} min` : ""}. No dice la causa: puede ser un ciberataque, un apagón o un corte ordenado por el gobierno.`,
+        dominio: "ciber", region: nm, lat: pl.lat, lon: pl.lon, zona: o.code === "ES" ? "espana" : cerca ? "ue" : pl.zona, S: cerca ? 5 : 3, nivel: "oficial", tendencia: "estable",
+        fecha: o.start ? new Date(o.start * 1000).toISOString() : null,
+        fuentes: [{ n: "IODA – panel del país", url: `https://ioda.inetintel.cc.gatech.edu/country/${o.code}` }],
+        fiabilidad: "Medición técnica independiente (Georgia Tech). Detecta el corte, no su causa." });
+    }
+    ST.auto = [...ST.auto.filter((x) => x.tema !== "ioda"), ...evs.slice(0, 6)];
+    setSource(id, nombre, "ok", `${byC.size} país(es) con cortes en 24 h` + (evs.some((e) => e.zona === "espana" || e.zona === "ue") ? " · ¡incluye España o vecinos!" : ""));
+  } catch (e) { setSource(id, nombre, "err", String(e.message || e).slice(0, 80)); }
+}
+
+/* Avisos de ciberseguridad del INCIBE-CERT (incluidos los de sistemas industriales: luz, agua, gas…) */
+async function scanINCIBE() {
+  const id = "incibe", nombre = "INCIBE-CERT · Avisos de ciberseguridad";
+  setSource(id, nombre, "wait", "Consultando…");
+  try {
+    const [av, sci] = await Promise.allSettled([
+      pget("https://www.incibe.es/incibe-cert/alerta-temprana/avisos/feed", false, 20000),
+      pget("https://www.incibe.es/incibe-cert/alerta-temprana/avisos-sci/feed", false, 20000)]);
+    if (av.status !== "fulfilled" && sci.status !== "fulfilled") throw new Error(String(av.reason?.message || "Sin respuesta"));
+    const its = [...(av.status === "fulfilled" ? rssItems(av.value).map((i) => ({ ...i, sci: false })) : []),
+                 ...(sci.status === "fulfilled" ? rssItems(sci.value).map((i) => ({ ...i, sci: true })) : [])].filter((i) => !i.date || reciente(i.date, 48));
+    const crit = its.filter((i) => /cr[ií]tica|5 - /i.test(i.title + " " + i.desc) || i.sci && /alta|4 - /i.test(i.desc));
+    const evs = crit.slice(0, 3).map((i) => ({ id: "incibe-" + i.title.replace(/[^a-z0-9]+/gi, "").slice(0, 40).toLowerCase(), origen: "auto", tema: "incibe",
+      titulo: `INCIBE${i.sci ? " (infraestructuras)" : ""}: ${i.title}`, resumen: i.desc.slice(0, 220), dominio: "ciber", region: "España", lat: 40.4, lon: -3.7,
+      zona: "espana", S: i.sci ? 3 : 2, nivel: "oficial", tendencia: "estable", fecha: i.date ? new Date(i.date).toISOString() : null,
+      fuentes: [{ n: "INCIBE-CERT", url: i.url }], fiabilidad: "Aviso técnico oficial: indica un fallo de seguridad grave, no un ataque en curso." }));
+    ST.auto = [...ST.auto.filter((x) => x.tema !== "incibe"), ...evs];
+    setSource(id, nombre, "ok", `${its.length} avisos en 48 h; ${crit.length} críticos`);
+  } catch (e) { setSource(id, nombre, "err", String(e.message || e).slice(0, 80)); }
+}
+
+/* ---- Análisis cruzado (inspirado en World Monitor): convergencia y aceleración ---- */
+const familia = (e) => e.origen === "analista" ? "analista" : e.origen === "mio" ? "tuyo"
+  : /^(usgs|emsc|noaa|gdacs|aemet|ree|ioda|ucrania)/.test(e.tema || "") ? "sensor"
+  : /^(of-|incibe|usstate|alemania|pd-pd-of|grp-of)/.test(e.tema || "") || e.nivel === "oficial" ? "oficial"
+  : /^(gdelt|pd-|grp-)/.test(e.tema || "") || /^(nuclear|guerra|espana|asturias|ciberbanca|energia|evacuacion|salud)$/.test(e.tema || "") ? "prensa" : "otros";
+function analizarCruce() {
+  // 1) Convergencia: varias familias de fuentes independientes señalan el mismo lugar en 48 h.
+  const base = [...(ST.ana?.eventos || []), ...ST.auto.filter((e) => e.tema !== "cruce"), ...buzonAsEvents()]
+    .filter((e) => e.region && e.region !== "Sin ubicar" && (!e.fecha || Date.now() - new Date(e.fecha) < 48 * 36e5));
+  const porLugar = new Map();
+  for (const e of base) { const k = e.region; if (!porLugar.has(k)) porLugar.set(k, []); porLugar.get(k).push(e); }
+  const cruces = [];
+  for (const [lugar, list] of porLugar) {
+    const fams = new Set(list.map(familia));
+    const top = list.reduce((a, b) => (b.S > a.S ? b : a));
+    if (fams.size >= 3 && top.S >= 5) {
+      cruces.push({ id: "cruce-" + lugar.replace(/[^a-z0-9]+/gi, "-").toLowerCase(), origen: "auto", tema: "cruce",
+        titulo: `Convergencia en ${lugar}: ${fams.size} tipos de fuente señalan lo mismo`,
+        resumen: `Coinciden ${[...fams].join(", ")} en las últimas 48 h. Lo más grave: «${top.titulo}». Cuando fuentes independientes coinciden, la situación suele ser real y estar moviéndose.`,
+        dominio: top.dominio, region: lugar, lat: top.lat, lon: top.lon, zona: top.zona, S: Math.min(9, top.S), nivel: fams.has("oficial") || fams.has("sensor") ? "confirmado" : "varios_medios",
+        tendencia: "escala", fecha: new Date().toISOString(), fuentes: list.slice(0, 8).flatMap((x) => (x.fuentes || []).slice(0, 1)),
+        fiabilidad: "Señal calculada por la Brújula al cruzar fuentes; revisa los sucesos de origen." });
+    }
+  }
+  ST.auto = [...ST.auto.filter((x) => x.tema !== "cruce"), ...cruces.slice(0, 5)];
+  // 2) Aceleración: cuántos titulares hay de cada lugar frente a la media de escaneos anteriores.
+  const vel = store.get("brujula.vel", {}); const ahora = {};
+  for (const e of ST.auto) if (e.region && e.n) ahora[e.region] = (ahora[e.region] || 0) + e.n;
+  for (const e of ST.auto) {
+    const hist = vel[e.region] || []; const media = hist.length >= 3 ? hist.reduce((a, b) => a + b, 0) / hist.length : null;
+    if (media != null && ahora[e.region] >= 6 && ahora[e.region] >= 3 * media) { e.tendencia = "escala"; e.acelera = Math.round(ahora[e.region] / Math.max(media, 1)); }
+  }
+  for (const [r, n] of Object.entries(ahora)) vel[r] = [...(vel[r] || []), n].slice(-10);
+  store.set("brujula.vel", vel);
+}
+
 async function scan(force) {
   if (ST.scanning) return;
   const cache = store.get("brujula.cache", null);
@@ -576,7 +725,8 @@ async function scan(force) {
   setProgress(0.02);
   await Promise.all([scanUSGS(), scanNOAA(), scanPolymarket(), scanWatched(), scanUcrania()]);
   recheckRumors();
-  await Promise.all([scanGdelt(prev), scanPrensaYOrganismos()]);
+  await Promise.all([scanGdelt(prev), scanPrensaYOrganismos(), scanEMSC(), scanREE(), scanIODA(), scanINCIBE()]);
+  analizarCruce();
   store.set("brujula.prev", prev);
   ST.scanAt = new Date(); ST.scanning = false; $("rescan").disabled = false; setProgress(1);
   setTimeout(() => setProgress(0), 800);
@@ -655,6 +805,7 @@ function renderAlerts(evs) {
   const crit = evs.filter((e) => e.S >= 8 && (NIV[e.nivel]?.[0] ?? 0) >= 0.65 && pScope(e, "espana") >= 0.7);
   for (const e of crit) box.append(h("div", { class: "alert crit" }, h("b", null, "⚠ " + e.titulo), h("span", null, e.resumen)));
   if (Math.max(ast, esp) >= 6) box.append(h("div", { class: "alert high" }, h("b", null, `Nivel de ${nivelDe(Math.max(ast, esp))[0].toLowerCase()} para España/Asturias`), h("span", null, "Revisa los sucesos de abajo y sigue a ES-Alert y al 112.")));
+  for (const c of ST.auto.filter((x) => x.tema === "cruce" && (x.zona === "espana" || x.zona === "asturias" || x.S >= 7))) box.append(h("div", { class: "alert mid" }, h("b", null, "◎ " + c.titulo), h("span", null, c.resumen)));
   for (const r of ST.rumors.filter((x) => x.S >= 8)) box.append(h("div", { class: "alert mid" }, h("b", null, "Rumor grave sin confirmar: " + r.titulo), h("span", null, "Solo lo publica una fuente. No actúes hasta que se confirme.")));
 }
 
@@ -729,7 +880,7 @@ function eventCard(e, isRumor) {
       h("span", { class: "chip" }, DOMNAME[e.dominio] || e.dominio),
       e.region ? h("span", { class: "chip" }, e.region) : null,
       h("span", { class: "chip" }, `Gravedad ${num(e.S, e.S % 1 ? 1 : 0)}`),
-      h("span", { class: "chip" }, TEND[e.tendencia]?.[1] || e.tendencia),
+      h("span", { class: "chip" }, (TEND[e.tendencia]?.[1] || e.tendencia) + (e.acelera ? ` · noticias ×${e.acelera}` : "")),
       e.fecha ? h("span", { class: "chip mono" }, fecha(e.fecha)) : null),
     h("div", { class: "ladder" }, steps, h("span", null, `Confirmación: ${nv[1]}`)),
     h("span", { class: "more" }, open ? "Ocultar detalles ▲" : "Ver detalles ▼"));
@@ -800,7 +951,7 @@ function renderLog() {
 }
 function renderSources() {
   const box = $("srcstatus"); box.replaceChildren();
-  const base = ["usgs", "noaa", "poly", "ucrania", "of-aemet", "of-gdacs", "of-usstate", "of-alemania", ...PRENSA.map((g) => "pd-" + g.id), ...GRUPOS.filter((g) => g.tipo !== "medio").map((g) => "grp-" + g.id), "vigiladas", ...THEMES.map((t) => "gdelt-" + t.id)];
+  const base = ["usgs", "emsc", "noaa", "ree", "ioda", "incibe", "poly", "ucrania", "of-aemet", "of-gdacs", "of-usstate", "of-alemania", ...PRENSA.map((g) => "pd-" + g.id), ...GRUPOS.filter((g) => g.tipo !== "medio").map((g) => "grp-" + g.id), "vigiladas", ...THEMES.map((t) => "gdelt-" + t.id)];
   const order = [...base, ...Object.keys(ST.sources).filter((k) => !base.includes(k))];
   for (const k of order) {
     const v = ST.sources[k]; if (!v) continue;

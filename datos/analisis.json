@@ -1,21 +1,21 @@
 {
  "estado": {
-  "actualizado": "2026-11-07T00:40:00+01:00",
+  "actualizado": "2026-11-07T21:40:00+01:00",
   "lugar": "Asturias (España)",
-  "resumen": "Sin amenaza directa para Asturias, pero la tensión sube. La noche del 6 nov hubo explosiones en Qeshm (Ormuz) y una alerta militar en el sur de Irán, mientras EE. UU. decide si reanuda la guerra. Irán amenaza con atacar bases de EE. UU. en Europa si eso ocurre; los expertos ven esa amenaza limitada al sureste de Europa. En España, huelga general el miércoles 11-N. Varias publicaciones de X que circulan esta noche son exageradas, antiguas o sin confirmar: revisa «Verificación de publicaciones».",
+  "resumen": "Sin amenaza directa para Asturias. Lo que más pesa es Irán: Trump confirmó el 7 nov un «ataque menor» que destruyó un sistema antiaéreo en Qeshm (Ormuz), el segundo en una semana, y dice que decidirá «pronto» si vuelve a los grandes bombardeos, aunque también habla de avances con Irán vía Catar. Irán advierte que cualquier activo de EE. UU. es objetivo, y un diputado amenazó con misiles contra Europa si se usan bases europeas; España no permite usar Rota y Morón. El petróleo bajó tras las elecciones de EE. UU. pero sigue cerca de 95 $. En España: huelga general el miércoles 11-N y elecciones generales el 29-N.",
   "notas": [
-   "Sin avisos de AEMET verificados para Asturias. Consulta AEMET o ES-Alert.",
-   "La probabilidad del 80 % de reanudación de la guerra es la estimación de un analista, no un dato oficial.",
-   "El «Código 100» iraní viene de una sola fuente OSINT.",
-   "La cifra de 6.300 millones del hackeo a Binance no está verificada en una fuente oficial."
+   "Sin avisos naranja o rojo de AEMET para Asturias en el último escaneo.",
+   "El ataque del 7 nov lo anunció Trump; Irán habla de explosiones en Qeshm. No hay cifras de víctimas confirmadas.",
+   "La amenaza de misiles contra Europa es de un diputado iraní, no del Gobierno de Irán.",
+   "La probabilidad del 80 % de reanudación es la opinión de un analista (5 nov), no un dato oficial."
   ],
   "metodo": 1
  },
  "eventos": [
   {
    "id": "iran-reanudacion",
-   "titulo": "EE. UU. decide si reanuda la guerra contra Irán",
-   "resumen": "Trump dijo el 5 nov que decidirá pronto si reanuda la acción militar, ahora que han pasado las elecciones de mitad de mandato. Irán envió una propuesta nuclear vía Catar, condicionada a sus siete exigencias para reabrir Ormuz. Un analista de Rapidan Energy estima un 80 % de probabilidad de que se reanuden los combates.",
+   "titulo": "Irán: ataques «menores» de EE. UU. y decisión pendiente sobre una guerra a gran escala",
+   "resumen": "El 7 nov Trump anunció un ataque limitado que destruyó un sistema antiaéreo recién instalado en Qeshm, tras los «ataques defensivos» del 2–3 nov. Dice que hay «muchos avances» con Irán y que decidirá pronto si lanza bombardeos mayores. Catar propone un plan de 48 horas que Irán aún no ha aceptado. Sigue habiendo ataques con minas en Ormuz.",
    "dominio": "belico",
    "region": "Oriente Medio",
    "lat": 32.4,
@@ -25,19 +25,19 @@
    "P": 0.45,
    "tendencia": "escala",
    "cadena": "iran",
-   "fecha": "2026-11-05",
+   "fecha": "2026-11-07",
    "fuentes": [
     {
-     "n": "Just Security – Early Edition 6 nov",
-     "url": "https://justsecurity.org/163619/early-edition-november-6-2026"
+     "n": "SANA (cita a AP) – ataque limitado, 7 nov",
+     "url": "https://sana.sy/en/international/2356705/"
     },
     {
-     "n": "Anadolu – Morning Briefing 6 nov",
-     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+     "n": "House of Saud – Trump confirma ataques y plan catarí, 7 nov",
+     "url": "https://houseofsaud.com/trump-qeshm-strikes-mediators-nov7/"
     },
     {
-     "n": "CNBC – petróleo y riesgo Irán, 6 nov",
-     "url": "https://www.cnbc.com/2026/11/06/oil-price-today-brent-wti.html"
+     "n": "Al Jazeera – explosiones en Qeshm, 3 nov",
+     "url": "https://aljazeera.com/news/2026/11/3/explosions-hit-irans-qeshm-island-as-us-media-report-us-strikes-in-hormuz"
     }
    ],
    "vigilar": [
@@ -45,7 +45,7 @@
     "Avisos de evacuación de embajadas en el Golfo",
     "Cierre de espacio aéreo en Irán, Irak o el Golfo"
    ],
-   "fiabilidad": "Declaraciones oficiales confirmadas por varios medios. La cifra del 80 % es la opinión de un analista, no un dato oficial.",
+   "fiabilidad": "El ataque del 7 nov lo anunció el propio Trump (AP). El plan catarí y las minas en Ormuz vienen de medios regionales: confirmación parcial.",
    "zona": "oriente",
    "origen": "analista"
   },
@@ -80,7 +80,7 @@
   {
    "id": "energia-precios",
    "titulo": "Petróleo volátil y gasóleo caro en España",
-   "resumen": "El Brent cerró el 6 nov en 98,32 $ tras caer más de un 16 % en la semana, pero sigue más de un 50 % por encima de hace un año. El gasóleo en España rondaba 1,90 €/l la semana del 26 oct al 1 nov. El G7 y la AIE siguen liberando reservas de emergencia.",
+   "resumen": "El Brent cayó con fuerza el 4 nov (hacia 93,5 $) tras la victoria demócrata en ambas cámaras de EE. UU. y volvió a superar los 96 $ al día siguiente. Sigue muy por encima de hace un año: el riesgo de Ormuz mantiene caros el gasóleo y la luz.",
    "dominio": "energia",
    "region": "España",
    "lat": 43.36,
@@ -90,19 +90,15 @@
    "P": 1.0,
    "tendencia": "estable",
    "cadena": "iran",
-   "fecha": "2026-11-06",
+   "fecha": "2026-11-05",
    "fuentes": [
     {
-     "n": "CNBC – cierre Brent 6 nov",
-     "url": "https://www.cnbc.com/2026/11/06/oil-price-today-brent-wti.html"
+     "n": "Admiral Markets – Brent tras las elecciones",
+     "url": "https://admiralmarkets.com/es/analytics/traders-blog/precio-petroleo-brent-elecciones-medio-mandato"
     },
     {
-     "n": "Trading Economics – Brent",
-     "url": "https://tradingeconomics.com/commodity/brent-crude-oil"
-    },
-    {
-     "n": "fuel-prices.eu – España, semana 26 oct–1 nov",
-     "url": "https://www.fuel-prices.eu/news/spain-fuel-prices-weekly-recap-2026-11-01/"
+     "n": "Portafolio – Brent vuelve a 96 $",
+     "url": "https://www.portafolio.co/internacional/el-petroleo-cambia-de-rumbo-esta-manana-y-sube-sobre-los-us-96-frenara-la-tendencia-tras-tres-jornadas-de-caidas-505762"
     }
    ],
    "vigilar": [
@@ -178,7 +174,7 @@
   {
    "id": "ucrania",
    "titulo": "Guerra en Ucrania y conversaciones de paz",
-   "resumen": "Sigue la guerra. Trump dice haber prometido un acuerdo de paz que «podría implicar a toda Europa» tras reunirse con el enviado del Kremlin. La Comisión Europea desembolsó 4.360 millones de euros a Ucrania.",
+   "resumen": "Rusia sigue atacando la red eléctrica: el 6 nov Járkiv y Chernígov se quedaron sin luz, y los combates se concentran en Pokrovsk, Myrnohrad y Kupiansk. Sin avances visibles en las conversaciones de paz.",
    "dominio": "belico",
    "region": "Ucrania",
    "lat": 48.5,
@@ -188,15 +184,11 @@
    "P": 0.6,
    "tendencia": "estable",
    "cadena": null,
-   "fecha": "2026-11-05",
+   "fecha": "2026-11-06",
    "fuentes": [
     {
-     "n": "Just Security – Early Edition 6 nov",
-     "url": "https://justsecurity.org/163619/early-edition-november-6-2026"
-    },
-    {
-     "n": "Anadolu – Morning Briefing 6 nov",
-     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+     "n": "France 24 vía Acento – ataques a infraestructura, 6 nov",
+     "url": "https://acento.com.do/france24/rusia-y-ucrania-atacan-mutuamente-infraestructura-esencial-mientras-la-guerra-palpita-en-pokrovsk-9575025.html"
     }
    ],
    "vigilar": [
@@ -547,7 +539,7 @@
   {
    "id": "iran-amenaza-europa",
    "titulo": "Irán amenaza con atacar bases de EE. UU. en Europa si se reanuda la guerra",
-   "resumen": "Responsables y diputados iraníes y la prensa dura del régimen avisan de que, si EE. UU. vuelve a atacar, podrían golpear bases e instalaciones estadounidenses en Europa. Un diputado llegó a decir que si dejan a su pueblo a oscuras, ellos dejarán a oscuras al de los atacantes. Expertos citados por la prensa británica ven la amenaza real pero limitada: los misiles iraníes alcanzarían sobre todo el sureste de Europa (Bulgaria, Grecia, Chipre).",
+   "resumen": "Un diputado de la Comisión de Seguridad Nacional iraní dijo el 4 nov a Euronews que Irán lanzaría misiles contra Europa si EE. UU. usa bases europeas (cita Italia y Alemania). En marzo el embajador iraní en Madrid nombró Rota y Morón. España no permite usar esas bases contra Irán.",
    "dominio": "belico",
    "region": "Europa",
    "lat": 42.7,
@@ -557,20 +549,16 @@
    "nivel": "oficial",
    "tendencia": "escala",
    "cadena": "iran",
-   "fecha": "2026-11-03",
+   "fecha": "2026-11-04",
    "origen": "analista",
    "fuentes": [
     {
-     "n": "Iran International – amenazas que llegan a Europa",
-     "url": "https://www.iranintl.com/en/202611036564"
+     "n": "Euronews – amenaza de un diputado iraní, 4 nov",
+     "url": "https://es.euronews.com/2026/11/04/amenaza-irani-teheran-atacara-europa-eeuu-usa-bases-advierte-diputado-irani-euronews"
     },
     {
-     "n": "APA (cita a The Times) – bases de EE. UU. en Europa",
-     "url": "https://en.apa.az/europe/iran-threatens-us-bases-in-europe-if-trump-orders-new-strikes-533615"
-    },
-    {
-     "n": "Israel National News – alcance limitado según RUSI",
-     "url": "https://www.israelnationalnews.com/news/431920"
+     "n": "Xataka – España niega el uso de Rota y Morón",
+     "url": "https://www.xataka.com/magnet/no-espana-al-uso-sus-bases-ofensiva-iran-tiene-respuesta-trump-amenaza-cortar-todo-comercio"
     }
    ],
    "vigilar": [
@@ -578,35 +566,31 @@
     "Cambios en el nivel de alerta de bases en España (Rota, Morón)",
     "Sabotajes a cables submarinos"
    ],
-   "fiabilidad": "Declaraciones de responsables iraníes recogidas por varios medios. La lista de «15 objetivos en 9 países» que circula en X no está verificada."
+   "fiabilidad": "Declaración real pero de un diputado, no del Gobierno iraní. No hay indicios de preparativos contra España."
   },
   {
    "id": "qeshm-explosiones",
-   "titulo": "Explosiones en Qeshm (Ormuz) y alerta militar en el sur de Irán",
-   "resumen": "Medios de la Guardia Revolucionaria informaron la noche del 6 nov de explosiones en Qeshm y Bandar Khamir y de dos misiles sobre la isla, sin decir su origen. El Mando Central de EE. UU. calificó la zona de «relativamente tranquila». Cuentas OSINT difundieron una alerta «Código 100» de dispersión para fuerzas militares del sur de Irán. El 2 nov EE. UU. ya había hecho «ataques defensivos» en Qeshm.",
+   "titulo": "Explosiones y defensas antiaéreas activadas en el sur de Irán (6–7 nov)",
+   "resumen": "Medios iraneses informaron de explosiones en Qeshm, Bandar Abbas, Sirik y Minab y de defensas antiaéreas activadas en Teherán la noche del 6 nov. EE. UU. confirmó después un ataque limitado en Qeshm.",
    "dominio": "belico",
    "region": "Estrecho de Ormuz",
    "lat": 26.85,
    "lon": 55.9,
    "zona": "oriente",
    "S": 6,
-   "nivel": "varios_medios",
+   "nivel": "oficial",
    "tendencia": "escala",
    "cadena": "iran",
-   "fecha": "2026-11-06",
+   "fecha": "2026-11-07",
    "origen": "analista",
    "fuentes": [
     {
-     "n": "Iran International – directo 6 nov (Tasnim, Fars, CENTCOM)",
-     "url": "https://www.iranintl.com/en/liveblog/202610312594"
+     "n": "Roya News – defensas activadas, 6 nov",
+     "url": "https://en.royanews.tv/news/70627"
     },
     {
-     "n": "Al Jazeera – EE. UU. ataca Qeshm (3 nov)",
-     "url": "https://www.aljazeera.com/news/2026/11/3/us-hits-qeshm-island-pezeshkian-signals-more-diplomacy-iran-war-latest"
-    },
-    {
-     "n": "Shin/FromIran – «Código 100» (fuente OSINT)",
-     "url": "https://sh1n.org/tweets/as-explained-before-this-is-for-military-forces-2118823640489939251"
+     "n": "SANA (cita a AP), 7 nov",
+     "url": "https://sana.sy/en/international/2356705/"
     }
    ],
    "vigilar": [
@@ -619,7 +603,7 @@
   {
    "id": "huelga-11n",
    "titulo": "Huelga general en España el miércoles 11 de noviembre",
-   "resumen": "CCOO, UGT y otros sindicatos convocan 24 horas de huelga general en toda España por la vivienda, los salarios y los precios. Es la primera huelga general estatal conjunta de CCOO y UGT desde 2012 y llega a menos de tres semanas de las elecciones generales del 29 de noviembre. Puede afectar a transporte, administraciones y servicios, con servicios mínimos.",
+   "resumen": "Huelga general de 24 h el miércoles 11 nov convocada por CCOO, UGT, CGT, CNT y el Sindicato de Inquilinas (vivienda, salarios, precios). Es la primera con CCOO y UGT juntos desde 2012. Se esperan cancelaciones de vuelos y problemas de transporte; los servicios mínimos se conocerán estos días.",
    "dominio": "social",
    "region": "España",
    "lat": 43.36,
@@ -633,12 +617,12 @@
    "origen": "analista",
    "fuentes": [
     {
-     "n": "Euronews – huelga general del 11 de noviembre",
-     "url": "https://es.euronews.com/2026/10/07/huelga-general-vivienda-espana-11-noviembre-ccoo-ugt"
+     "n": "Demócrata – claves de la huelga",
+     "url": "https://www.democrata.es/actualidad/huelga-general-11-noviembre-quien-convoca-cuanto-dura-cuales-son-motivos/"
     },
     {
-     "n": "El Demócrata – quién convoca y por qué",
-     "url": "https://www.democrata.es/actualidad/huelga-general-11-noviembre-quien-convoca-cuanto-dura-cuales-son-motivos/"
+     "n": "Majorca Daily Bulletin – vuelos afectados",
+     "url": "https://www.majorcadailybulletin.com/news/local/2026/10/31/146955/spain-november-general-strike-will-cause-flight-cancellations-and-transport-delays.html"
     }
    ],
    "vigilar": [
@@ -646,13 +630,39 @@
     "Cortes de carreteras y transporte el 11-N"
    ],
    "fiabilidad": "Convocatoria registrada ante el Ministerio de Trabajo."
+  },
+  {
+   "id": "elecciones-29n",
+   "titulo": "Elecciones generales en España el 29 de noviembre",
+   "resumen": "Las Cortes se disolvieron el 6 oct y hay elecciones generales el 29 nov. Campaña tensa y coincidente con la huelga del 11-N; vigila posibles campañas de desinformación.",
+   "dominio": "social",
+   "region": "España",
+   "lat": 40.4,
+   "lon": -3.7,
+   "S": 2,
+   "nivel": "confirmado",
+   "tendencia": "estable",
+   "fecha": "2026-11-07",
+   "zona": "espana",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "Mallorca Global Mag – huelga y elecciones",
+     "url": "https://mallorcaglobalmag.es/?p=158735"
+    }
+   ],
+   "vigilar": [
+    "Desinformación en redes antes del 29-N",
+    "Ciberataques a webs oficiales"
+   ],
+   "fiabilidad": "Hecho oficial (Real Decreto de convocatoria)."
   }
  ],
  "cadenas": [
   {
    "id": "iran",
    "titulo": "Guerra de Irán → Ormuz → energía en España",
-   "estado": "Pausa frágil; decisión inminente",
+   "estado": "Ataques limitados de EE. UU.; decisión sobre guerra mayor pendiente",
    "pasos": [
     {
      "fecha": "2026-02-28",
@@ -683,6 +693,11 @@
      "fecha": "2026-11-06",
      "texto": "Explosiones en Qeshm y alerta militar en el sur de Irán. Irán amenaza con golpear bases de EE. UU. en Europa.",
      "nivel": "varios_medios"
+    },
+    {
+     "fecha": "2026-11-07",
+     "texto": "Trump anuncia un «ataque menor» que destruye un antiaéreo en Qeshm y dice que decidirá pronto. Catar propone un plan de 48 h.",
+     "nivel": "oficial"
     }
    ],
    "siguiente": [
@@ -756,7 +771,7 @@
  "escenarios": [
   {
    "titulo": "EE. UU. reanuda los ataques contra Irán",
-   "prob": "80 % según Rapidan Energy (opinión de un analista)",
+   "prob": "80 % según Rapidan Energy (5 nov, opinión de un analista); desde entonces EE. UU. ha hecho dos ataques limitados",
    "impacto": "Indirecto en Asturias: más subidas de combustible, electricidad y transporte. Sin riesgo militar directo previsto en las fuentes revisadas.",
    "senales": [
     "Ultimátum público",
@@ -954,8 +969,44 @@
       "url": ""
      }
     ]
+   },
+   {
+    "nombre": "Añadidas el 7 nov (estudio de herramientas similares)",
+    "items": [
+     {
+      "n": "EMSC – Centro Sismológico Euromediterráneo",
+      "url": "https://www.seismicportal.eu/fdsn-wsevent.html",
+      "uso": "Terremotos pequeños cerca de Asturias (M3+), que USGS no da",
+      "acceso": "Gratis, sin clave"
+     },
+     {
+      "n": "Red Eléctrica – demanda en tiempo real",
+      "url": "https://www.ree.es/es/apidatos",
+      "uso": "Detector de apagón: avisa si la demanda real cae muy por debajo de la prevista",
+      "acceso": "Gratis, sin clave"
+     },
+     {
+      "n": "IODA (Georgia Tech) – cortes de internet",
+      "url": "https://ioda.inetintel.cc.gatech.edu/",
+      "uso": "Cortes de internet a escala de país (guerras, ciberataques, apagones)",
+      "acceso": "Gratis, sin clave"
+     },
+     {
+      "n": "INCIBE-CERT – avisos y avisos SCI",
+      "url": "https://www.incibe.es/incibe-cert/alerta-temprana/avisos",
+      "uso": "Fallos de ciberseguridad críticos, incluidos sistemas industriales",
+      "acceso": "RSS gratuito"
+     },
+     {
+      "n": "World Monitor (referencia de método)",
+      "url": "https://www.worldmonitor.app/docs/about",
+      "uso": "Inspiró la convergencia de fuentes y la aceleración de noticias",
+      "acceso": "Panel gratuito; su API es de pago"
+     }
+    ]
    }
-  ]
+  ],
+  "descartadas": []
  },
  "verificaciones": [
   {

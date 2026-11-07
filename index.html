@@ -154,15 +154,16 @@
           <tr><td>Confianza</td><td>Rumor 0,15 · Fuente única 0,35 · Medios locales 0,45 · Varios medios 0,65 · Oficial 0,85 · Confirmado 1. En la capa automática depende de cuántos medios distintos lo publican y de si hay webs oficiales.</td></tr>
           <tr><td>Cercanía</td><td>Asturias: Asturias 1 · resto de España 0,85 · UE 0,7 · Europa 0,6 · Mediterráneo 0,5 · Oriente Medio 0,4 · resto 0,2. España: igual, con España 1 y UE 0,75. Escalada global: siempre 1.</td></tr>
           <tr><td>Tendencia</td><td>Escala 1,15 · Estable 1 · Se calma 0,85.</td></tr>
+          <tr><td>Antigüedad</td><td>Hasta 3 días 1 · hasta 2 semanas 0,85 · hasta 45 días 0,7 · más 0,5.</td></tr>
         </table>
-        <p>Cada índice suma el suceso más fuerte, el 35 % del segundo y el 15 % del resto, y lo comprime a una escala de 0 a 10. Un rumor aislado aporta como mucho 1 punto.</p>
-        <p>Suelos automáticos: un suceso confirmado de gravedad 9 o más en la UE pone el índice de España y Asturias en 9 como mínimo.</p>
+        <p>Cada índice suma el suceso más fuerte, el 35 % del segundo, el 15 % del tercero y, a partir de ahí, cada suceso la mitad que el anterior (máximo 12). Así, muchos titulares sobre lo mismo no disparan el índice. El resultado se comprime a una escala de 0 a 10. Un rumor aislado aporta como mucho 1 punto.</p><p><b>Convergencia:</b> si en 48 h al menos tres tipos de fuente independientes (sensores, organismos oficiales, prensa, tus aportaciones o el analista) señalan el mismo lugar, la Brújula crea un aviso de convergencia. <b>Aceleración:</b> si los titulares sobre un lugar triplican su media de escaneos anteriores, el suceso se marca como «escala».</p>
+        <p>Suelos automáticos: un suceso confirmado de gravedad 9 o más cerca (UE o más cerca) pone el índice de España y Asturias en 9 como mínimo; uno de gravedad 8 en España, en 8.</p>
         <p class="muted">Escala: 0–2 Calma · 2–4 Vigilancia · 4–6 Tensión · 6–8 Alerta · 8–10 Emergencia. Es una herramienta de orientación. Ante una emergencia, sigue siempre a ES-Alert, el 112 y Protección Civil.</p>
       </div>
     </details>
   </section>
 </main>
 <script src="land.js"></script>
-<script src="app.js?v=1794082053"></script>
+<script src="app.js?v=1794082646"></script>
 </body>
 </html>
