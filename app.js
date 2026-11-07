@@ -1,4 +1,4 @@
-const VERSION = "7 nov 2026 · 02:15";
+const VERSION = "7 nov 2026 · 02:20";
 /* Brújula de Emergencia — se ejecuta entero en el navegador.
    Capa del analista: datos/analisis.json (revisado a mano).
    Capa automática: GDELT, USGS, NOAA y Polymarket, consultados al abrir la página. */
@@ -568,6 +568,7 @@ async function scan(force) {
     return;
   }
   ST.scanning = true; $("rescan").disabled = true; renderStamp();
+  ST.sources = {}; renderSources();
   const prev = store.get("brujula.prev", {});
   setProgress(0.02);
   await Promise.all([scanUSGS(), scanNOAA(), scanPolymarket(), scanWatched(), scanUcrania()]);
