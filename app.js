@@ -19,7 +19,7 @@ const ZP = {
 };
 const SCOPES = [["asturias", "Asturias"], ["espana", "España"], ["global", "Escalada global"]];
 const HOME = [43.36, -5.85];
-const GDELT_GAP_MS = 5600;          // GDELT admite 1 consulta cada 5 s
+const GDELT_GAP_MS = 7000;          // GDELT admite 1 consulta cada 5 s
 const CACHE_MIN = 20;               // minutos antes de volver a consultar al abrir
 
 /* Consultas a GDELT (busca en 65 idiomas traducidos al inglés) */
@@ -213,7 +213,17 @@ async function scanGdelt(prevCounts) {
     const url = "https://api.gdeltproject.org/api/v2/doc/doc?query=" + encodeURIComponent(th.q) +
       "&mode=artlist&maxrecords=120&format=json&timespan=24h&sort=datedesc";
     try {
-      const data = await pget(url);
+      let data, tries = 0;
+      for (;;) {
+        try { data = await pget(url, true, 30000); break; }
+        catch (e) {
+          const m = String(e.message || e);
+          if (tries >= 2 || !/429|abort/i.test(m)) throw e;
+          tries++;
+          setSource("gdelt-" + th.id, "GDELT · " + th.titulo, "wait", `GDELT saturado, reintento ${tries}/2…`);
+          await sleep(12000 * tries);
+        }
+      }
       const arts = Array.isArray(data.articles) ? data.articles : [];
       // agrupar por lugar
       const groups = new Map();
