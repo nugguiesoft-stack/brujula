@@ -1,15 +1,8 @@
-// Intermediario de la Brújula de Emergencia (Cloudflare Worker, plan gratuito).
-// Recibe /?u=<dirección> y devuelve el contenido con permiso para que la web lo lea.
-// Solo deja pasar las webs de esta lista, para que nadie pueda usarlo para otra cosa.
-const PERMITIDOS = [
-  "api.gdeltproject.org", "news.google.com", "api.fxtwitter.com", "www.youtube.com", "t.me",
-  "www.gdacs.org", "gdacs.org", "public.api.bsky.app", "api.bsky.app", "gamma-api.polymarket.com",
-  "earthquake.usgs.gov", "services.swpc.noaa.gov", "api.elections.kalshi.com", "apidatos.ree.es",
-  "www.aemet.es", "travel.state.gov", "www.auswaertiges-amt.de", "feeds.meteoalarm.org"
-];
-// Además, cualquier web oficial (gobiernos y organismos internacionales):
-const SUFIJOS = [".gob.es", ".gov", ".gov.uk", ".gouv.fr", ".bund.de", ".europa.eu", ".int", ".mil", ".un.org"];
+// Intermediario de la Brújula de Emergencia (Cloudflare Worker, plan gratuito) — v3
+// Recibe /?u=<dirección> y devuelve el contenido con permiso para que la web de la Brújula lo lea.
+// Solo atiende peticiones que vienen de la propia web de la Brújula.
 const ORIGENES = ["https://nugguiesoft-stack.github.io", "http://localhost:8765"];
+const NAVEGADOR = "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Mobile Safari/537.36";
 
 export default {
   async fetch(request) {
@@ -20,29 +13,29 @@ export default {
       "Vary": "Origin"
     };
     if (request.method === "OPTIONS") return new Response(null, { headers: cors });
-    if (origin && !ORIGENES.includes(origin)) return new Response("Origen no permitido", { status: 403, headers: cors });
 
     const u = new URL(request.url).searchParams.get("u");
-    if (!u) return new Response("Brújula: intermediario activo (v2)", { headers: cors });
+    if (!u) return new Response("Brújula: intermediario activo (v3)", { headers: cors });
+    if (!ORIGENES.includes(origin)) return new Response("Origen no permitido", { status: 403, headers: cors });
+
     let destino;
     try { destino = new URL(u); } catch { return new Response("Dirección no válida", { status: 400, headers: cors }); }
     const host = destino.hostname;
-    const ok = PERMITIDOS.includes(host) || SUFIJOS.some((x) => host.endsWith(x));
-    if (destino.protocol !== "https:" || !ok) {
+    if (destino.protocol !== "https:" || /^(localhost|127\.|10\.|192\.168\.|169\.254\.)/.test(host)) {
       return new Response("Web no permitida", { status: 403, headers: cors });
     }
 
+    const ttl = host === "api.gdeltproject.org" ? 900 : 300;
     const cache = caches.default;
     const clave = new Request(destino.toString());
     let resp = await cache.match(clave);
     if (!resp) {
       const r = await fetch(destino.toString(), {
-        headers: { "User-Agent": "Mozilla/5.0 (BrujulaEmergencia; uso personal)", "Accept": "*/*" },
-        cf: { cacheTtl: host === "api.gdeltproject.org" ? 900 : 300 }
+        headers: { "User-Agent": NAVEGADOR, "Accept": "application/rss+xml, application/xml, application/json, text/html;q=0.9, */*;q=0.8", "Accept-Language": "es-ES,es;q=0.9,en;q=0.8" },
+        cf: { cacheTtl: ttl }
       });
       resp = new Response(r.body, r);
-      // GDELT se guarda 15 min para no saturarlo; el resto 5 min
-      resp.headers.set("Cache-Control", "public, max-age=" + (host === "api.gdeltproject.org" ? 900 : 300));
+      resp.headers.set("Cache-Control", "public, max-age=" + ttl);
       if (r.ok) await cache.put(clave, resp.clone());
     }
     const out = new Response(resp.body, resp);

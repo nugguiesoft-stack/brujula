@@ -474,9 +474,73 @@ async function scanOficiales() {
   }));
 }
 
+
+/* --- prensa leída directamente (sin pasar por Google) --- */
+const PRENSA = [
+  { id: "pd-es", titulo: "Prensa española (directo)", feeds: [
+    ["ABC · Última hora", "https://www.abc.es/rss/feeds/abc_ultima.xml"],
+    ["Europa Press", "https://www.europapress.es/rss/rss.aspx?ch=94"],
+    ["El País", "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada"],
+    ["El Mundo", "https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml"],
+    ["El Debate", "https://www.eldebate.com/rss/home.xml"],
+    ["20minutos", "https://www.20minutos.es/rss/"]
+  ] },
+  { id: "pd-ast", titulo: "Prensa asturiana (directo)", local: true, feeds: [
+    ["La Nueva España", "https://www.lne.es/rss/section/1"],
+    ["El Comercio", "https://www.elcomercio.es/rss/2.0/portada"],
+    ["La Nueva España · Asturias", "https://www.lne.es/rss/section/4"]
+  ] },
+  { id: "pd-int", titulo: "Prensa internacional (directo)", feeds: [
+    ["BBC Mundo (inglés)", "https://feeds.bbci.co.uk/news/world/rss.xml"],
+    ["Al Jazeera", "https://www.aljazeera.com/xml/rss/all.xml"],
+    ["DW español", "https://rss.dw.com/rdf/rss-sp-all"],
+    ["France 24 español", "https://www.france24.com/es/rss"],
+    ["The Guardian · Mundo", "https://www.theguardian.com/world/rss"],
+    ["ONU Noticias", "https://news.un.org/feed/subscribe/es/news/all/rss.xml"]
+  ] },
+  { id: "pd-of", titulo: "Avisos de viaje de Reino Unido", oficial: true, feeds: [
+    ["Gobierno británico · Avisos de viaje", "https://www.gov.uk/foreign-travel-advice.atom"]
+  ] }
+];
+async function scanPrensaDirecta(g) {
+  const sid = "pd-" + g.id;
+  setSource(sid, g.titulo, "wait", "Consultando…");
+  const res = await Promise.allSettled(g.feeds.map(async ([n, u]) => rssItems(await pget(u, false, 20000)).map((it) => ({ ...it, medio: n }))));
+  const okN = res.filter((r) => r.status === "fulfilled").length;
+  const fallos = g.feeds.filter((f, i) => res[i].status !== "fulfilled").map((f) => f[0]);
+  const items = res.flatMap((r) => r.status === "fulfilled" ? r.value : []).filter((it) => !it.date || reciente(it.date, 24));
+  const groups = new Map();
+  for (const it of items) {
+    const txt = it.title + " " + (g.oficial ? "" : it.desc.slice(0, 200));
+    const c = classifyPost(txt);
+    const min = g.oficial ? 2 : g.local ? 3 : 5;
+    if (c.S < min) continue;
+    if (g.oficial && !/(terror|conflict|war|unrest|evacuat|do not travel|against all|military|attack|security)/i.test(it.title + " " + it.desc)) continue;
+    const key = c.dominio + "|" + c.pl.name;
+    if (!groups.has(key)) groups.set(key, { c, its: [] });
+    groups.get(key).its.push(it);
+  }
+  const evs = [];
+  for (const [key, x] of groups) {
+    const medios = new Set(x.its.map((i) => i.medio));
+    const S = Math.max(...x.its.map((i) => classifyPost(i.title).S));
+    const nivel = g.oficial ? "oficial" : medios.size >= 3 ? "varios_medios" : medios.size === 2 ? "medios_locales" : "fuente_unica";
+    evs.push({ id: sid + "-" + key.replace(/[^a-z0-9]+/gi, "-").toLowerCase(), origen: "auto", tema: sid,
+      titulo: `${x.its[0].medio}: ${x.its[0].title}`, resumen: x.its[0].desc.slice(0, 240) || x.its[0].title, dominio: x.c.dominio,
+      region: x.c.pl.name, lat: x.c.pl.lat, lon: x.c.pl.lon, zona: x.c.pl.zona, S, nivel, tendencia: "estable",
+      fecha: x.its.map((i) => i.date && !isNaN(new Date(i.date)) ? new Date(i.date).toISOString() : "").filter(Boolean).sort().at(-1) || null,
+      fuentes: x.its.slice(0, 10).map((i) => ({ n: `${i.medio} · ${i.title}`, url: i.url })),
+      fiabilidad: `${medios.size} medio(s) lo publican: ${[...medios].join(", ")}.` });
+  }
+  ST.auto = [...ST.auto.filter((x) => x.tema !== sid), ...evs.sort((a, b) => b.S - a.S).slice(0, 12)];
+  setSource(sid, g.titulo, okN ? "ok" : "err", okN ? `${okN}/${g.feeds.length} medios leídos, ${items.length} noticias de hoy, ${evs.length} de alerta` + (fallos.length ? ` · fallan: ${fallos.join(", ")}` : "") : "Ningún medio respondió");
+}
+
 async function scanPrensaYOrganismos() {
-  await scanOficiales();
-  for (const g of GRUPOS) { await scanGrupo(g); renderAll(); await sleep(800); }
+  await Promise.all([scanOficiales(), ...PRENSA.map(scanPrensaDirecta)]);
+  renderAll();
+  // Google Noticias solo para las webs oficiales que no tienen canal propio (va en cola, de una en una)
+  for (const g of GRUPOS.filter((g) => g.tipo !== "medio")) { await scanGrupo(g); renderAll(); }
 }
 
 /* --- canales de Telegram públicos (t.me/s/…) --- */
@@ -716,7 +780,7 @@ function renderLog() {
 }
 function renderSources() {
   const box = $("srcstatus"); box.replaceChildren();
-  const base = ["usgs", "noaa", "poly", "ucrania", "of-aemet", "of-gdacs", "of-usstate", "of-alemania", ...GRUPOS.map((g) => "grp-" + g.id), "vigiladas", ...THEMES.map((t) => "gdelt-" + t.id)];
+  const base = ["usgs", "noaa", "poly", "ucrania", "of-aemet", "of-gdacs", "of-usstate", "of-alemania", ...PRENSA.map((g) => "pd-" + g.id), ...GRUPOS.filter((g) => g.tipo !== "medio").map((g) => "grp-" + g.id), "vigiladas", ...THEMES.map((t) => "gdelt-" + t.id)];
   const order = [...base, ...Object.keys(ST.sources).filter((k) => !base.includes(k))];
   for (const k of order) {
     const v = ST.sources[k]; if (!v) continue;
@@ -833,7 +897,7 @@ async function pget(url, asJson = true, timeout = 20000) {
   try {
     const r = await fetch(target, { signal: ctl.signal });
     const txt = await r.text();
-    if (!r.ok) throw new Error("HTTP " + r.status);
+    if (!r.ok) { const why = /no permitid|no válida/i.test(txt) ? ": " + txt.slice(0, 40) : ""; throw new Error("HTTP " + r.status + why); }
     if (!asJson) return txt;
     try { return JSON.parse(txt); } catch { throw new Error(txt.slice(0, 80) || "Respuesta no válida"); }
   } finally { clearTimeout(t); }
