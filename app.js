@@ -716,7 +716,8 @@ function renderLog() {
 }
 function renderSources() {
   const box = $("srcstatus"); box.replaceChildren();
-  const order = ["usgs", "noaa", "poly", "vigiladas", ...THEMES.map((t) => "gdelt-" + t.id)];
+  const base = ["usgs", "noaa", "poly", "of-aemet", "of-gdacs", "of-usstate", "of-alemania", ...GRUPOS.map((g) => "grp-" + g.id), "vigiladas", ...THEMES.map((t) => "gdelt-" + t.id)];
+  const order = [...base, ...Object.keys(ST.sources).filter((k) => !base.includes(k))];
   for (const k of order) {
     const v = ST.sources[k]; if (!v) continue;
     box.append(h("div", { class: "st " + v.state }, h("i"), h("span", null, v.name), h("span", { class: "small muted" }, v.state === "err" ? "Error: " + v.msg : v.msg)));
