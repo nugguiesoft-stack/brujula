@@ -1,4 +1,4 @@
-const VERSION = "7 nov 2026 · 21:15";
+const VERSION = "7 nov 2026 · 21:20";
 /* Brújula de Emergencia — se ejecuta entero en el navegador.
    Capa del analista: datos/analisis.json (revisado a mano).
    Capa automática: GDELT, USGS, NOAA y Polymarket, consultados al abrir la página. */
@@ -661,8 +661,23 @@ function renderAlerts(evs) {
 function renderAnalysis(evs) {
   const ana = ST.ana?.estado;
   const ast = indice(evs, "asturias"), esp = indice(evs, "espana"), glo = indice(evs, "global");
-  const auto = ST.auto.length ? ` La capa automática añade ${ST.auto.length} suceso(s) y ${ST.rumors.length} rumor(es) sin contrastar.` : "";
-  $("takeaway").textContent = (ana?.resumen || `Asturias ${num(ast)}, España ${num(esp)}, escalada global ${num(glo)}.`) + auto;
+  // Resumen automático: se rehace en cada escaneo con lo que acaban de traer las fuentes.
+  const fresh = [...ST.auto].filter((e) => !e.fecha || Date.now() - new Date(e.fecha) < 36 * 36e5)
+    .sort((a, b) => contrib(b) - contrib(a)).slice(0, 3);
+  const cerca = ST.auto.filter((e) => (e.zona === "asturias" || e.zona === "espana") && e.S >= 5);
+  const partes = [`Ahora: Asturias ${num(ast)} (${nivelDe(ast)[0].toLowerCase()}), España ${num(esp)} (${nivelDe(esp)[0].toLowerCase()}), escalada global ${num(glo)} (${nivelDe(glo)[0].toLowerCase()}).`];
+  if (ST.scanAt) {
+    partes.push(cerca.length ? `En España o Asturias hay ${cerca.length} aviso(s) relevante(s): ${cerca.slice(0, 2).map((e) => e.titulo).join(" · ")}.` : "Ninguna fuente avisa de nada grave en España o Asturias.");
+    if (fresh.length) partes.push("Lo que más pesa hoy: " + fresh.map((e) => e.titulo.replace(/\s+/g, " ").slice(0, 120)).join(" · ") + ".");
+    partes.push(`${ST.auto.length} suceso(s) automáticos y ${ST.rumors.length} rumor(es) sin contrastar.`);
+  }
+  let txt = partes.join(" ");
+  if (ana?.resumen) {
+    const hrs = ana.actualizado ? Math.round((Date.now() - new Date(ana.actualizado)) / 36e5) : null;
+    txt += `\n\nContexto del analista${hrs != null ? ` (de hace ${hrs < 48 ? hrs + " h" : Math.round(hrs / 24) + " días"}; di «actualiza la brújula» para renovarlo)` : ""}: ` + ana.resumen;
+  }
+  $("takeaway").textContent = txt;
+  $("takeaway").style.whiteSpace = "pre-line";
   const dm = $("domains"); dm.replaceChildren();
   for (const [k, name] of DOM) {
     const dv = dominio(evs, k), [, c] = nivelDe(dv);
