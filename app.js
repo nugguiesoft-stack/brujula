@@ -1,4 +1,4 @@
-const VERSION = "7 nov 2026 · 02:20";
+const VERSION = "7 nov 2026 · 21:15";
 /* Brújula de Emergencia — se ejecuta entero en el navegador.
    Capa del analista: datos/analisis.json (revisado a mano).
    Capa automática: GDELT, USGS, NOAA y Polymarket, consultados al abrir la página. */
@@ -145,7 +145,9 @@ function contrib(e, scope = "asturias") {
 function indice(evs, scope) {
   const cs = evs.map((e) => contrib(e, scope)).sort((a, b) => b - a);
   if (!cs.length) return 0;
-  const sc = cs[0] + (cs[1] ? 0.35 * cs[1] : 0) + 0.15 * cs.slice(2).reduce((a, b) => a + b, 0);
+  // Cada suceso adicional pesa la mitad que el anterior: muchos titulares sobre lo mismo no disparan el índice.
+  const W = [1, 0.35, 0.15];
+  const sc = cs.slice(0, 12).reduce((a, c, i) => a + c * (W[i] ?? 0.15 * Math.pow(0.5, i - 2)), 0);
   let v = 10 * (1 - Math.exp(-sc / (scope === "global" ? 16 : 12)));
   if (scope !== "global") for (const e of evs) {
     const c = NIV[e.nivel]?.[0] ?? 0, p = pScope(e, scope);
@@ -157,7 +159,8 @@ function indice(evs, scope) {
 function dominio(evs, d, scope = "asturias") {
   const cs = evs.filter((e) => e.dominio === d).map((e) => contrib(e, scope)).sort((a, b) => b - a);
   if (!cs.length) return 0;
-  const sc = cs[0] + 0.35 * cs.slice(1).reduce((a, b) => a + b, 0);
+  const W = [1, 0.35, 0.15];
+  const sc = cs.slice(0, 12).reduce((a, c, i) => a + c * (W[i] ?? 0.15 * Math.pow(0.5, i - 2)), 0);
   return Math.round(100 * (1 - Math.exp(-sc / 6))) / 10;
 }
 function nivelDe(v) {
