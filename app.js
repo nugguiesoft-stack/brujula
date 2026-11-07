@@ -1,4 +1,4 @@
-const VERSION = "7 nov 2026 · 22:55";
+const VERSION = "7 nov 2026 · 23:10";
 /* Brújula de Emergencia — se ejecuta entero en el navegador.
    Capa del analista: datos/analisis.json (revisado a mano).
    Capa automática: GDELT, USGS, NOAA y Polymarket, consultados al abrir la página. */
@@ -312,6 +312,7 @@ async function scanUSGS() {
     }
     ST.auto = [...ST.auto.filter((x) => x.tema !== "usgs"), ...evs];
     setSource("usgs", "USGS · Terremotos", "ok", `${seen.size} sismos M4,5+ revisados`);
+    sens("usgs", { n: seen.size, max: Math.max(0, ...[...seen.values()].map((f) => +f.properties?.mag || 0)) });
   } catch (e) { setSource("usgs", "USGS · Terremotos", "err", String(e.message || e)); }
   renderAll();
 }
@@ -333,6 +334,7 @@ async function scanNOAA() {
     });
     ST.auto = [...ST.auto.filter((x) => x.tema !== "noaa"), ...evs];
     setSource("noaa", "NOAA · Tormentas solares", "ok", `Nivel geomagnético máximo previsto: G${maxG}`);
+    sens("noaa", { g: maxG });
   } catch (e) { setSource("noaa", "NOAA · Tormentas solares", "err", String(e.message || e)); }
   renderAll();
 }
@@ -450,7 +452,7 @@ async function scanOficiales() {
         if (!(rojo || (naranja && ast))) continue;
         out.push(evOficial("aemet", "AEMET", it.title, it.desc, it.url, rojo ? (ast ? 6 : 4) : 3, "natural", it.date));
       }
-      return [out, `${its.length} avisos; ${out.length} naranja/rojo relevantes`];
+      return [out, `${its.length} avisos; ${out.length} naranja/rojo relevantes`, { n: its.length, rel: out.length }];
     }],
     ["gdacs", "GDACS · Desastres (ONU/UE)", async () => {
       const raw = await pget("https://www.gdacs.org/xml/rss.xml", false, 20000);
@@ -458,14 +460,14 @@ async function scanOficiales() {
       if (!its.length) throw new Error("Respuesta sin sucesos: " + raw.replace(/\s+/g, " ").slice(0, 50));
       const out = its.filter((it) => /^(red|orange)/i.test(it.title) && reciente(it.date, 96))
         .map((it) => evOficial("gdacs", "GDACS", it.title, it.desc, it.url, /^red/i.test(it.title) ? 5 : 3, "natural", it.date));
-      return [out, `${its.length} sucesos; ${out.length} naranja/rojo`];
+      return [out, `${its.length} sucesos; ${out.length} naranja/rojo`, { n: its.length, rel: out.length }];
     }],
     ["usstate", "EE. UU. · Avisos de viaje", async () => {
       const its = rssItems(await pget("https://travel.state.gov/_res/rss/TAsTWs.xml", false, 20000));
       const out = its.filter((it) => /level [34]/i.test(it.title) && reciente(it.date, 96))
         .map((it) => evOficial("usstate", "Departamento de Estado EE. UU.", it.title, it.desc, it.url, /level 4/i.test(it.title) ? 5 : 3,
           /terror|armed conflict|war|unrest|kidnap/i.test(it.desc) ? "belico" : "social", it.date));
-      return [out, `${its.length} países; ${out.length} subidos a nivel 3–4 en 4 días`];
+      return [out, `${its.length} países; ${out.length} subidos a nivel 3–4 en 4 días`, { n: out.length }];
     }],
     ["alemania", "Alemania · Avisos de viaje", async () => {
       const d = await pget("https://www.auswaertiges-amt.de/opendata/travelwarning", true, 20000);
@@ -478,12 +480,12 @@ async function scanOficiales() {
         out.push(evOficial("alemania", "Ministerio de Exteriores de Alemania", v.title, v.warning ? "Aviso de viaje (Reisewarnung)" : "Aviso de viaje parcial",
           "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit", v.warning ? 5 : 3, "belico", new Date(t).toISOString()));
       }
-      return [out, `${out.length} avisos nuevos o cambiados en 4 días`];
+      return [out, `${out.length} avisos nuevos o cambiados en 4 días`, { n: out.length }];
     }]
   ];
   await Promise.all(tareas.map(async ([id, nombre, fn]) => {
     setSource("of-" + id, nombre, "wait", "Consultando…");
-    try { const [evs, msg] = await fn(); ST.auto = [...ST.auto.filter((x) => x.tema !== id), ...evs.slice(0, 10)]; setSource("of-" + id, nombre, "ok", msg); }
+    try { const [evs, msg, extra] = await fn(); if (extra) sens(id, extra); ST.auto = [...ST.auto.filter((x) => x.tema !== id), ...evs.slice(0, 10)]; setSource("of-" + id, nombre, "ok", msg); }
     catch (e) { setSource("of-" + id, nombre, "err", String(e.message || e).slice(0, 80)); }
   }));
 }
@@ -609,6 +611,9 @@ async function scanEMSC() {
         fiabilidad: "Dato instrumental del Centro Sismológico Euromediterráneo (EMSC)." });
     }
     ST.auto = [...ST.auto.filter((x) => x.tema !== "emsc"), ...evs.slice(0, 8)];
+    const todos = (d.features || []).map((f) => ({ M: +f.properties.mag, dist: km(HOME[0], HOME[1], +f.properties.lat, +f.properties.lon), r: f.properties.flynn_region }));
+    const prox = todos.reduce((a, b) => (!a || b.dist < a.dist ? b : a), null);
+    sens("emsc", { n: todos.length, mags: todos.map((x) => x.M), cerca: evs.length, prox });
     setSource("emsc", "EMSC · Sismos cerca de Asturias", "ok", `${(d.features || []).length} sismos M3+ en 48 h; ${evs.length} cerca`);
   } catch (e) { setSource("emsc", "EMSC · Sismos cerca de Asturias", "err", String(e.message || e).slice(0, 80)); }
 }
@@ -637,6 +642,7 @@ async function scanREE() {
         fiabilidad: "Dato oficial de Red Eléctrica. Puede haber retrasos de unos minutos." });
     }
     ST.auto = [...ST.auto.filter((x) => x.tema !== "ree"), ...evs];
+    sens("ree", { real: real.v.map((x) => ({ t: x.datetime, v: x.value })), prev: prev.v.map((x) => ({ t: x.datetime, v: x.value })), ratio });
     setSource(id, nombre, "ok", `Demanda ${Math.round(last.value)} MW (${Math.round(ratio * 100)} % de lo previsto)` + (evs.length ? " · ¡caída anómala!" : " · normal"));
   } catch (e) { setSource(id, nombre, "err", String(e.message || e).slice(0, 80)); }
 }
@@ -671,6 +677,7 @@ async function scanIODA() {
         fiabilidad: "Medición técnica independiente (Georgia Tech). Detecta el corte, no su causa." });
     }
     ST.auto = [...ST.auto.filter((x) => x.tema !== "ioda"), ...evs.slice(0, 6)];
+    sens("ioda", { n: byC.size, paises: [...byC.values()].sort((a, b) => b.score - a.score).map((o) => PAIS_ES[o.code] || o.name || o.code).slice(0, 12), cerca: evs.filter((e) => e.zona === "espana" || e.zona === "ue").length });
     setSource(id, nombre, "ok", `${byC.size} país(es) con cortes en 24 h` + (evs.some((e) => e.zona === "espana" || e.zona === "ue") ? " · ¡incluye España o vecinos!" : ""));
   } catch (e) { setSource(id, nombre, "err", String(e.message || e).slice(0, 80)); }
 }
@@ -693,6 +700,7 @@ async function scanINCIBE() {
       fuentes: [{ n: "INCIBE-CERT", url: i.url }], fiabilidad: "Aviso técnico oficial: indica un fallo de seguridad grave, no un ataque en curso." }));
     ST.auto = [...ST.auto.filter((x) => x.tema !== "incibe"), ...evs];
     setSource(id, nombre, "ok", `${its.length} avisos en 48 h; ${crit.length} críticos`);
+    sens("incibe", { n: its.length, crit: crit.length, ult: its.slice(0, 3).map((i) => ({ t: i.title, u: i.url })) });
   } catch (e) { setSource(id, nombre, "err", String(e.message || e).slice(0, 80)); }
 }
 
@@ -732,11 +740,74 @@ function analizarCruce() {
   store.set("brujula.vel", vel);
 }
 
+
+/* ===================== Panel de sensores (resumen gráfico) ===================== */
+function stitle(t) { const e = s("title"); e.textContent = t; return e; }
+function sens(id, data) { ST.sens = ST.sens || {}; ST.sens[id] = { ...data, t: Date.now() }; renderSensores(); }
+const SENS_METRICA = { usgs: (d) => d.n, emsc: (d) => d.n, noaa: (d) => d.g, ree: (d) => Math.round(d.ratio * 100), ioda: (d) => d.n, incibe: (d) => d.n, ucrania: (d) => d.n, aemet: (d) => d.n, gdacs: (d) => d.rel };
+function guardarHistSensores() {
+  const hist = store.get("brujula.senshist", {});
+  for (const [k, f] of Object.entries(SENS_METRICA)) if (ST.sens?.[k]) hist[k] = [...(hist[k] || []), { t: Date.now(), v: f(ST.sens[k]) }].slice(-30);
+  store.set("brujula.senshist", hist);
+}
+function sparkline(k) {
+  const pts = (store.get("brujula.senshist", {})[k] || []).filter((p) => Number.isFinite(p.v));
+  if (pts.length < 2) return h("span", { class: "small muted" }, "Historial: se irá llenando con cada escaneo");
+  const W = 140, H = 28, vs = pts.map((p) => p.v), mn = Math.min(...vs), mx = Math.max(...vs), r = mx - mn || 1;
+  const xy = pts.map((p, i) => [i * (W - 4) / (pts.length - 1) + 2, H - 3 - (p.v - mn) / r * (H - 6)]);
+  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, width: W, height: H, role: "img", "aria-label": `Evolución en los últimos ${pts.length} escaneos: de ${vs[0]} a ${vs.at(-1)}` });
+  svg.append(s("polyline", { points: xy.map((p) => p.join(",")).join(" "), fill: "none", stroke: css("--accent"), "stroke-width": 2, "stroke-linejoin": "round", "stroke-linecap": "round" }));
+  const [lx, ly] = xy.at(-1); svg.append(s("circle", { cx: lx, cy: ly, r: 3, fill: css("--accent") }));
+  pts.forEach((p, i) => { const c = s("circle", { cx: xy[i][0], cy: xy[i][1], r: 6, fill: "transparent" }); c.append(stitle(`${new Date(p.t).toLocaleString("es-ES", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}: ${p.v}`)); svg.append(c); });
+  return h("div", { class: "spark" }, svg, h("span", { class: "small muted" }, `últimos ${pts.length} escaneos`));
+}
+function tile(titulo, valor, unidad, estado, detalle, extra, k) {
+  const ICON = { ok: "●", watch: "▲", alert: "■" }, TXT = { ok: "Normal", watch: "Atención", alert: "Alerta" };
+  return h("div", { class: "stile st-" + estado },
+    h("div", { class: "stile-h" }, h("span", null, titulo), h("span", { class: "stile-badge" }, h("span", { style: `color:var(${estado === "ok" ? "--ok" : estado === "watch" ? "--watch" : "--alert"})` }, ICON[estado]), " " + TXT[estado])),
+    h("div", { class: "stile-v" }, h("b", null, String(valor)), unidad ? h("span", { class: "muted" }, " " + unidad) : null),
+    detalle ? h("div", { class: "small muted" }, detalle) : null, extra || null, k ? sparkline(k) : null);
+}
+function lineaREE(d) {
+  const W = 300, H = 110, L = 38, B = 18, all = [...d.real, ...d.prev].map((p) => p.v), mn = Math.min(...all) * 0.95, mx = Math.max(...all) * 1.02;
+  const ts = [...d.real, ...d.prev].map((p) => +new Date(p.t)), t0 = Math.min(...ts), t1 = Math.max(...ts) || t0 + 1;
+  const X = (t) => L + (+new Date(t) - t0) / (t1 - t0 || 1) * (W - L - 6), Y = (v) => H - B - (v - mn) / (mx - mn || 1) * (H - B - 8);
+  const svg = s("svg", { viewBox: `0 0 ${W} ${H}`, class: "chart", role: "img", "aria-label": "Demanda eléctrica real frente a prevista, últimas horas" });
+  for (const v of [mn, (mn + mx) / 2, mx]) { svg.append(s("line", { x1: L, x2: W - 4, y1: Y(v), y2: Y(v), stroke: css("--line"), "stroke-width": 1 })); const tx = s("text", { x: L - 4, y: Y(v) + 3, "text-anchor": "end", class: "axis" }); tx.textContent = Math.round(v / 1000) + " GW"; svg.append(tx); }
+  for (const t of [t0, t1]) { const tx = s("text", { x: X(t), y: H - 4, "text-anchor": t === t0 ? "start" : "end", class: "axis" }); tx.textContent = new Date(t).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }); svg.append(tx); }
+  const path = (pts, col, dash) => svg.append(s("polyline", { points: pts.map((p) => `${X(p.t)},${Y(p.v)}`).join(" "), fill: "none", stroke: col, "stroke-width": 2, "stroke-dasharray": dash || "", "stroke-linejoin": "round", "stroke-linecap": "round" }));
+  path(d.prev, css("--muted"), "5 4"); path(d.real, css("--accent"));
+  d.real.forEach((p) => { const c = s("circle", { cx: X(p.t), cy: Y(p.v), r: 7, fill: "transparent" }); const pr = d.prev.find((q) => q.t === p.t); c.append(stitle(`${new Date(p.t).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" })} · real ${Math.round(p.v)} MW${pr ? ` · prevista ${Math.round(pr.v)} MW` : ""}`)); svg.append(c); });
+  return h("div", null, svg, h("div", { class: "legend small" }, h("span", null, h("i", { style: `background:${css("--accent")}` }), "Real"), h("span", null, h("i", { class: "dash" }), "Prevista")));
+}
+function barrasSismos(mags) {
+  const B = [["3–4", 3, 4], ["4–5", 4, 5], ["5–6", 5, 6], ["6+", 6, 99]].map(([l, a, b]) => [l, mags.filter((m) => m >= a && m < b).length]);
+  const mx = Math.max(1, ...B.map((x) => x[1]));
+  return h("div", { class: "hbars", role: "img", "aria-label": "Sismos por magnitud: " + B.map(([l, n]) => `${l}: ${n}`).join(", ") },
+    ...B.map(([l, n]) => h("div", { class: "hbar", title: `Magnitud ${l}: ${n} sismos` }, h("span", { class: "small muted" }, "M" + l), h("div", { class: "hbar-t" }, h("i", { style: `width:${n / mx * 100}%` })), h("span", { class: "small mono" }, n))));
+}
+function renderSensores() {
+  const box = $("sensores"); if (!box) return;
+  const S = ST.sens || {}; const out = [];
+  if (S.ree) { const r = Math.round(S.ree.ratio * 100); out.push(tile("Red eléctrica (apagón)", r + " %", "de la demanda prevista", r < 75 ? "alert" : r < 90 ? "watch" : "ok", r < 90 ? "La demanda real cae por debajo de lo previsto: posible corte." : "La demanda sigue lo previsto: no hay indicios de apagón.", S.ree.real?.length > 1 ? lineaREE(S.ree) : null, "ree")); }
+  if (S.emsc) { const p = S.emsc.prox; out.push(tile("Sismos (EMSC, 48 h)", S.emsc.n, "M3 o más", S.emsc.cerca ? "watch" : "ok", p ? `El más cercano: M${p.M.toFixed(1)} a ${Math.round(p.dist)} km (${p.r || "?"}). ${S.emsc.cerca ? S.emsc.cerca + " cerca de Asturias." : "Ninguno cerca de Asturias."}` : "", barrasSismos(S.emsc.mags), "emsc")); }
+  if (S.ioda) out.push(tile("Cortes de internet (24 h)", S.ioda.n, "país(es)", S.ioda.cerca ? "alert" : "ok", S.ioda.cerca ? "Incluye España o países vecinos." : "Ninguno en España ni vecinos.", S.ioda.paises?.length ? h("div", { class: "chips" }, ...S.ioda.paises.map((x) => h("span", { class: "chip" }, x))) : null, "ioda"));
+  if (S.incibe) out.push(tile("Ciberseguridad (INCIBE, 48 h)", S.incibe.n, "avisos", S.incibe.crit ? "watch" : "ok", `${S.incibe.crit} crítico(s).`, S.incibe.ult?.length ? h("ul", { class: "mini" }, ...S.incibe.ult.map((x) => h("li", null, safeUrl(x.u) ? h("a", { href: safeUrl(x.u), target: "_blank", rel: "noopener" }, x.t) : x.t))) : null, "incibe"));
+  if (S.ucrania) out.push(tile("Ucrania · alertas aéreas", S.ucrania.n, "zona(s) ahora", S.ucrania.n >= 15 ? "alert" : S.ucrania.n >= 8 ? "watch" : "ok", S.ucrania.n >= 15 ? "Alerta casi en todo el país: posible ataque masivo." : "Las alertas son habituales; solo cuentan si son masivas.", null, "ucrania"));
+  if (S.noaa) out.push(tile("Tormenta solar (NOAA)", "G" + S.noaa.g, "escala 0–5", S.noaa.g >= 4 ? "alert" : S.noaa.g >= 3 ? "watch" : "ok", S.noaa.g >= 4 ? "Puede afectar a redes eléctricas y GPS." : "Sin riesgo para la red eléctrica.", null, "noaa"));
+  if (S.aemet) out.push(tile("Avisos AEMET", S.aemet.n, "avisos en España", S.aemet.rel ? "watch" : "ok", S.aemet.rel ? `${S.aemet.rel} naranja/rojo relevantes.` : "Ninguno naranja o rojo en Asturias ni rojo en España.", null, "aemet"));
+  if (S.gdacs) out.push(tile("Desastres (GDACS)", S.gdacs.rel, "naranja/rojo", S.gdacs.rel ? "watch" : "ok", `${S.gdacs.n} sucesos vigilados en el mundo.`, null, "gdacs"));
+  if (S.usgs) out.push(tile("Grandes sismos (USGS)", S.usgs.n, "M4,5+ revisados", S.usgs.max >= 7 ? "watch" : "ok", S.usgs.n ? `El mayor: M${(+S.usgs.max).toFixed(1)}.` : "Ninguno grande en el mundo.", null, "usgs"));
+  if (S.usstate || S.alemania) out.push(tile("Avisos de viaje", (S.usstate?.n || 0) + (S.alemania?.n || 0), "cambios en 4 días", (S.usstate?.n || 0) ? "watch" : "ok", `EE. UU.: ${S.usstate?.n ?? "–"} subidos a nivel 3–4 · Alemania: ${S.alemania?.n ?? "–"} nuevos o cambiados.`, null, null));
+  box.replaceChildren(...(out.length ? out : [h("p", { class: "empty" }, "Pulsa «Escanear ahora» para ver los sensores.")]));
+}
+
 async function scan(force) {
   if (ST.scanning) return;
   const cache = store.get("brujula.cache", null);
   if (!force && cache && Date.now() - cache.t < CACHE_MIN * 60000) {
-    Object.assign(ST, { auto: cache.auto || [], rumors: cache.rumors || [], markets: cache.markets || [], scanAt: new Date(cache.t) });
+    Object.assign(ST, { auto: cache.auto || [], rumors: cache.rumors || [], markets: cache.markets || [], scanAt: new Date(cache.t), sens: cache.sens || {} });
+    renderSensores();
     for (const [k, v] of Object.entries(cache.sources || {})) ST.sources[k] = v;
     renderAll(); renderSources(); renderMarkets();
     return;
@@ -752,7 +823,8 @@ async function scan(force) {
   store.set("brujula.prev", prev);
   ST.scanAt = new Date(); ST.scanning = false; $("rescan").disabled = false; setProgress(1);
   setTimeout(() => setProgress(0), 800);
-  store.set("brujula.cache", { t: Date.now(), auto: ST.auto, rumors: ST.rumors, markets: ST.markets, sources: ST.sources });
+  store.set("brujula.cache", { t: Date.now(), auto: ST.auto, rumors: ST.rumors, markets: ST.markets, sources: ST.sources, sens: ST.sens });
+  guardarHistSensores();
   addLog();
   renderAll();
 }
@@ -1237,6 +1309,7 @@ async function scanUcrania() {
         fiabilidad: "Canal oficial de alertas aéreas de Ucrania (Ajax Systems con datos de la administración ucraniana). Las alertas son habituales: solo suben el índice si son masivas." });
     }
     ST.auto = [...ST.auto.filter((x) => x.tema !== "ucrania"), ...evs];
+    sens("ucrania", { n });
     setSource("ucrania", "Ucrania · Alertas aéreas (oficial)", "ok", n ? `${n} zona(s) en alerta ahora` : "Sin alertas activas");
   } catch (e) { setSource("ucrania", "Ucrania · Alertas aéreas (oficial)", "err", String(e.message || e).slice(0, 80)); }
 }

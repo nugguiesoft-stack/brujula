@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="estilo.css?v=1794013855">
+<link rel="stylesheet" href="estilo.css?v=1794084346&x=1794013855">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icono-192.png">
 <link rel="apple-touch-icon" href="icono-192.png">
@@ -52,6 +52,11 @@
   </section>
   <p class="muted small center">0 = calma · 10 = peligro inminente. «Escalada global» mide el riesgo de que los conflictos vayan a más, estén donde estén.</p>
 
+  <section class="panel" aria-labelledby="h-sens" style="display:grid;gap:12px">
+    <h2 id="h-sens">Sensores en directo</h2>
+    <p class="small muted">Medidas técnicas que la Brújula lee en cada escaneo. Solo cuentan para los índices cuando algo sale de lo normal.</p>
+    <div class="sensores" id="sensores"><p class="empty">Pulsa «Escanear ahora» para ver los sensores.</p></div>
+  </section>
   <section class="panel" style="display:grid;gap:14px" aria-labelledby="h-res">
     <h2 id="h-res">Análisis</h2>
     <p id="takeaway" class="takeaway">—</p>
@@ -164,6 +169,6 @@
   </section>
 </main>
 <script src="land.js"></script>
-<script src="app.js?v=1794084114"></script>
+<script src="app.js?v=1794084346"></script>
 </body>
 </html>
