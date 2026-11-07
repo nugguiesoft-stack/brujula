@@ -24,21 +24,21 @@ const CACHE_MIN = 20;               // minutos antes de volver a consultar al ab
 
 /* Consultas a GDELT (busca en 65 idiomas traducidos al inglés) */
 const THEMES = [
-  { id: "nuclear", dominio: "nuclear", S: 7, titulo: "Alarma nuclear o radiológica",
+  { id: "nuclear", gn: '"ataque nuclear" OR "amenaza nuclear" OR "pastillas de yodo" OR "fuga radiactiva" OR "nuclear strike" OR "radiation leak"', dominio: "nuclear", S: 7, titulo: "Alarma nuclear o radiológica",
     q: '("nuclear strike" OR "nuclear attack" OR "nuclear threat" OR "iodine tablets" OR "radiation leak" OR "nuclear alert")' },
-  { id: "guerra", dominio: "belico", S: 6, titulo: "Ataques y movilizaciones",
+  { id: "guerra", gn: '"ataque con misiles" OR bombardeo OR "movilización militar" OR "missile strike" OR airstrike OR "ballistic missile"', dominio: "belico", S: 6, titulo: "Ataques y movilizaciones",
     q: '("missile strike" OR "airstrike" OR "air raid" OR "declares war" OR "military mobilization" OR "ballistic missile")' },
-  { id: "espana", dominio: "social", S: 4, titulo: "Alertas en España",
+  { id: "espana", gn: 'España (apagón OR ciberataque OR evacuación OR explosión OR "estado de emergencia" OR atentado)', dominio: "social", S: 4, titulo: "Alertas en España",
     q: '(blackout OR cyberattack OR evacuation OR explosion OR "state of emergency" OR "terror attack") sourcecountry:spain' },
-  { id: "asturias", dominio: "natural", S: 4, titulo: "Alertas en Asturias",
+  { id: "asturias", gn: 'Asturias (alerta OR emergencia OR evacuación OR incendio OR inundación OR temporal OR explosión OR apagón)', dominio: "natural", S: 4, titulo: "Alertas en Asturias",
     q: 'asturias (alert OR emergency OR evacuation OR fire OR flood OR storm OR explosion OR blackout)' },
-  { id: "ciberbanca", dominio: "ciber", S: 5, titulo: "Ciberataques y banca",
+  { id: "ciberbanca", gn: 'ciberataque OR ransomware OR "caída bancaria" OR corralito OR "bank run" OR "payment outage"', dominio: "ciber", S: 5, titulo: "Ciberataques y banca",
     q: '(cyberattack OR ransomware OR "bank run" OR "bank collapse" OR "banking system" OR "payment outage")' },
-  { id: "energia", dominio: "energia", S: 4, titulo: "Energía y suministros",
+  { id: "energia", gn: 'apagón OR "escasez de combustible" OR racionamiento OR "suministro de gas" OR "power outage" OR "fuel shortage"', dominio: "energia", S: 4, titulo: "Energía y suministros",
     q: '("power outage" OR blackout OR "fuel shortage" OR rationing OR "oil supply" OR "gas supply")' },
-  { id: "evacuacion", dominio: "belico", S: 6, titulo: "Evacuaciones y avisos de embajadas",
+  { id: "evacuacion", gn: '"evacuación de la embajada" OR "abandonen el país" OR "embassy evacuation" OR "leave the country" OR "travel warning"', dominio: "belico", S: 6, titulo: "Evacuaciones y avisos de embajadas",
     q: '("embassy evacuation" OR "evacuate citizens" OR "leave the country" OR "shelter in place" OR "travel warning")' },
-  { id: "salud", dominio: "sanitario", S: 4, titulo: "Brotes y emergencias sanitarias",
+  { id: "salud", gn: 'brote OR epidemia OR "emergencia sanitaria" OR outbreak OR "health emergency"', dominio: "sanitario", S: 4, titulo: "Brotes y emergencias sanitarias",
     q: '(outbreak OR epidemic OR pandemic OR "health emergency") (virus OR disease)' }
 ];
 
@@ -203,6 +203,14 @@ function levelFromCount(nDom, nCountries, official) {
   return "rumor";
 }
 
+function gnToArt(it) {
+  let host = ""; try { host = new URL(it.sourceUrl || it.url).hostname.replace(/^www\./, ""); } catch {}
+  const tld = host.split(".").pop();
+  const country = { es: "Spain", fr: "France", de: "Germany", it: "Italy", uk: "United Kingdom", pt: "Portugal", mx: "Mexico", ar: "Argentina" }[tld] || "";
+  const d = new Date(it.date); const seendate = isNaN(d) ? "" : d.toISOString().replace(/[-:]/g, "").replace(/\.\d+/, "");
+  const title = (it.title || "").replace(/\s+-\s+[^-]+$/, "");
+  return { title, url: it.url, domain: host || it.source, sourcecountry: country, seendate };
+}
 async function scanGdelt(prevCounts) {
   const out = [], rum = [];
   let i = 0;
@@ -213,16 +221,16 @@ async function scanGdelt(prevCounts) {
     const url = "https://api.gdeltproject.org/api/v2/doc/doc?query=" + encodeURIComponent(th.q) +
       "&mode=artlist&maxrecords=120&format=json&timespan=24h&sort=datedesc";
     try {
-      let data, tries = 0;
-      for (;;) {
-        try { data = await pget(url, true, 30000); break; }
-        catch (e) {
-          const m = String(e.message || e);
-          if (tries >= 2 || !/429|abort/i.test(m)) throw e;
-          tries++;
-          setSource("gdelt-" + th.id, "GDELT · " + th.titulo, "wait", `GDELT saturado, reintento ${tries}/2…`);
-          await sleep(12000 * tries);
-        }
+      let data, via = "GDELT";
+      try { data = await pget(url, true, 20000); }
+      catch (e) {
+        // GDELT saturado o lento: plan B con Google Noticias (español + inglés)
+        setSource("gdelt-" + th.id, "GDELT · " + th.titulo, "wait", "GDELT saturado: probando Google Noticias…");
+        const q = "(" + (th.gn || th.q) + ") when:1d";
+        const res = await Promise.allSettled([googleNews(q, "es"), googleNews(q, "en")]);
+        const items = res.flatMap((r) => r.status === "fulfilled" ? r.value : []);
+        if (!items.length) throw new Error("GDELT y Google Noticias sin respuesta (" + String(e.message || e).slice(0, 40) + ")");
+        data = { articles: items.map(gnToArt) }; via = "Google Noticias";
       }
       const arts = Array.isArray(data.articles) ? data.articles : [];
       // agrupar por lugar
@@ -256,7 +264,7 @@ async function scanGdelt(prevCounts) {
         if (nivel === "rumor" || (nivel === "fuente_unica" && S >= 6)) { if (S >= 5) rum.push(ev); }
         else out.push(ev);
       }
-      setSource("gdelt-" + th.id, "GDELT · " + th.titulo, "ok", `${arts.length} artículos`);
+      setSource("gdelt-" + th.id, "GDELT · " + th.titulo, "ok", `${arts.length} artículos` + (via === "GDELT" ? "" : " (vía Google Noticias)"));
     } catch (e) {
       setSource("gdelt-" + th.id, "GDELT · " + th.titulo, "err", String(e.message || e));
     }
