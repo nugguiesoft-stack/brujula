@@ -1,4 +1,4 @@
-const VERSION = "7 nov 2026 · 22:45";
+const VERSION = "7 nov 2026 · 22:55";
 /* Brújula de Emergencia — se ejecuta entero en el navegador.
    Capa del analista: datos/analisis.json (revisado a mano).
    Capa automática: GDELT, USGS, NOAA y Polymarket, consultados al abrir la página. */
@@ -418,7 +418,9 @@ async function scanGrupo(g) {
 }
 
 function rssItems(xml) {
-  const doc = new DOMParser().parseFromString(xml, "text/xml");
+  let doc = new DOMParser().parseFromString(xml, "text/xml");
+  // Si el XML viene con algún defecto, se reintenta en modo tolerante (HTML)
+  if (doc.querySelector("parsererror") || !doc.querySelector("item, entry")) doc = new DOMParser().parseFromString(xml, "text/html");
   return [...doc.querySelectorAll("item, entry")].map((it) => ({
     title: it.querySelector("title")?.textContent?.trim() || "",
     desc: (it.querySelector("description, summary, content")?.textContent || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim(),
@@ -451,7 +453,9 @@ async function scanOficiales() {
       return [out, `${its.length} avisos; ${out.length} naranja/rojo relevantes`];
     }],
     ["gdacs", "GDACS · Desastres (ONU/UE)", async () => {
-      const its = rssItems(await pget("https://www.gdacs.org/xml/rss.xml", false, 20000));
+      const raw = await pget("https://www.gdacs.org/xml/rss.xml", false, 20000);
+      const its = rssItems(raw);
+      if (!its.length) throw new Error("Respuesta sin sucesos: " + raw.replace(/\s+/g, " ").slice(0, 50));
       const out = its.filter((it) => /^(red|orange)/i.test(it.title) && reciente(it.date, 96))
         .map((it) => evOficial("gdacs", "GDACS", it.title, it.desc, it.url, /^red/i.test(it.title) ? 5 : 3, "natural", it.date));
       return [out, `${its.length} sucesos; ${out.length} naranja/rojo`];
@@ -496,9 +500,8 @@ const PRENSA = [
     ["20minutos", "https://www.20minutos.es/rss/"]
   ] },
   { id: "pd-ast", titulo: "Prensa asturiana (directo)", local: true, feeds: [
-    ["La Nueva España", "https://www.lne.es/rss/section/1"],
-    ["El Comercio", "https://www.elcomercio.es/rss/2.0/portada"],
-    ["La Nueva España · Asturias", "https://www.lne.es/rss/section/4"]
+    ["La Nueva España", "auto:https://www.lne.es/"],
+    ["El Comercio", "https://www.elcomercio.es/rss/2.0/portada"]
   ] },
   { id: "pd-int", titulo: "Prensa internacional (directo)", feeds: [
     ["BBC Mundo (inglés)", "https://feeds.bbci.co.uk/news/world/rss.xml"],
@@ -512,10 +515,29 @@ const PRENSA = [
     ["Gobierno británico · Avisos de viaje", "https://www.gov.uk/foreign-travel-advice.atom"]
   ] }
 ];
+
+/* Busca el canal RSS de una web leyendo su portada (<link rel="alternate" type="application/rss+xml">) y lo recuerda. */
+async function descubrirFeed(web) {
+  const mem = store.get("brujula.feeds", {});
+  if (mem[web]) return mem[web];
+  const html = await pget(web, false, 20000);
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  const links = [...doc.querySelectorAll('link[type*="rss"], link[type*="atom"], a[href*="rss"]')].map((l) => l.getAttribute("href")).filter(Boolean);
+  const cand = [...links.map((h) => new URL(h, web).href), web + "rss", web + "elementosInt/rss/1", web + "rss/section/1"];
+  for (const u of cand) {
+    try { const its = rssItems(await pget(u, false, 15000)); if (its.length) { mem[web] = u; store.set("brujula.feeds", mem); return u; } } catch {}
+  }
+  throw new Error("no se encontró su canal RSS");
+}
 async function scanPrensaDirecta(g) {
   const sid = "pd-" + g.id;
   setSource(sid, g.titulo, "wait", "Consultando…");
-  const res = await Promise.allSettled(g.feeds.map(async ([n, u]) => rssItems(await pget(u, false, 20000)).map((it) => ({ ...it, medio: n }))));
+  const res = await Promise.allSettled(g.feeds.map(async ([n, u]) => {
+    if (u.startsWith("auto:")) u = await descubrirFeed(u.slice(5));
+    const its = rssItems(await pget(u, false, 20000));
+    if (!its.length) throw new Error("sin noticias");
+    return its.map((it) => ({ ...it, medio: n }));
+  }));
   const okN = res.filter((r) => r.status === "fulfilled").length;
   const fallos = g.feeds.filter((f, i) => res[i].status !== "fulfilled").map((f) => f[0]);
   const items = res.flatMap((r) => r.status === "fulfilled" ? r.value : []).filter((it) => !it.date || reciente(it.date, 24));
