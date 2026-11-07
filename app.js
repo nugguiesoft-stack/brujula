@@ -1,3 +1,4 @@
+const VERSION = "7 nov 2026 · 02:15";
 /* Brújula de Emergencia — se ejecuta entero en el navegador.
    Capa del analista: datos/analisis.json (revisado a mano).
    Capa automática: GDELT, USGS, NOAA y Polymarket, consultados al abrir la página. */
@@ -787,6 +788,7 @@ function renderSources() {
     box.append(h("div", { class: "st " + v.state }, h("i"), h("span", null, v.name), h("span", { class: "small muted" }, v.state === "err" ? "Error: " + v.msg : v.msg)));
   }
   if (!box.children.length) box.append(h("p", { class: "empty" }, "Todavía no se ha consultado ninguna fuente."));
+  box.append(h("p", { class: "small muted" }, "Versión de la web: " + VERSION));
   const cat = $("sources");
   if (!cat.children.length && ST.ana?.fuentes) for (const g of ST.ana.fuentes.grupos || []) cat.append(h("div", { class: "src-group" }, h("h3", null, g.nombre),
     h("div", { class: "src-list" }, ...g.items.map((it) => { const u = safeUrl(it.url); return h("div", { class: "src" }, u ? h("a", { href: u, target: "_blank", rel: "noopener" }, h("b", null, it.n)) : h("b", null, it.n), h("span", { class: "small" }, it.uso), h("span", { class: "small muted" }, it.acceso)); }))));
