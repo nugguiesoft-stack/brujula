@@ -1,4 +1,4 @@
-const VERSION = "7 nov 2026 · 23:10";
+const VERSION = "9 nov 2026 · 00:50";
 /* Brújula de Emergencia — se ejecuta entero en el navegador.
    Capa del analista: datos/analisis.json (revisado a mano).
    Capa automática: GDELT, USGS, NOAA y Polymarket, consultados al abrir la página. */
@@ -593,6 +593,31 @@ async function readTelegram(handle) {
 
 /* ===================== Fuentes nuevas (estudio de herramientas similares) ===================== */
 /* Sismos cercanos (EMSC, centro sismológico euromediterráneo): completa a USGS con terremotos pequeños cerca de casa */
+/* Sol: llamaradas de los últimos 7 días (GOES) y probabilidad oficial de llamaradas M y X (NOAA) */
+async function scanSol() {
+  const id = "sol", nombre = "NOAA · Llamaradas solares";
+  setSource(id, nombre, "wait", "Consultando…");
+  try {
+    const [fl, pr] = await Promise.all([
+      getJSON("https://services.swpc.noaa.gov/json/goes/primary/xray-flares-7-day.json"),
+      getJSON("https://services.swpc.noaa.gov/json/solar_probabilities.json").catch(() => [])]);
+    const flares = (fl || []).map((f) => ({ c: String(f.max_class || ""), t: f.max_time || f.begin_time })).filter((f) => /^[MX]/.test(f.c));
+    const uniq = [...new Map(flares.map((f) => [f.t + f.c, f])).values()];
+    const val = (c) => ({ X: 10, M: 1 }[c[0]] || 0) * (parseFloat(c.slice(1)) || 1);
+    const top = uniq.reduce((a, b) => (!a || val(b.c) > val(a.c) ? b : a), null);
+    const p0 = Array.isArray(pr) ? pr[0] || {} : {};
+    const pM = +p0.m_class_1_day || 0, pX = +p0.x_class_1_day || 0;
+    const dias = []; for (let i = 6; i >= 0; i--) { const d = new Date(Date.now() - i * 864e5).toISOString().slice(0, 10); dias.push([d.slice(8, 10) + "/" + d.slice(5, 7), uniq.filter((f) => (f.t || "").startsWith(d)).length]); }
+    const xs24 = uniq.filter((f) => f.c[0] === "X" && Date.now() - new Date(f.t) < 864e5);
+    const evs = xs24.map((f) => ({ id: "sol-" + f.t, origen: "auto", tema: "sol", titulo: `Llamarada solar ${f.c}`, dominio: "natural", region: "Global", lat: null, lon: null, zona: "mundo",
+      resumen: `Llamarada de clase ${f.c}. Corta la radio de onda corta en la cara iluminada de la Tierra durante minutos u horas. Si lanzó una eyección hacia la Tierra, puede haber tormenta geomagnética en 1–3 días: vigila el nivel G.`,
+      S: val(f.c) >= 50 ? 4 : 3, nivel: "oficial", tendencia: "estable", fecha: f.t,
+      fuentes: [{ n: "NOAA SWPC – flujo de rayos X", url: "https://www.swpc.noaa.gov/products/goes-x-ray-flux" }], fiabilidad: "Medida del satélite GOES (NOAA)." }));
+    ST.auto = [...ST.auto.filter((x) => x.tema !== "sol"), ...evs];
+    sens("sol", { m: uniq.filter((f) => f.c[0] === "M").length, x: uniq.filter((f) => f.c[0] === "X").length, top: top?.c || null, pM, pX, dias });
+    setSource(id, nombre, "ok", `${uniq.length} llamaradas M/X en 7 días; mayor ${top?.c || "–"}; prob. X mañana ${pX} %`);
+  } catch (e) { setSource(id, nombre, "err", String(e.message || e).slice(0, 80)); }
+}
 async function scanEMSC() {
   setSource("emsc", "EMSC · Sismos cerca de Asturias", "wait", "Consultando…");
   try {
@@ -744,7 +769,7 @@ function analizarCruce() {
 /* ===================== Panel de sensores (resumen gráfico) ===================== */
 function stitle(t) { const e = s("title"); e.textContent = t; return e; }
 function sens(id, data) { ST.sens = ST.sens || {}; ST.sens[id] = { ...data, t: Date.now() }; renderSensores(); }
-const SENS_METRICA = { usgs: (d) => d.n, emsc: (d) => d.n, noaa: (d) => d.g, ree: (d) => Math.round(d.ratio * 100), ioda: (d) => d.n, incibe: (d) => d.n, ucrania: (d) => d.n, aemet: (d) => d.n, gdacs: (d) => d.rel };
+const SENS_METRICA = { sol: (d) => d.m + 10 * d.x, usgs: (d) => d.n, emsc: (d) => d.n, noaa: (d) => d.g, ree: (d) => Math.round(d.ratio * 100), ioda: (d) => d.n, incibe: (d) => d.n, ucrania: (d) => d.n, aemet: (d) => d.n, gdacs: (d) => d.rel };
 function guardarHistSensores() {
   const hist = store.get("brujula.senshist", {});
   for (const [k, f] of Object.entries(SENS_METRICA)) if (ST.sens?.[k]) hist[k] = [...(hist[k] || []), { t: Date.now(), v: f(ST.sens[k]) }].slice(-30);
@@ -794,6 +819,11 @@ function renderSensores() {
   if (S.ioda) out.push(tile("Cortes de internet (24 h)", S.ioda.n, "país(es)", S.ioda.cerca ? "alert" : "ok", S.ioda.cerca ? "Incluye España o países vecinos." : "Ninguno en España ni vecinos.", S.ioda.paises?.length ? h("div", { class: "chips" }, ...S.ioda.paises.map((x) => h("span", { class: "chip" }, x))) : null, "ioda"));
   if (S.incibe) out.push(tile("Ciberseguridad (INCIBE, 48 h)", S.incibe.n, "avisos", S.incibe.crit ? "watch" : "ok", `${S.incibe.crit} crítico(s).`, S.incibe.ult?.length ? h("ul", { class: "mini" }, ...S.incibe.ult.map((x) => h("li", null, safeUrl(x.u) ? h("a", { href: safeUrl(x.u), target: "_blank", rel: "noopener" }, x.t) : x.t))) : null, "incibe"));
   if (S.ucrania) out.push(tile("Ucrania · alertas aéreas", S.ucrania.n, "zona(s) ahora", S.ucrania.n >= 15 ? "alert" : S.ucrania.n >= 8 ? "watch" : "ok", S.ucrania.n >= 15 ? "Alerta casi en todo el país: posible ataque masivo." : "Las alertas son habituales; solo cuentan si son masivas.", null, "ucrania"));
+  if (S.sol) { const mx = Math.max(1, ...S.sol.dias.map((d) => d[1]));
+    out.push(tile("Llamaradas solares (7 días)", `${S.sol.m} M · ${S.sol.x} X`, "", S.sol.pX >= 25 || S.sol.x ? "watch" : "ok",
+      `Mayor: ${S.sol.top || "ninguna M"}. Probabilidad oficial para mañana: M ${S.sol.pM} % · X ${S.sol.pX} %. Una llamarada solo afecta a la radio; lo que cuenta para la red eléctrica es el nivel G.`,
+      h("div", { class: "hbars", role: "img", "aria-label": "Llamaradas M o X por día: " + S.sol.dias.map(([d, n]) => `${d}: ${n}`).join(", ") },
+        ...S.sol.dias.map(([d, n]) => h("div", { class: "hbar", title: `${d}: ${n} llamaradas M/X` }, h("span", { class: "small muted" }, d), h("div", { class: "hbar-t" }, h("i", { style: `width:${n / mx * 100}%` })), h("span", { class: "small mono" }, n)))), "sol")); }
   if (S.noaa) out.push(tile("Tormenta solar (NOAA)", "G" + S.noaa.g, "escala 0–5", S.noaa.g >= 4 ? "alert" : S.noaa.g >= 3 ? "watch" : "ok", S.noaa.g >= 4 ? "Puede afectar a redes eléctricas y GPS." : "Sin riesgo para la red eléctrica.", null, "noaa"));
   if (S.aemet) out.push(tile("Avisos AEMET", S.aemet.n, "avisos en España", S.aemet.rel ? "watch" : "ok", S.aemet.rel ? `${S.aemet.rel} naranja/rojo relevantes.` : "Ninguno naranja o rojo en Asturias ni rojo en España.", null, "aemet"));
   if (S.gdacs) out.push(tile("Desastres (GDACS)", S.gdacs.rel, "naranja/rojo", S.gdacs.rel ? "watch" : "ok", `${S.gdacs.n} sucesos vigilados en el mundo.`, null, "gdacs"));
@@ -818,7 +848,7 @@ async function scan(force) {
   setProgress(0.02);
   await Promise.all([scanUSGS(), scanNOAA(), scanPolymarket(), scanWatched(), scanUcrania()]);
   recheckRumors();
-  await Promise.all([scanGdelt(prev), scanPrensaYOrganismos(), scanEMSC(), scanREE(), scanIODA(), scanINCIBE()]);
+  await Promise.all([scanGdelt(prev), scanPrensaYOrganismos(), scanEMSC(), scanREE(), scanIODA(), scanINCIBE(), scanSol()]);
   analizarCruce();
   store.set("brujula.prev", prev);
   ST.scanAt = new Date(); ST.scanning = false; $("rescan").disabled = false; setProgress(1);
@@ -1045,7 +1075,7 @@ function renderLog() {
 }
 function renderSources() {
   const box = $("srcstatus"); box.replaceChildren();
-  const base = ["usgs", "emsc", "noaa", "ree", "ioda", "incibe", "poly", "ucrania", "of-aemet", "of-gdacs", "of-usstate", "of-alemania", ...PRENSA.map((g) => "pd-" + g.id), ...GRUPOS.filter((g) => g.tipo !== "medio").map((g) => "grp-" + g.id), "vigiladas", ...THEMES.map((t) => "gdelt-" + t.id)];
+  const base = ["usgs", "emsc", "noaa", "sol", "ree", "ioda", "incibe", "poly", "ucrania", "of-aemet", "of-gdacs", "of-usstate", "of-alemania", ...PRENSA.map((g) => "pd-" + g.id), ...GRUPOS.filter((g) => g.tipo !== "medio").map((g) => "grp-" + g.id), "vigiladas", ...THEMES.map((t) => "gdelt-" + t.id)];
   const order = [...base, ...Object.keys(ST.sources).filter((k) => !base.includes(k))];
   for (const k of order) {
     const v = ST.sources[k]; if (!v) continue;

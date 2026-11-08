@@ -1,6 +1,6 @@
 {
  "estado": {
-  "actualizado": "2026-11-07T21:40:00+01:00",
+  "actualizado": "2026-11-09T00:45:00+01:00",
   "lugar": "Asturias (España)",
   "resumen": "Sin amenaza directa para Asturias. Lo que más pesa es Irán: Trump confirmó el 7 nov un «ataque menor» que destruyó un sistema antiaéreo en Qeshm (Ormuz), el segundo en una semana, y dice que decidirá «pronto» si vuelve a los grandes bombardeos, aunque también habla de avances con Irán vía Catar. Irán advierte que cualquier activo de EE. UU. es objetivo, y un diputado amenazó con misiles contra Europa si se usan bases europeas; España no permite usar Rota y Morón. El petróleo bajó tras las elecciones de EE. UU. pero sigue cerca de 95 $. En España: huelga general el miércoles 11-N y elecciones generales el 29-N.",
   "notas": [
@@ -1009,6 +1009,22 @@
   "descartadas": []
  },
  "verificaciones": [
+  {
+   "cuenta": "Publicación en X sobre el Sol (8 nov, 17:16, 341 000 visualizaciones)",
+   "dice": "«URGENTE»: una llamarada solar de nivel X podría ser inminente; el grupo de manchas 4566 lleva 6 llamaradas M y «está a punto de estallar».",
+   "veredicto": "parcial",
+   "explica": "Las llamaradas M son reales: la propia gráfica del satélite GOES que adjunta muestra varias (M3.6, M2.0, M1.7…). Que venga una X es la opinión del autor («si me lo preguntas»), no una previsión oficial. Aunque llegase, una llamarada X solo corta durante minutos la radio de onda corta en la cara iluminada de la Tierra; lo que podría afectar a la red eléctrica es una gran tormenta geomagnética (nivel G4–G5), y la Brújula ya la vigila con la NOAA.",
+   "fuentes": [
+    {
+     "n": "SpaceWeatherLive – región AR4566",
+     "url": "https://www.spaceweatherlive.com/en/solar-activity/region/14566.html"
+    },
+    {
+     "n": "NOAA SWPC – flujo de rayos X GOES",
+     "url": "https://www.swpc.noaa.gov/products/goes-x-ray-flux"
+    }
+   ]
+  },
   {
    "cuenta": "Dr Charlie Ward (@Drcharlie…)",
    "dice": "«MOMENTS AGO»: Trump publica que la mayoría de aliados de la OTAN no quieren implicarse en la operación contra Irán.",
