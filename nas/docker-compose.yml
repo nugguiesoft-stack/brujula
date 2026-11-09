@@ -1,0 +1,38 @@
+# Brújula · agente del NAS (ASUSTOR / cualquier Docker)
+# Pega esto en Portainer → Stacks → Add stack. Cambia SOLO lo marcado con 👉.
+services:
+  brujula:
+    image: node:22-alpine
+    container_name: brujula
+    restart: unless-stopped
+    mem_limit: 160m            # techo de memoria: nunca le quitará RAM al NAS
+    cpus: 0.5                  # como mucho medio núcleo
+    environment:
+      TZ: Europe/Madrid
+      NTFY_TOPIC: "brujula-CAMBIA-ESTO-por-algo-secreto"   # 👉 el mismo tema que pongas en la app ntfy del móvil
+      # NTFY_SERVER: https://ntfy.sh                       # (por defecto) o tu propio servidor ntfy
+      # TELEGRAM_TOKEN: ""                                 # opcional: bot de Telegram como segundo canal
+      # TELEGRAM_CHAT: ""
+      CASA_LAT: "43.36"                                    # 👉 tu casa (aprox.), para distancias de terremotos
+      CASA_LON: "-5.85"
+      SILENCIO: "23-08"                                    # de noche solo suenan emergencias
+      RESUMEN_DIARIO: "08:30"
+      # TELEGRAM_CANALES: "canal1,canal2"                  # canales públicos extra a vigilar
+      # GIST_ID: ""  GITHUB_TOKEN: ""                      # opcional: la web muestra lo que ve el NAS
+      # HEALTHCHECK_URL: ""                                # opcional: te avisa si el NAS deja de funcionar
+      # DESACTIVAR: "aereo,militar"                        # módulos que no quieras usar
+      REPO: nugguiesoft-stack/brujula
+    volumes:
+      - /volume1/Docker/brujula:/data                      # 👉 carpeta del NAS donde guarda memoria y código
+    # Al arrancar: descarga la última versión del código desde GitHub (si no hay red, usa la copia guardada)
+    command:
+      - sh
+      - -c
+      - |
+        node -e 'fetch("https://codeload.github.com/"+process.env.REPO+"/tar.gz/refs/heads/main").then(r=>{if(!r.ok)throw new Error("HTTP "+r.status);return r.arrayBuffer()}).then(b=>require("fs").writeFileSync("/tmp/c.tgz",Buffer.from(b)))' \
+          && mkdir -p /tmp/c && tar xzf /tmp/c.tgz -C /tmp/c --strip-components=1 && rm -rf /data/app && cp -r /tmp/c/nas /data/app && rm -rf /tmp/c /tmp/c.tgz \
+          || echo "Sin descarga: uso la copia guardada"
+        exec node --max-old-space-size=64 /data/app/index.js
+    logging:
+      driver: json-file
+      options: { max-size: "1m", max-file: "2" }

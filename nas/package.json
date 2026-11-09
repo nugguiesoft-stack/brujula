@@ -1,0 +1,10 @@
+{
+  "name": "brujula-nas",
+  "version": "1.0.0",
+  "description": "Brújula de Emergencia: vigilancia continua y alertas al móvil desde un NAS",
+  "type": "module",
+  "main": "index.js",
+  "engines": { "node": ">=20" },
+  "scripts": { "start": "node --max-old-space-size=48 index.js", "prueba": "node index.js --prueba" },
+  "license": "MIT"
+}

@@ -57,6 +57,10 @@
     <p class="small muted">Medidas técnicas que la Brújula lee en cada escaneo. Solo cuentan para los índices cuando algo sale de lo normal.</p>
     <div class="sensores" id="sensores"><p class="empty">Pulsa «Escanear ahora» para ver los sensores.</p></div>
   </section>
+  <section class="panel" aria-labelledby="h-nas" style="display:grid;gap:12px" id="nas-panel" hidden>
+    <h2 id="h-nas">Vigilante del NAS</h2>
+    <div id="nas"></div>
+  </section>
   <section class="panel" style="display:grid;gap:14px" aria-labelledby="h-res">
     <h2 id="h-res">Análisis</h2>
     <p id="takeaway" class="takeaway">—</p>
@@ -140,6 +144,8 @@
       <label for="proxy-in" class="small">Dirección del intermediario de Cloudflare</label>
       <div class="row"><input id="proxy-in" type="url" placeholder="https://brujula-proxy.tu-cuenta.workers.dev" style="flex:1;min-width:200px;font:inherit;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px"><button type="button" id="proxy-save" class="btn-ghost">Guardar</button></div>
       <p id="proxy-msg" class="small muted"></p>
+      <label for="nas-in" class="small">Gist del vigilante del NAS (opcional, ver guía)</label>
+      <div class="row"><input id="nas-in" type="text" placeholder="ID del Gist, p. ej. 3f2a…" style="flex:1;min-width:200px;font:inherit;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px"><button type="button" id="nas-save" class="btn-ghost">Guardar</button></div>
     </div>
     <details>
       <summary>Catálogo de fuentes revisadas</summary>
@@ -169,6 +175,6 @@
   </section>
 </main>
 <script src="land.js"></script>
-<script src="app.js?v=1794180748"></script>
+<script src="app.js?v=1794182874"></script>
 </body>
 </html>

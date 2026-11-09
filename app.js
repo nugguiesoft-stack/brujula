@@ -1,4 +1,4 @@
-const VERSION = "9 nov 2026 · 00:50";
+const VERSION = "9 nov 2026 · 01:30";
 /* Brújula de Emergencia — se ejecuta entero en el navegador.
    Capa del analista: datos/analisis.json (revisado a mano).
    Capa automática: GDELT, USGS, NOAA y Polymarket, consultados al abrir la página. */
@@ -1473,11 +1473,34 @@ let installPrompt = null;
 window.addEventListener("beforeinstallprompt", (ev) => { ev.preventDefault(); installPrompt = ev; const b = $("install"); if (b) b.hidden = false; });
 
 /* ===================== Arranque ===================== */
+// ---------- Vigilante del NAS: lee el estado que el NAS publica en un Gist ----------
+const NIV_NAS = { 4: ["EMERGENCIA", "var(--crit, #d33)"], 3: ["ALERTA", "var(--serious, #e67e22)"], 2: ["AVISO", "var(--warn, #d4a017)"], 1.5: ["SEÑAL TEMPRANA", "var(--muted)"], 1: ["INFO", "var(--muted)"] };
+async function cargarNAS() {
+  const id = store.get("brujula.nas", "").trim(); const panel = $("nas-panel"); if (!id) { panel.hidden = true; return; }
+  panel.hidden = false; const box = $("nas"); box.replaceChildren(h("p", { class: "empty" }, "Leyendo el NAS…"));
+  try {
+    const r = await fetch("https://api.github.com/gists/" + encodeURIComponent(id), { cache: "no-store" }); if (!r.ok) throw new Error("HTTP " + r.status);
+    const g = await r.json(); const f = g.files?.["brujula-nas.json"]; if (!f) throw new Error("el Gist no tiene brujula-nas.json");
+    const e = JSON.parse(f.truncated ? await (await fetch(f.raw_url)).text() : f.content);
+    const min = Math.round((Date.now() - Date.parse(e.generado)) / 60000); const vivo = min < 20;
+    const ok = e.fuentes.filter((x) => x.ok).length;
+    box.replaceChildren(
+      h("p", { class: "small" }, h("strong", { style: `color:${vivo ? "var(--good, #2e8b57)" : "var(--crit, #d33)"}` }, vivo ? "● Activo" : "● Sin noticias del NAS"), ` · actualizado hace ${min} min · v${e.version} · ${ok}/${e.fuentes.length} fuentes · ${e.memoriaMB} MB · índices NAS: Asturias ${num(e.indices.asturias)} · España ${num(e.indices.espana)} · Global ${num(e.indices.global)}`),
+      e.alertas.length ? h("ul", { class: "small", style: "margin:0;padding-left:18px;display:grid;gap:6px" }, e.alertas.slice(0, 10).map((a) => { const n = NIV_NAS[a.nivel] || NIV_NAS[1]; const u = safeUrl(a.url);
+        return h("li", null, h("strong", { style: `color:${n[1]}` }, n[0]), " · ", new Date(a.t).toLocaleString("es-ES", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }), " · ", u ? h("a", { href: u, target: "_blank", rel: "noopener" }, a.titulo) : a.titulo, a.previo ? h("span", { class: "muted" }, " (ya estaba en curso al arrancar)") : null); }))
+        : h("p", { class: "small muted" }, "Sin avisos recientes."),
+      h("details", null, h("summary", { class: "small" }, "Estado de cada fuente del NAS"), h("ul", { class: "small", style: "margin:6px 0 0;padding-left:18px" }, e.fuentes.map((x) => h("li", null, x.ok ? "✓ " : "✗ ", h("strong", null, x.nombre), " — ", x.msg || ""))))
+    );
+  } catch (err) { box.replaceChildren(h("p", { class: "small" }, "No se pudo leer el NAS: " + err.message)); }
+}
 async function init() {
   $("rescan").addEventListener("click", () => scan(true));
   $("post-go").addEventListener("click", async () => { const b = $("post-go"); b.disabled = true; b.textContent = "Analizando…"; await analyzeInput($("post-in").value); $("post-in").value = ""; b.disabled = false; b.textContent = "Analizar"; });
   $("proxy-in").value = store.get("brujula.proxy", "");
   $("proxy-save").addEventListener("click", () => { const v = $("proxy-in").value.trim(); store.set("brujula.proxy", v); $("proxy-msg").textContent = v ? "Guardado. Pulsa «Escanear ahora»." : "Borrado."; });
+  $("nas-in").value = store.get("brujula.nas", "");
+  $("nas-save").addEventListener("click", () => { store.set("brujula.nas", $("nas-in").value.trim()); cargarNAS(); });
+  cargarNAS(); setInterval(cargarNAS, 5 * 60000);
   $("install").addEventListener("click", async () => { if (!installPrompt) return; installPrompt.prompt(); installPrompt = null; $("install").hidden = true; });
   if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
   try { ST.ana = await getJSON("datos/analisis.json?v=" + Math.floor(Date.now() / 600000)); }
