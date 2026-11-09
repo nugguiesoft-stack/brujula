@@ -1,6 +1,6 @@
 {
  "estado": {
-  "actualizado": "2026-11-09T03:40:00+01:00",
+  "actualizado": "2026-11-09T03:50:00+01:00",
   "lugar": "Asturias (España)",
   "resumen": "Sin amenaza directa para Asturias. Lo que más pesa sigue siendo Irán. EE. UU. hace ataques «menores» en Qeshm (Ormuz) y la decisión sobre una guerra a gran escala sigue abierta. El 8 nov Rubio dijo que las conversaciones están estancadas. La Guardia Revolucionaria iraní dice que ya no limita sus misiles a 2.000 km, aunque no se le conoce un misil capaz de llegar a España. Ucrania: conversaciones con Rusia en Abu Dabi el 10 y 11 nov. En España: huelga general el miércoles 11-N y elecciones generales el 29-N.",
   "notas": [
@@ -712,7 +712,7 @@
   {
    "id": "iran",
    "titulo": "Guerra de Irán → Ormuz → energía en España",
-   "estado": "Ataques limitados de EE. UU.; decisión sobre guerra mayor pendiente",
+   "estado": "Ataques limitados de EE. UU.; negociaciones estancadas; decisión sobre una guerra mayor pendiente",
    "pasos": [
     {
      "fecha": "2026-02-28",
@@ -748,17 +748,59 @@
      "fecha": "2026-11-07",
      "texto": "Trump anuncia un «ataque menor» que destruye un antiaéreo en Qeshm y dice que decidirá pronto. Catar propone un plan de 48 h.",
      "nivel": "oficial"
+    },
+    {
+     "fecha": "2026-11-08",
+     "texto": "La Guardia Revolucionaria dice que ya no limita sus misiles a 2.000 km y que fabrica misiles bajo tierra. No se le conoce un misil de mayor alcance.",
+     "nivel": "oficial"
+    },
+    {
+     "fecha": "2026-11-08",
+     "texto": "Rubio: no hay un acuerdo cerca y las exigencias de Irán son «inaceptables». Irán dice que otros dos petroleros chocaron con minas en Ormuz.",
+     "nivel": "oficial"
     }
    ],
    "siguiente": [
     "Si EE. UU. reanuda los ataques: el Brent volvería a subir y, con él, el gasóleo y los precios en España",
-    "Si avanza la propuesta vía Catar: posible reapertura de Ormuz y bajada de precios"
+    "Si Irán prueba un misil de más de 2.000 km: aumentaría la preocupación en Europa (España sigue fuera del alcance conocido)",
+    "Si las conversaciones se reactivan vía Catar u Omán: posible reapertura de Ormuz y bajada de precios"
+   ]
+  },
+  {
+   "id": "ucrania-paz",
+   "titulo": "Ucrania: negociaciones de paz",
+   "estado": "Nueva ronda en Abu Dabi el 10 y 11 nov",
+   "pasos": [
+    {
+     "fecha": "2026-01/02",
+     "texto": "Tres rondas de negociación entre Ucrania, Rusia y EE. UU. (Abu Dabi y Ginebra), sin acuerdo.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-02-28",
+     "texto": "Las conversaciones se paran al empezar la guerra de Irán.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-10-21",
+     "texto": "Putin recibe al enviado de EE. UU., Witkoff, en San Petersburgo.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-11-02",
+     "texto": "Witkoff anuncia una nueva ronda en Abu Dabi el 10 y 11 nov. Mientras, Rusia sigue atacando la red eléctrica ucraniana.",
+     "nivel": "oficial"
+    }
+   ],
+   "siguiente": [
+    "Si hay acuerdo de alto el fuego energético: menos riesgo de escalada en Europa",
+    "Si fracasa: más ataques a infraestructuras y más tensión con la OTAN"
    ]
   },
   {
    "id": "baltico",
    "titulo": "Rusia–OTAN en el Báltico",
-   "estado": "Tensión estable",
+   "estado": "Tensión estable; sin novedades relevantes desde el 5 nov",
    "pasos": [
     {
      "fecha": "2026-09-30",
@@ -784,7 +826,7 @@
   {
    "id": "aviacion",
    "titulo": "Amenazas híbridas en la aviación europea",
-   "estado": "En aumento",
+   "estado": "En aumento; la UE coordina la respuesta",
    "pasos": [
     {
      "fecha": "2026-09-30",
@@ -810,10 +852,20 @@
      "fecha": "2026-11-05",
      "texto": "La cifra sube a al menos 18 vuelos.",
      "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-11-05",
+     "texto": "Al menos 25 vuelos de 14 países amenazados en un día. La Comisión Europea activa un mecanismo de intercambio de información.",
+     "nivel": "varios_medios"
+    },
+    {
+     "fecha": "2026-11-06",
+     "texto": "Irlanda habla de una «probable campaña coordinada». Más alertas: 11 vuelos de Praga, 4 hacia Madrid y 1 Lisboa–Roma. Todas falsas.",
+     "nivel": "varios_medios"
     }
    ],
    "siguiente": [
-    "Atribución oficial",
+    "Atribución oficial (los gobiernos europeos apuntan a operaciones híbridas de Rusia o Irán, sin confirmar)",
     "Amenazas en aeropuertos del norte de España"
    ]
   }
