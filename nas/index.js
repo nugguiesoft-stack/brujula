@@ -9,6 +9,7 @@ import { clasifica, lugar, zonaDe, ALARMA } from "./lib/clasifica.js";
 import { mem, base, historial, guardar } from "./lib/store.js";
 import { avisar, retenidos, NIVEL } from "./lib/avisar.js";
 import { procesar, indices, vigilarIndices, top } from "./lib/motor.js";
+import { escuchar, apagado, silenciado, temaControl } from "./lib/control.js";
 
 const INICIO = Date.now();
 const ESTADO = {};                      // estado por módulo: ok/err, mensaje, última vez
@@ -48,7 +49,7 @@ async function ejecutar(m) {
 // Módulos continuos (Wikipedia en directo): conexión permanente aparte
 for (const m of MODS.filter((x) => x.continuo)) {
   const E = (ESTADO[m.id] = { nombre: m.nombre, ok: null, msg: "conectando", ultima: Date.now(), desde: Date.now() });
-  m.run({ ...ctxBase, estado: (ok, msg) => Object.assign(E, { ok: ok === "ok", msg, ultima: Date.now() }), procesar: (s) => procesar(s.map((x) => ({ ...x, modulo: m.id }))) })
+  m.run({ ...ctxBase, estado: (ok, msg) => Object.assign(E, { ok: ok === "ok", msg, ultima: Date.now() }), procesar: (s) => (apagado() ? 0 : procesar(s.map((x) => ({ ...x, modulo: m.id })))) })
     .catch((e) => Object.assign(E, { ok: false, msg: e.message }));
 }
 
@@ -56,7 +57,7 @@ for (const m of MODS.filter((x) => x.continuo)) {
 function estadoJSON() {
   const mu = process.memoryUsage();
   return {
-    version: CFG.version, generado: new Date().toISOString(), arranque: new Date(INICIO).toISOString(),
+    version: CFG.version, apagado: apagado(), silencio: silenciado(), generado: new Date().toISOString(), arranque: new Date(INICIO).toISOString(),
     memoriaMB: Math.round(mu.rss / 1048576), indices: indices(), top: top(6),
     alertas: mem.alertas.filter((a) => !a.sistema).slice(-25).reverse(),
     temas: Object.values(mem.temas).filter((t) => Date.now() - t.ultimo < 24 * 36e5 && t.nivel >= 1.5).sort((a, b) => b.ultimo - a.ultimo).slice(0, 20)
@@ -89,6 +90,7 @@ async function autodiagnostico() {
   const I = indices();
   const texto = [`Fuentes funcionando: ${ok.length}/${per.length}.`, mal.length ? "Fallan: " + mal.map((m) => `${m.nombre} (${ESTADO[m.id].msg.slice(0, 60)})`).join("; ") + "." : "Todas responden.",
     `Índices ahora: Asturias ${I.asturias} · España ${I.espana} · Global ${I.global}.`, `Memoria usada: ${Math.round(process.memoryUsage().rss / 1048576)} MB.`,
+    temaControl() ? "Mando a distancia: usa los botones de este aviso o escribe «apaga», «enciende», «silencio» o «estado» en el tema " + temaControl() + "." : "",
     frio ? "Primer arranque: lo que ya estaba pasando no te lo aviso (salvo emergencias); solo lo nuevo a partir de ahora." : ""].filter(Boolean).join("\n");
   log(texto.replace(/\n/g, " | "));
   await avisar({ nivel: 1, forzar: true, sistema: true, titulo: `Brújula NAS ${CFG.version} en marcha`, texto });
@@ -123,14 +125,27 @@ async function actualizar() {
   } catch (e) { log("Comprobar versión:", e.message); }
 }
 
+// --- Mando a distancia (tema de control de ntfy) ---
+function lineaEstado() {
+  const ok = Object.values(ESTADO).filter((e) => e.ok).length, I = indices();
+  return [apagado() ? "Estado: ⏸ APAGADO" : silenciado() ? "Estado: 🔕 vigilando en silencio (solo emergencias)" : "Estado: ▶ vigilando",
+    `Fuentes OK: ${ok}/${Object.keys(ESTADO).length} · Memoria ${Math.round(process.memoryUsage().rss / 1048576)} MB`,
+    `Índices: Asturias ${I.asturias} · España ${I.espana} · Global ${I.global}`].join("\n");
+}
+escuchar(async (r) => avisar({ nivel: 1, forzar: true, sistema: true, titulo: "Brújula NAS", texto: (r ? r + "\n\n" : "") + lineaEstado() }));
+if (temaControl()) log("Mando a distancia: escribe en el tema «" + temaControl() + "»");
+
 // --- Bucle principal ---
 process.on("unhandledRejection", (e) => log("Error no controlado:", e?.message || e));
 process.on("SIGTERM", () => { guardar(); setTimeout(() => process.exit(0), 2500); });
 await autodiagnostico(); await vigilarIndices(); await publicar();
 if (process.argv.includes("--una-vez")) { await sleep(2500); console.log(JSON.stringify(estadoJSON(), null, 1).slice(0, 4000)); process.exit(0); }
-let ultimaAct = Date.now(), ultimaPub = Date.now();
+let ultimaAct = Date.now(), ultimaPub = Date.now(), estabaApagado = apagado();
 for (;;) {
   await sleep(30000);
+  if (estabaApagado && !apagado()) await avisar({ nivel: 1, forzar: true, sistema: true, titulo: "Brújula NAS: vuelvo a vigilar", texto: lineaEstado() });
+  estabaApagado = apagado();
+  if (apagado()) { if (Date.now() - ultimaPub > 60000) { ultimaPub = Date.now(); await publicar(); } continue; }
   const toca = MODS.filter((m) => !m.continuo && Date.now() >= m.prox);
   for (const m of toca) await ejecutar(m);   // de uno en uno: menos memoria y menos ráfagas de red
   if (toca.length) await vigilarIndices();

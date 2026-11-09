@@ -2,6 +2,7 @@
 import { CFG } from "./config.js";
 import { horaLocal, log } from "./util.js";
 import { mem, guardar } from "./store.js";
+import { silenciado, apagado, botones } from "./control.js";
 
 export const NIVEL = {
   4: { n: "EMERGENCIA", p: 5, tags: ["rotating_light"], ico: "🔴" },
@@ -22,7 +23,8 @@ export async function avisar({ nivel = 2, titulo, texto, url, forzar = false, so
   // Primer arranque: lo que ya estaba pasando se anota, pero no suena (salvo emergencias)
   if (soloRegistrar) { mem.alertas.push({ t: Date.now(), nivel, titulo, texto: (texto || "").slice(0, 400), url, previo: true }); guardar(); return false; }
   const ultimaHora = mem.alertas.filter((a) => Date.now() - a.t < 36e5 && a.nivel < 4 && !a.previo && !a.sistema).length;
-  if (!forzar && nivel < 4 && (enSilencio() || ultimaHora >= 8)) { cola.push({ nivel, titulo, texto, url, t: Date.now() }); log("retenido:", titulo); return false; }
+  if (!sistema && apagado()) { log("(apagado) no se avisa:", titulo); return false; }
+  if (!forzar && nivel < 4 && (enSilencio() || silenciado() || ultimaHora >= 8)) { cola.push({ nivel, titulo, texto, url, t: Date.now() }); log("retenido:", titulo); return false; }
   mem.alertas.push({ t: Date.now(), nivel, titulo, texto: (texto || "").slice(0, 400), url, ...(sistema ? { sistema: true } : {}) }); guardar();
   const title = `${N.ico} ${N.n}: ${titulo}`.slice(0, 250);
   log("AVISO", title);
@@ -30,7 +32,7 @@ export async function avisar({ nivel = 2, titulo, texto, url, forzar = false, so
   if (CFG.ntfyTopic) tareas.push(fetch(CFG.ntfyServer.replace(/\/$/, "") + "/", {
     method: "POST", headers: { "Content-Type": "application/json", ...(CFG.ntfyToken ? { Authorization: "Bearer " + CFG.ntfyToken } : {}) },
     body: JSON.stringify({ topic: CFG.ntfyTopic, title, message: (texto || "").slice(0, 3500), priority: N.p, tags: N.tags, click: url || CFG.web,
-      actions: url ? [{ action: "view", label: "Fuente", url }, { action: "view", label: "Brújula", url: CFG.web }] : [{ action: "view", label: "Brújula", url: CFG.web }] })
+      actions: sistema ? botones() : url ? [{ action: "view", label: "Fuente", url }, { action: "view", label: "Brújula", url: CFG.web }] : [{ action: "view", label: "Brújula", url: CFG.web }] })
   }).then((r) => { if (!r.ok) throw new Error("ntfy HTTP " + r.status); }));
   if (CFG.telegramToken && CFG.telegramChat) tareas.push(fetch(`https://api.telegram.org/bot${CFG.telegramToken}/sendMessage`, {
     method: "POST", headers: { "Content-Type": "application/json" },

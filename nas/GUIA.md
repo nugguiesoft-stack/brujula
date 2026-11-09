@@ -64,6 +64,23 @@ Si no llega, ve a Portainer → **Containers** → `brujula` → **Logs** y mán
 - De 23:00 a 8:00 solo suenan las emergencias. El resto te llega en el resumen de la mañana.
 - Como máximo 8 avisos por hora, para que no te sature si hay un día movido.
 
+## Encender, apagar y silenciar desde el móvil
+
+Los avisos de sistema (arranque, estado y resumen diario) traen botones:
+
+- **⏸ Apagar 2 h**: deja de vigilar durante 2 horas y después vuelve solo. Mientras está apagado **no te avisa de nada, ni de emergencias**.
+- **🔕 Silenciar 8 h**: sigue vigilando, pero solo suenan las EMERGENCIAS. El resto lo encontrarás en el resumen.
+- **▶ Encender** / **🔔 Sonido normal**: vuelve a la normalidad.
+- **Estado**: te responde cómo está y cuántas fuentes funcionan.
+
+También puedes escribir una orden en el tema `TU-TEMA-control` (tu tema seguido de `-control`). Puedes hacerlo, por ejemplo, desde la web de ntfy en el navegador del móvil (`ntfy.sh/TU-TEMA-control`). Las órdenes son:
+
+`apaga` · `apaga 2h` · `apaga 30m` · `enciende` · `silencio` · `silencio 8h` · `normal` · `estado`
+
+Sin tiempo (`apaga`, `silencio`), dura hasta que lo vuelvas a cambiar. El vigilante te confirma cada orden con un aviso.
+
+> El tema de control también hace de contraseña: quien lo conozca podría apagarte el vigilante. No lo compartas.
+
 ## Qué vigila (16 módulos)
 
 | Módulo | Fuente primaria | Cada |
