@@ -1,4 +1,4 @@
-const VERSION = "9 nov 2026 · 01:30";
+const VERSION = "9 nov 2026 · 03:40";
 /* Brújula de Emergencia — se ejecuta entero en el navegador.
    Capa del analista: datos/analisis.json (revisado a mano).
    Capa automática: GDELT, USGS, NOAA y Polymarket, consultados al abrir la página. */

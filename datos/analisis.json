@@ -1,13 +1,13 @@
 {
  "estado": {
-  "actualizado": "2026-11-09T00:45:00+01:00",
+  "actualizado": "2026-11-09T03:40:00+01:00",
   "lugar": "Asturias (España)",
-  "resumen": "Sin amenaza directa para Asturias. Lo que más pesa es Irán: Trump confirmó el 7 nov un «ataque menor» que destruyó un sistema antiaéreo en Qeshm (Ormuz), el segundo en una semana, y dice que decidirá «pronto» si vuelve a los grandes bombardeos, aunque también habla de avances con Irán vía Catar. Irán advierte que cualquier activo de EE. UU. es objetivo, y un diputado amenazó con misiles contra Europa si se usan bases europeas; España no permite usar Rota y Morón. El petróleo bajó tras las elecciones de EE. UU. pero sigue cerca de 95 $. En España: huelga general el miércoles 11-N y elecciones generales el 29-N.",
+  "resumen": "Sin amenaza directa para Asturias. Lo que más pesa sigue siendo Irán. EE. UU. hace ataques «menores» en Qeshm (Ormuz) y la decisión sobre una guerra a gran escala sigue abierta. El 8 nov Rubio dijo que las conversaciones están estancadas. La Guardia Revolucionaria iraní dice que ya no limita sus misiles a 2.000 km, aunque no se le conoce un misil capaz de llegar a España. Ucrania: conversaciones con Rusia en Abu Dabi el 10 y 11 nov. En España: huelga general el miércoles 11-N y elecciones generales el 29-N.",
   "notas": [
-   "Sin avisos naranja o rojo de AEMET para Asturias en el último escaneo.",
-   "El ataque del 7 nov lo anunció Trump; Irán habla de explosiones en Qeshm. No hay cifras de víctimas confirmadas.",
-   "La amenaza de misiles contra Europa es de un diputado iraní, no del Gobierno de Irán.",
-   "La probabilidad del 80 % de reanudación es la opinión de un analista (5 nov), no un dato oficial."
+   "No he podido comprobar los avisos actuales de AEMET para Asturias: la web no estaba accesible desde aquí. La Brújula los lee en cada escaneo.",
+   "La retirada del límite de alcance es una declaración: no hay pruebas de que Irán tenga misiles de más de 2.000 km.",
+   "Algunos funcionarios de EE. UU. citados por Fox mencionaron la luna nueva del 9 nov como posible momento para atacar. Es especulación, no una fecha anunciada.",
+   "La probabilidad del 80 % de reanudación de la guerra es la opinión de un analista (5 nov), no un dato oficial."
   ],
   "metodo": 1
  },
@@ -15,39 +15,72 @@
   {
    "id": "iran-reanudacion",
    "titulo": "Irán: ataques «menores» de EE. UU. y decisión pendiente sobre una guerra a gran escala",
-   "resumen": "El 7 nov Trump anunció un ataque limitado que destruyó un sistema antiaéreo recién instalado en Qeshm, tras los «ataques defensivos» del 2–3 nov. Dice que hay «muchos avances» con Irán y que decidirá pronto si lanza bombardeos mayores. Catar propone un plan de 48 horas que Irán aún no ha aceptado. Sigue habiendo ataques con minas en Ormuz.",
+   "resumen": "Siguen los ataques «menores» de EE. UU. en Qeshm (2–3 y 6–7 nov) y la decisión sobre una guerra a gran escala sigue abierta. El domingo 8 nov Rubio dijo que las conversaciones no avanzan, que las exigencias de Irán son «inaceptables» y que no hay un acuerdo cerca. Según el NYT, miles de efectivos de EE. UU. están listos para reanudar los combates si Trump lo ordena. Irán sigue atacando petroleros en Ormuz: el 8 nov dijo que otros dos chocaron con minas.",
    "dominio": "belico",
    "region": "Oriente Medio",
    "lat": 32.4,
    "lon": 53.7,
    "S": 8,
    "nivel": "oficial",
-   "P": 0.45,
+   "P": 0.5,
    "tendencia": "escala",
    "cadena": "iran",
-   "fecha": "2026-11-07",
+   "fecha": "2026-11-08",
    "fuentes": [
     {
-     "n": "SANA (cita a AP) – ataque limitado, 7 nov",
-     "url": "https://sana.sy/en/international/2356705/"
+     "n": "Jerusalem Post – Rubio: conversaciones estancadas, 9 nov",
+     "url": "http://www.jpost.com/middle-east/iran-news/article-914276"
     },
     {
-     "n": "House of Saud – Trump confirma ataques y plan catarí, 7 nov",
-     "url": "https://houseofsaud.com/trump-qeshm-strikes-mediators-nov7/"
+     "n": "CBS News – directo guerra de Irán, 8 nov",
+     "url": "https://www.cbsnews.com/live-updates/iran-war-trump-us-strait-hormuz-persian-gulf/"
     },
     {
-     "n": "Al Jazeera – explosiones en Qeshm, 3 nov",
-     "url": "https://aljazeera.com/news/2026/11/3/explosions-hit-irans-qeshm-island-as-us-media-report-us-strikes-in-hormuz"
+     "n": "Al Jazeera – Trump confirma ataques en Qeshm, 7 nov",
+     "url": "https://aljazeera.com/news/2026/11/7/trump-confirms-new-us-strikes-on-irans-qeshm-island"
     }
    ],
    "vigilar": [
     "Anuncio de la Casa Blanca o del Pentágono",
     "Avisos de evacuación de embajadas en el Golfo",
-    "Cierre de espacio aéreo en Irán, Irak o el Golfo"
+    "Cierre de espacio aéreo en Irán, Irak o el Golfo",
+    "Reunión del G7 en Francia esta semana"
    ],
-   "fiabilidad": "El ataque del 7 nov lo anunció el propio Trump (AP). El plan catarí y las minas en Ormuz vienen de medios regionales: confirmación parcial.",
+   "fiabilidad": "Los ataques los confirmó Trump y las declaraciones de Rubio son públicas. Lo del NYT viene de fuentes anónimas del Pentágono. Lo de las minas lo afirma la Guardia Revolucionaria y no está verificado.",
    "zona": "oriente",
    "origen": "analista"
+  },
+  {
+   "id": "iran-alcance-misiles",
+   "titulo": "Irán elimina su límite de 2.000 km para misiles balísticos",
+   "resumen": "La Guardia Revolucionaria anunció este fin de semana que ya no respeta el límite de 2.000 km de alcance que se había impuesto. También dice que fabrica misiles y drones en instalaciones subterráneas. No se le conoce ningún misil capaz de superar esa distancia: con 2.000 km llega a Grecia y los Balcanes. Asturias está a más de 4.000 km de Irán.",
+   "dominio": "belico",
+   "region": "Europa / Irán",
+   "lat": 38.0,
+   "lon": 23.7,
+   "zona": "ue",
+   "S": 5,
+   "nivel": "oficial",
+   "tendencia": "escala",
+   "cadena": "iran",
+   "fecha": "2026-11-08",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "Gulf News – Irán levanta el límite de alcance",
+     "url": "https://gulfnews.com/world/mena/middle-east-war-update-qeshm-island-strike-raises-tensions-talks-continue-1.500739148"
+    },
+    {
+     "n": "National Herald – mismo anuncio",
+     "url": "https://www.nationalheraldindia.com/international/iran-lifts-self-imposed-limit-on-missile-ranges-amid-fears-of-renewed-war-gaza-hit-by-heavy-rain"
+    }
+   ],
+   "vigilar": [
+    "Pruebas de misiles de largo alcance",
+    "Lanzamientos hacia Europa o hacia Diego García",
+    "Reacción de la OTAN"
+   ],
+   "fiabilidad": "La declaración es oficial (portavoz de la Guardia Revolucionaria), pero no hay pruebas de que Irán tenga esa capacidad. Por ahora es más un mensaje político que una amenaza inmediata para España."
   },
   {
    "id": "ormuz-drones",
@@ -174,7 +207,7 @@
   {
    "id": "ucrania",
    "titulo": "Guerra en Ucrania y conversaciones de paz",
-   "resumen": "Rusia sigue atacando la red eléctrica: el 6 nov Járkiv y Chernígov se quedaron sin luz, y los combates se concentran en Pokrovsk, Myrnohrad y Kupiansk. Sin avances visibles en las conversaciones de paz.",
+   "resumen": "Rusia sigue atacando la red eléctrica, con cortes programados en Kiev desde mediados de octubre, y Ucrania ataca refinerías rusas. EE. UU. reúne a delegaciones de Ucrania y Rusia en Abu Dabi el 10 y 11 nov, la primera ronda desde febrero. Se hablará de un alto el fuego energético y marítimo, de canje de prisioneros y de los niños ucranianos llevados a Rusia. Merz (Alemania) dice que no ve a Rusia negociando en serio.",
    "dominio": "belico",
    "region": "Ucrania",
    "lat": 48.5,
@@ -184,16 +217,25 @@
    "P": 0.6,
    "tendencia": "estable",
    "cadena": null,
-   "fecha": "2026-11-06",
+   "fecha": "2026-11-08",
    "fuentes": [
     {
-     "n": "France 24 vía Acento – ataques a infraestructura, 6 nov",
-     "url": "https://acento.com.do/france24/rusia-y-ucrania-atacan-mutuamente-infraestructura-esencial-mientras-la-guerra-palpita-en-pokrovsk-9575025.html"
+     "n": "Kyiv Post – conversaciones en Abu Dabi 10–11 nov",
+     "url": "https://www.kyivpost.com/post/88971"
+    },
+    {
+     "n": "Al Jazeera – Zelenski y Merz, 3 nov",
+     "url": "https://www.aljazeera.com/news/2026/11/3/zelenskyy-hopes-abu-dhabi-talks-will-open-way-to-meeting-with-putin"
+    },
+    {
+     "n": "Al Jazeera – ataques a infraestructuras, 5 nov",
+     "url": "https://www.aljazeera.com/news/2026/11/5/russia-says-it-hit-ukrainian-postal-hub-and-ship-as-ukraine-strikes-ryazan"
     }
    ],
    "vigilar": [
-    "Ataques masivos sobre infraestructura energética",
-    "Anuncio formal de negociaciones"
+    "Resultado de Abu Dabi (10–11 nov)",
+    "Ataques masivos justo antes o después de la reunión",
+    "Posible encuentro Trump–Xi–Putin en la cumbre APEC (18–19 nov, sin confirmar)"
    ],
    "fiabilidad": "Varias fuentes oficiales y de agencias.",
    "zona": "europa",
@@ -268,7 +310,7 @@
   {
    "id": "yemen-saudi",
    "titulo": "Hutíes contra Arabia Saudí y Mar Rojo",
-   "resumen": "Varios países condenaron un intento de ataque con misil balístico hutí sobre la región de Medina. La OMS cifra en 1.771 los muertos en Yemen desde agosto. Los ataques afectan a la navegación del Mar Rojo.",
+   "resumen": "Los hutíes dicen haber atacado con misiles y drones instalaciones de Aramco y el aeropuerto de Riad. Antes hubo un intento de ataque balístico sobre la región de Medina. La OMS cifra en 1.771 los muertos en Yemen desde agosto. La navegación por el Mar Rojo sigue afectada.",
    "dominio": "belico",
    "region": "Yemen / Arabia Saudí",
    "lat": 20.5,
@@ -278,8 +320,12 @@
    "P": 0.35,
    "tendencia": "escala",
    "cadena": "iran",
-   "fecha": "2026-11-05",
+   "fecha": "2026-11-08",
    "fuentes": [
+    {
+     "n": "Gulf News – directo: hutíes reivindican ataques a Aramco y Riad",
+     "url": "https://gulfnews.com/world/mena/middle-east-war-update-qeshm-island-strike-raises-tensions-talks-continue-1.500739148"
+    },
     {
      "n": "Anadolu – Morning Briefing 6 nov",
      "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
@@ -293,7 +339,7 @@
     "Ataques a petroleros en el Mar Rojo",
     "Cierre del paso de Bab el-Mandeb"
    ],
-   "fiabilidad": "Saudíes informan; los hutíes niegan algunos ataques.",
+   "fiabilidad": "Los ataques a Aramco y Riad solo los reivindican los hutíes; Arabia Saudí no los ha confirmado en lo revisado.",
    "zona": "oriente",
    "origen": "analista"
   },
@@ -603,7 +649,7 @@
   {
    "id": "huelga-11n",
    "titulo": "Huelga general en España el miércoles 11 de noviembre",
-   "resumen": "Huelga general de 24 h el miércoles 11 nov convocada por CCOO, UGT, CGT, CNT y el Sindicato de Inquilinas (vivienda, salarios, precios). Es la primera con CCOO y UGT juntos desde 2012. Se esperan cancelaciones de vuelos y problemas de transporte; los servicios mínimos se conocerán estos días.",
+   "resumen": "Huelga general de 24 h el miércoles 11 nov, convocada por CCOO, UGT, CGT, CNT y otras organizaciones (vivienda, salarios, jornada). Se esperan cancelaciones de vuelos y problemas en el transporte. Los servicios mínimos los fija cada comunidad: Cataluña ya los ha publicado (25 % en hora punta). Los de Asturias aún no los he podido comprobar.",
    "dominio": "social",
    "region": "España",
    "lat": 43.36,
@@ -616,6 +662,10 @@
    "fecha": "2026-11-11",
    "origen": "analista",
    "fuentes": [
+    {
+     "n": "Ara – servicios mínimos en Cataluña, 5 nov",
+     "url": "https://es.ara.cat/sociedad/movilidad/seran-servicios-minimos-durante-huelga-11-n_1_5901577.html"
+    },
     {
      "n": "Demócrata – claves de la huelga",
      "url": "https://www.democrata.es/actualidad/huelga-general-11-noviembre-quien-convoca-cuanto-dura-cuales-son-motivos/"
@@ -781,7 +831,7 @@
   },
   {
    "titulo": "Acuerdo con Irán y reapertura de Ormuz",
-   "prob": "Sin estimación verificada",
+   "prob": "Sin estimación verificada. El 8 nov Rubio dijo que no hay acuerdo cerca.",
    "impacto": "Bajada del petróleo y alivio de precios en semanas.",
    "senales": [
     "Respuesta de EE. UU. a la propuesta vía Catar",
