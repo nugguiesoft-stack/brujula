@@ -17,6 +17,9 @@ services:
       CASA_LON: "-5.85"
       SILENCIO: "23-08"                                    # de noche solo suenan emergencias
       RESUMEN_DIARIO: "08:30"
+      INTERVALO_DIA: "30"                                  # minutos entre revisiones de día
+      INTERVALO_NOCHE: "60"                                # minutos entre revisiones de noche (horario de SILENCIO)
+      RAPIDOS: "sismos,tsunami,electricidad"               # sensores que siguen revisando cada 2–5 min (pon "" para que todo vaya lento)
       # TELEGRAM_CANALES: "canal1,canal2"                  # canales públicos extra a vigilar
       # GIST_ID: ""  GITHUB_TOKEN: ""                      # opcional: la web muestra lo que ve el NAS
       # HEALTHCHECK_URL: ""                                # opcional: te avisa si el NAS deja de funcionar

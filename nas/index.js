@@ -7,7 +7,7 @@ import { rss } from "./lib/xml.js";
 import { km, sleep, log, hora, horaLocal, madrid } from "./lib/util.js";
 import { clasifica, lugar, zonaDe, ALARMA } from "./lib/clasifica.js";
 import { mem, base, historial, guardar } from "./lib/store.js";
-import { avisar, retenidos, NIVEL } from "./lib/avisar.js";
+import { avisar, retenidos, NIVEL, enSilencio } from "./lib/avisar.js";
 import { procesar, indices, vigilarIndices, top } from "./lib/motor.js";
 import { escuchar, apagado, silenciado, temaControl } from "./lib/control.js";
 
@@ -43,7 +43,9 @@ async function ejecutar(m) {
     }
   }
   // Si falla, espera más antes de reintentar (máx. ×6)
-  m.prox = Date.now() + m.cada * 60000 * CFG.ritmo * Math.min(6, 1 + m.fallos);
+  // Sensores rápidos (terremotos, tsunamis, apagón) a su ritmo; el resto cada 30 min de día y cada hora de noche
+  const cada = CFG.rapidos.includes(m.id) ? m.cada : Math.max(m.cada, enSilencio() ? CFG.intervaloNoche : CFG.intervaloDia);
+  m.prox = Date.now() + cada * 60000 * CFG.ritmo * Math.min(6, 1 + m.fallos);
 }
 
 // Módulos continuos (Wikipedia en directo): conexión permanente aparte
@@ -118,7 +120,7 @@ async function actualizar() {
   try {
     const v = (await pedir(`https://raw.githubusercontent.com/${CFG.repo}/main/nas/VERSION`, { condicional: false })).trim();
     if (v && v !== CFG.version && /^\d+\.\d+\.\d+$/.test(v)) {
-      log("Nueva versión", v, "→ reinicio para actualizar"); guardar();
+      log("Nueva versión", v, "→ reinicio para actualizar"); guardar(true);
       await avisar({ nivel: 1, forzar: true, sistema: true, titulo: `Actualizando la Brújula NAS a ${v}`, texto: `Versión actual ${CFG.version}. Vuelvo en un minuto.` });
       await sleep(3000); process.exit(0);
     }
@@ -137,7 +139,7 @@ if (temaControl()) log("Mando a distancia: escribe en el tema «" + temaControl(
 
 // --- Bucle principal ---
 process.on("unhandledRejection", (e) => log("Error no controlado:", e?.message || e));
-process.on("SIGTERM", () => { guardar(); setTimeout(() => process.exit(0), 2500); });
+process.on("SIGTERM", () => { guardar(true); setTimeout(() => process.exit(0), 2500); });
 await autodiagnostico(); await vigilarIndices(); await publicar();
 if (process.argv.includes("--una-vez")) { await sleep(2500); console.log(JSON.stringify(estadoJSON(), null, 1).slice(0, 4000)); process.exit(0); }
 let ultimaAct = Date.now(), ultimaPub = Date.now(), estabaApagado = apagado();
@@ -145,11 +147,11 @@ for (;;) {
   await sleep(30000);
   if (estabaApagado && !apagado()) await avisar({ nivel: 1, forzar: true, sistema: true, titulo: "Brújula NAS: vuelvo a vigilar", texto: lineaEstado() });
   estabaApagado = apagado();
-  if (apagado()) { if (Date.now() - ultimaPub > 60000) { ultimaPub = Date.now(); await publicar(); } continue; }
+  if (apagado()) { if (Date.now() - ultimaPub > 10 * 60000) { ultimaPub = Date.now(); await publicar(); } continue; }
   const toca = MODS.filter((m) => !m.continuo && Date.now() >= m.prox);
   for (const m of toca) await ejecutar(m);   // de uno en uno: menos memoria y menos ráfagas de red
   if (toca.length) await vigilarIndices();
-  if (Date.now() - ultimaPub > 60000) { ultimaPub = Date.now(); await publicar(); }
+  if (Date.now() - ultimaPub > 10 * 60000) { ultimaPub = Date.now(); await publicar(); }
   await resumen();
   if (Date.now() - ultimaAct > 6 * 36e5) { ultimaAct = Date.now(); await actualizar(); }
 }

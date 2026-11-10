@@ -81,9 +81,17 @@ Sin tiempo (`apaga`, `silencio`), dura hasta que lo vuelvas a cambiar. El vigila
 
 > El tema de control también hace de contraseña: quien lo conozca podría apagarte el vigilante. No lo compartas.
 
+## Cada cuánto revisa
+
+- **De día**: cada **30 min** (`INTERVALO_DIA`).
+- **De noche** (horario de `SILENCIO`): cada **60 min** (`INTERVALO_NOCHE`).
+- **Excepción, `RAPIDOS`**: terremotos, tsunamis y apagón siguen revisándose cada 2–5 min. Son consultas diminutas y son las que dan minutos de ventaja. Si quieres que todo vaya lento, pon `RAPIDOS: ""`.
+- **Wikipedia en directo** escucha de forma continua. Gasta muy poco; si prefieres quitarla, añade `wikipedia` a `DESACTIVAR`.
+- **Disco**: el vigilante escribe como mucho cada 10 min, para que los discos del NAS puedan dormir.
+
 ## Qué vigila (16 módulos)
 
-| Módulo | Fuente primaria | Cada |
+| Módulo | Fuente primaria | Cada (máx.) |
 |---|---|---|
 | Terremotos | IGN, EMSC, USGS (se cruzan entre sí) | 2 min |
 | Tsunamis | Centros de alerta de tsunami de EE. UU. | 5 min |
