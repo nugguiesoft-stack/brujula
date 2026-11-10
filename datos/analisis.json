@@ -1,10 +1,10 @@
 {
  "estado": {
-  "actualizado": "2026-11-10T12:30:00+01:00",
+  "actualizado": "2026-11-10T20:20:00+01:00",
   "lugar": "Asturias (España)",
-  "resumen": "Hoy lo más importante es local. En Oviedo (Villafría) un hombre disparó a una joven y dejó una mochila bomba que, al explotar, ha matado a dos policías. Sigue huido y podría ir armado. La Policía ha cerrado los accesos a la ciudad y la investigación apunta a un conflicto vecinal, no a terrorismo. Evita la zona y sigue los avisos de la Policía y del 112. Fuera de Asturias no hay cambios: Irán sigue en tensión (ataques limitados, negociaciones estancadas) y hoy empiezan las conversaciones sobre Ucrania en Abu Dabi. Huelga general mañana, 11-N.",
+  "resumen": "Hoy lo más importante es local. En Oviedo (Villafría) un hombre disparó a una joven y dejó una mochila bomba que mató a un policía y a su perro; otro agente está grave pero estable. El sospechoso está identificado pero no consta su detención; podría ir armado. Hay controles en los accesos a Oviedo. La investigación apunta a un conflicto vecinal, no a terrorismo. Evita la zona y sigue los avisos de la Policía y del 112. Fuera de Asturias no hay cambios: Irán sigue en tensión y se negocia sobre Ucrania en Abu Dabi. Huelga general mañana, 11-N.",
   "notas": [
-   "Oviedo: la muerte del segundo agente la ha comunicado el sindicato SUP; falta el comunicado oficial. Algunos medios dicen que el autor estaría localizado, pero no consta su detención.",
+   "Corrección: a las 12:30 di por muerto al segundo agente (dato del sindicato SUP). La Policía lo desmintió: está grave pero estable. Que el sospechoso esté atrincherado con rehenes no está confirmado oficialmente.",
    "Oviedo: por ahora nada apunta a terrorismo; la Policía habla de un conflicto vecinal y de un autor con antecedentes por delincuencia común.",
    "Irán: sin novedades relevantes desde el 8 nov en lo revisado.",
    "No he podido comprobar los avisos actuales de AEMET para Asturias; la Brújula los lee en cada escaneo."
@@ -14,8 +14,8 @@
  "eventos": [
   {
    "id": "oviedo-explosion",
-   "titulo": "Oviedo: tiroteo y mochila bomba; mueren dos policías y el autor sigue huido",
-   "resumen": "Martes 10 nov. Hacia las 7:30 un hombre disparó a una joven de 17 años en un edificio de la calle Rafael Urrusti (Villafría–Otero); ella está herida pero fuera de peligro. En el portal dejó una mochila con un artefacto que explotó hacia las 8:45 cuando los agentes la sacaban a la calle. Murieron un subinspector de Guías Caninos y, horas después en el HUCA, un agente de los TEDAX (según el sindicato SUP). La Policía ha cerrado los accesos a Oviedo y busca a un hombre de unos 60–65 años, calvo, que podría ir armado.",
+   "titulo": "Oviedo: tiroteo y mochila bomba; muere un policía y el autor, identificado, sigue sin ser detenido",
+   "resumen": "Martes 10 nov. Hacia las 7:30 un hombre disparó a una joven de 17 años en un edificio de la calle Rafael Urrusti (Villafría); ella está herida pero fuera de peligro. Dejó en el portal una mochila con un artefacto que explotó hacia las 8:45, cuando los agentes la sacaban a la calle. Murieron el subinspector de Guías Caninos Juan José Rodríguez y su perro detector, Deny. Un agente de los TEDAX perdió una pierna y está grave pero estable en el HUCA; la Policía desmintió que hubiera muerto. El sospechoso, de unos 64–65 años y con antecedentes por delincuencia común, está plenamente identificado. Hay controles en los accesos a Oviedo y la ciudad ha decretado dos días de luto.",
    "dominio": "belico",
    "region": "Oviedo (Asturias)",
    "lat": 43.372,
@@ -23,36 +23,40 @@
    "zona": "asturias",
    "S": 6,
    "nivel": "varios_medios",
-   "P": 0.95,
+   "P": 0.9,
    "tendencia": "escala",
    "cadena": "oviedo",
    "fecha": "2026-11-10",
    "origen": "analista",
    "fuentes": [
     {
-     "n": "elDiario.es Asturias – cierre de accesos",
-     "url": "https://www.eldiario.es/asturias/policia-muerto-herido-explosion-artefacto-oviedo_1_13651200.html"
+     "n": "La Nueva Crónica – la Policía desmiente la muerte del TEDAX",
+     "url": "https://www.lanuevacronica.com/sucesos/controles-por-todo-oviedo-identificar-autor-muerte-policia-en-oviedo_206237_102.html"
     },
     {
-     "n": "COPE Asturias – cronología",
-     "url": "https://www.cope.es/emisoras/asturias/asturias-provincia/oviedo/noticias/agente-policia-nacional-muerto-herido-grave-explosion-tiroteo-edificio-barrio-otero-oviedo-20261110_3471951.html"
+     "n": "elDiario.es Asturias – operación jaula y víctimas",
+     "url": "https://eldiario.es/asturias/temor-vecinos-explosion-operacion-jaula-oviedo-pudo-haber-sido-tragedia_1_13652299.html"
     },
     {
-     "n": "La Voz del Sur – muere el segundo agente (SUP)",
-     "url": "https://www.lavozdelsur.es/actualidad/sociedad/muere-el-segundo-policia-nacional-herido-en-la-explosion-de-una-mochila-bomba-hay-tambien-una-menor-herida.html"
+     "n": "El Pespunte – última hora",
+     "url": "https://www.elpespunte.es/espana/ultima-hora-tiroteo-explosion-oviedo-policia-mantiene-busqueda-sospechoso-muerte-agente-explosion-mochila-bomba/20261110163522161312.html"
     },
     {
-     "n": "El Pespunte – búsqueda del autor",
-     "url": "https://www.elpespunte.es/espana/policia-bloquea-accesos-oviedo-detener-autor-tiroteo-explosion/20261110114701161265.html"
+     "n": "León 24 Horas – atrincherado en un bar (sin confirmar)",
+     "url": "https://www.leon24horas.net/sucesos/actualizacion-policia-muerto-tedax-herido-critico-pierna-amputada-estallar-mochila-bomba-oviedo-operacion-tiroteo/20261110132738214117.html"
+    },
+    {
+     "n": "Telemadrid – localizado y atrincherado con armas",
+     "url": "https://www.telemadrid.es/noticias/sociedad/policia-busca-hombre-tiroteo-mochila_1_2804210.html"
     }
    ],
    "vigilar": [
-    "Detención del autor",
+    "Detención o fin del atrincheramiento",
     "Nuevos artefactos o desalojos en Oviedo",
     "Avisos de la Policía Nacional y del 112 Asturias",
-    "Controles y retenciones en los accesos a Oviedo"
+    "Controles en los accesos a Oviedo"
    ],
-   "fiabilidad": "Hechos confirmados por muchos medios con fuentes policiales. La muerte del segundo agente la comunica el sindicato SUP; no he visto aún el comunicado oficial. La Policía habla de un «conflicto vecinal» y de un autor con antecedentes por delincuencia común: por ahora nada apunta a terrorismo. Algunos medios dicen que el autor «ya estaría localizado», pero no consta su detención."
+   "fiabilidad": "Confirmado por el portavoz de la Policía Nacional en Asturias: un agente muerto, el TEDAX grave pero estable y el sospechoso identificado. Sin confirmar: que esté atrincherado en un bar de Las Campas con rehenes (lo publican León 24 Horas y sindicatos policiales) y que su pareja esté detenida (lo dice el sindicato JUPOL). Algunos medios anunciaron su detención por error. Corrección: en la actualización de las 12:30 di por muerto al segundo agente, con datos del sindicato SUP; la Policía lo desmintió."
   },
   {
    "id": "iran-reanudacion",
@@ -753,8 +757,8 @@
  "cadenas": [
   {
    "id": "oviedo",
-   "titulo": "Oviedo: tiroteo y explosión en Villafría",
-   "estado": "Autor huido; accesos a Oviedo controlados",
+   "titulo": "Oviedo: tiroteo y mochila bomba en Villafría",
+   "estado": "Sospechoso identificado, no detenido; controles en Oviedo",
    "pasos": [
     {
      "fecha": "2026-11-10 07:30",
@@ -763,7 +767,7 @@
     },
     {
      "fecha": "2026-11-10 08:45",
-     "texto": "Explota la mochila que el autor dejó en el portal: muere un subinspector de Guías Caninos y un agente de los TEDAX queda muy grave.",
+     "texto": "Explota la mochila que el autor dejó en el portal: mueren un subinspector de Guías Caninos y su perro; un agente de los TEDAX queda muy grave.",
      "nivel": "varios_medios"
     },
     {
@@ -772,9 +776,14 @@
      "nivel": "varios_medios"
     },
     {
-     "fecha": "2026-11-10 11:30",
-     "texto": "Muere en el hospital el agente de los TEDAX, según el sindicato SUP.",
-     "nivel": "varios_medios"
+     "fecha": "2026-11-10 mediodía",
+     "texto": "La Policía desmiente la muerte del agente TEDAX (grave pero estable) y confirma que el sospechoso está plenamente identificado.",
+     "nivel": "oficial"
+    },
+    {
+     "fecha": "2026-11-10 tarde",
+     "texto": "Medios y sindicatos dicen que está atrincherado y armado, quizá en un bar de Las Campas, y que su pareja ha sido detenida. Oviedo decreta dos días de luto.",
+     "nivel": "rumor"
     }
    ],
    "siguiente": [
