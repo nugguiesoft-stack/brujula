@@ -1,17 +1,59 @@
 {
  "estado": {
-  "actualizado": "2026-11-09T03:50:00+01:00",
+  "actualizado": "2026-11-10T12:30:00+01:00",
   "lugar": "Asturias (España)",
-  "resumen": "Sin amenaza directa para Asturias. Lo que más pesa sigue siendo Irán. EE. UU. hace ataques «menores» en Qeshm (Ormuz) y la decisión sobre una guerra a gran escala sigue abierta. El 8 nov Rubio dijo que las conversaciones están estancadas. La Guardia Revolucionaria iraní dice que ya no limita sus misiles a 2.000 km, aunque no se le conoce un misil capaz de llegar a España. Ucrania: conversaciones con Rusia en Abu Dabi el 10 y 11 nov. En España: huelga general el miércoles 11-N y elecciones generales el 29-N.",
+  "resumen": "Hoy lo más importante es local. En Oviedo (Villafría) un hombre disparó a una joven y dejó una mochila bomba que, al explotar, ha matado a dos policías. Sigue huido y podría ir armado. La Policía ha cerrado los accesos a la ciudad y la investigación apunta a un conflicto vecinal, no a terrorismo. Evita la zona y sigue los avisos de la Policía y del 112. Fuera de Asturias no hay cambios: Irán sigue en tensión (ataques limitados, negociaciones estancadas) y hoy empiezan las conversaciones sobre Ucrania en Abu Dabi. Huelga general mañana, 11-N.",
   "notas": [
-   "No he podido comprobar los avisos actuales de AEMET para Asturias: la web no estaba accesible desde aquí. La Brújula los lee en cada escaneo.",
-   "La retirada del límite de alcance es una declaración: no hay pruebas de que Irán tenga misiles de más de 2.000 km.",
-   "Algunos funcionarios de EE. UU. citados por Fox mencionaron la luna nueva del 9 nov como posible momento para atacar. Es especulación, no una fecha anunciada.",
-   "La probabilidad del 80 % de reanudación de la guerra es la opinión de un analista (5 nov), no un dato oficial."
+   "Oviedo: la muerte del segundo agente la ha comunicado el sindicato SUP; falta el comunicado oficial. Algunos medios dicen que el autor estaría localizado, pero no consta su detención.",
+   "Oviedo: por ahora nada apunta a terrorismo; la Policía habla de un conflicto vecinal y de un autor con antecedentes por delincuencia común.",
+   "Irán: sin novedades relevantes desde el 8 nov en lo revisado.",
+   "No he podido comprobar los avisos actuales de AEMET para Asturias; la Brújula los lee en cada escaneo."
   ],
   "metodo": 1
  },
  "eventos": [
+  {
+   "id": "oviedo-explosion",
+   "titulo": "Oviedo: tiroteo y mochila bomba; mueren dos policías y el autor sigue huido",
+   "resumen": "Martes 10 nov. Hacia las 7:30 un hombre disparó a una joven de 17 años en un edificio de la calle Rafael Urrusti (Villafría–Otero); ella está herida pero fuera de peligro. En el portal dejó una mochila con un artefacto que explotó hacia las 8:45 cuando los agentes la sacaban a la calle. Murieron un subinspector de Guías Caninos y, horas después en el HUCA, un agente de los TEDAX (según el sindicato SUP). La Policía ha cerrado los accesos a Oviedo y busca a un hombre de unos 60–65 años, calvo, que podría ir armado.",
+   "dominio": "belico",
+   "region": "Oviedo (Asturias)",
+   "lat": 43.372,
+   "lon": -5.836,
+   "zona": "asturias",
+   "S": 6,
+   "nivel": "varios_medios",
+   "P": 0.95,
+   "tendencia": "escala",
+   "cadena": "oviedo",
+   "fecha": "2026-11-10",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "elDiario.es Asturias – cierre de accesos",
+     "url": "https://www.eldiario.es/asturias/policia-muerto-herido-explosion-artefacto-oviedo_1_13651200.html"
+    },
+    {
+     "n": "COPE Asturias – cronología",
+     "url": "https://www.cope.es/emisoras/asturias/asturias-provincia/oviedo/noticias/agente-policia-nacional-muerto-herido-grave-explosion-tiroteo-edificio-barrio-otero-oviedo-20261110_3471951.html"
+    },
+    {
+     "n": "La Voz del Sur – muere el segundo agente (SUP)",
+     "url": "https://www.lavozdelsur.es/actualidad/sociedad/muere-el-segundo-policia-nacional-herido-en-la-explosion-de-una-mochila-bomba-hay-tambien-una-menor-herida.html"
+    },
+    {
+     "n": "El Pespunte – búsqueda del autor",
+     "url": "https://www.elpespunte.es/espana/policia-bloquea-accesos-oviedo-detener-autor-tiroteo-explosion/20261110114701161265.html"
+    }
+   ],
+   "vigilar": [
+    "Detención del autor",
+    "Nuevos artefactos o desalojos en Oviedo",
+    "Avisos de la Policía Nacional y del 112 Asturias",
+    "Controles y retenciones en los accesos a Oviedo"
+   ],
+   "fiabilidad": "Hechos confirmados por muchos medios con fuentes policiales. La muerte del segundo agente la comunica el sindicato SUP; no he visto aún el comunicado oficial. La Policía habla de un «conflicto vecinal» y de un autor con antecedentes por delincuencia común: por ahora nada apunta a terrorismo. Algunos medios dicen que el autor «ya estaría localizado», pero no consta su detención."
+  },
   {
    "id": "iran-reanudacion",
    "titulo": "Irán: ataques «menores» de EE. UU. y decisión pendiente sobre una guerra a gran escala",
@@ -207,7 +249,7 @@
   {
    "id": "ucrania",
    "titulo": "Guerra en Ucrania y conversaciones de paz",
-   "resumen": "Rusia sigue atacando la red eléctrica, con cortes programados en Kiev desde mediados de octubre, y Ucrania ataca refinerías rusas. EE. UU. reúne a delegaciones de Ucrania y Rusia en Abu Dabi el 10 y 11 nov, la primera ronda desde febrero. Se hablará de un alto el fuego energético y marítimo, de canje de prisioneros y de los niños ucranianos llevados a Rusia. Merz (Alemania) dice que no ve a Rusia negociando en serio.",
+   "resumen": "Rusia sigue atacando la red eléctrica, con cortes programados en Kiev desde mediados de octubre, y Ucrania ataca refinerías rusas. Hoy y mañana (10 y 11 nov) EE. UU. reúne a delegaciones de Ucrania y Rusia en Abu Dabi, la primera ronda desde febrero. Se hablará de un alto el fuego energético y marítimo, de canje de prisioneros y de los niños ucranianos llevados a Rusia. Merz (Alemania) dice que no ve a Rusia negociando en serio.",
    "dominio": "belico",
    "region": "Ucrania",
    "lat": 48.5,
@@ -709,6 +751,37 @@
   }
  ],
  "cadenas": [
+  {
+   "id": "oviedo",
+   "titulo": "Oviedo: tiroteo y explosión en Villafría",
+   "estado": "Autor huido; accesos a Oviedo controlados",
+   "pasos": [
+    {
+     "fecha": "2026-11-10 07:30",
+     "texto": "Disparos en un edificio de la calle Rafael Urrusti: una joven de 17 años herida.",
+     "nivel": "varios_medios"
+    },
+    {
+     "fecha": "2026-11-10 08:45",
+     "texto": "Explota la mochila que el autor dejó en el portal: muere un subinspector de Guías Caninos y un agente de los TEDAX queda muy grave.",
+     "nivel": "varios_medios"
+    },
+    {
+     "fecha": "2026-11-10 10:00",
+     "texto": "La Policía cierra los accesos a Oviedo y busca al autor, que podría ir armado. Se suspende la agenda pública y la precampaña.",
+     "nivel": "varios_medios"
+    },
+    {
+     "fecha": "2026-11-10 11:30",
+     "texto": "Muere en el hospital el agente de los TEDAX, según el sindicato SUP.",
+     "nivel": "varios_medios"
+    }
+   ],
+   "siguiente": [
+    "Si lo detienen: fin del riesgo inmediato",
+    "Si sigue huido: más controles y posibles registros en Oviedo y alrededores"
+   ]
+  },
   {
    "id": "iran",
    "titulo": "Guerra de Irán → Ormuz → energía en España",
