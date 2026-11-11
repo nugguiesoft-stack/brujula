@@ -1,12 +1,12 @@
 {
  "estado": {
-  "actualizado": "2026-11-10T20:20:00+01:00",
+  "actualizado": "2026-11-11T10:45:00+01:00",
   "lugar": "Asturias (España)",
-  "resumen": "Hoy lo más importante es local. En Oviedo (Villafría) un hombre disparó a una joven y dejó una mochila bomba que mató a un policía y a su perro; otro agente está grave pero estable. El sospechoso está identificado pero no consta su detención; podría ir armado. Hay controles en los accesos a Oviedo. La investigación apunta a un conflicto vecinal, no a terrorismo. Evita la zona y sigue los avisos de la Policía y del 112. Fuera de Asturias no hay cambios: Irán sigue en tensión y se negocia sobre Ucrania en Abu Dabi. Huelga general mañana, 11-N.",
+  "resumen": "En Asturias, el autor de la mochila bomba de Oviedo (un policía y su perro muertos) sigue huido y su pareja está detenida. Si sabes algo, llama al 091. En España, hoy hay huelga general, con cortes de carreteras y problemas en el transporte. Fuera: Trump aparca por ahora los ataques a Irán y el petróleo baja, pero Ormuz sigue cerrado y hay avisos de amenazas iraníes en Europa. Siguen las conversaciones sobre Ucrania en Abu Dabi.",
   "notas": [
-   "Corrección: a las 12:30 di por muerto al segundo agente (dato del sindicato SUP). La Policía lo desmintió: está grave pero estable. Que el sospechoso esté atrincherado con rehenes no está confirmado oficialmente.",
-   "Oviedo: por ahora nada apunta a terrorismo; la Policía habla de un conflicto vecinal y de un autor con antecedentes por delincuencia común.",
-   "Irán: sin novedades relevantes desde el 8 nov en lo revisado.",
+   "Oviedo: no he encontrado confirmación de la detención del autor. El martes algunos medios la anunciaron por error.",
+   "Huelga: no he encontrado datos de seguimiento en Asturias.",
+   "Irán: los ataques a petroleros que reivindica la Guardia Revolucionaria no están confirmados por ninguna autoridad marítima. Lo de la segunda base británica viene de un solo medio (WSJ).",
    "No he podido comprobar los avisos actuales de AEMET para Asturias; la Brújula los lee en cada escaneo."
   ],
   "metodo": 1
@@ -14,8 +14,8 @@
  "eventos": [
   {
    "id": "oviedo-explosion",
-   "titulo": "Oviedo: tiroteo y mochila bomba; muere un policía y el autor, identificado, sigue sin ser detenido",
-   "resumen": "Martes 10 nov. Hacia las 7:30 un hombre disparó a una joven de 17 años en un edificio de la calle Rafael Urrusti (Villafría); ella está herida pero fuera de peligro. Dejó en el portal una mochila con un artefacto que explotó hacia las 8:45, cuando los agentes la sacaban a la calle. Murieron el subinspector de Guías Caninos Juan José Rodríguez y su perro detector, Deny. Un agente de los TEDAX perdió una pierna y está grave pero estable en el HUCA; la Policía desmintió que hubiera muerto. El sospechoso, de unos 64–65 años y con antecedentes por delincuencia común, está plenamente identificado. Hay controles en los accesos a Oviedo y la ciudad ha decretado dos días de luto.",
+   "titulo": "Oviedo: sigue huido el autor de la mochila bomba que mató a un policía",
+   "resumen": "El martes 10 nov un hombre disparó a una joven de 17 años en Villafría (calle Rafael Urrusti) y dejó en el portal una mochila con una bomba casera, que explotó hacia las 8:45. Murieron el subinspector de Guías Caninos Juan José Rodríguez y su perro Deny; un agente de los TEDAX perdió una pierna y está grave pero estable. El sospechoso, Manuel Ferrero Álvarez, «El Ruso» (64–65 años, antecedentes por delitos comunes), seguía huido en las últimas informaciones. Su pareja está detenida y, según El Mundo, dio datos falsos para darle tiempo. La Policía pide llamar al 091 si alguien sabe dónde está.",
    "dominio": "belico",
    "region": "Oviedo (Asturias)",
    "lat": 43.372,
@@ -24,30 +24,22 @@
    "S": 6,
    "nivel": "varios_medios",
    "P": 0.9,
-   "tendencia": "escala",
+   "tendencia": "estable",
    "cadena": "oviedo",
-   "fecha": "2026-11-10",
+   "fecha": "2026-11-11",
    "origen": "analista",
    "fuentes": [
     {
+     "n": "Telecinco – la pareja dio datos erróneos",
+     "url": "https://telecinco.es/noticias/sucesos/20261111/interrogatorio-mujer-ruso-explosion-mortal-oviedo-datos-erroneos_18_020676360.html"
+    },
+    {
+     "n": "The Objective – el autor sigue en busca",
+     "url": "https://theobjective.com/espana/2026-11-11/indignacion-policia-muerte-subinspector-oviedo-mochila-bomba/"
+    },
+    {
      "n": "La Nueva Crónica – la Policía desmiente la muerte del TEDAX",
      "url": "https://www.lanuevacronica.com/sucesos/controles-por-todo-oviedo-identificar-autor-muerte-policia-en-oviedo_206237_102.html"
-    },
-    {
-     "n": "elDiario.es Asturias – operación jaula y víctimas",
-     "url": "https://eldiario.es/asturias/temor-vecinos-explosion-operacion-jaula-oviedo-pudo-haber-sido-tragedia_1_13652299.html"
-    },
-    {
-     "n": "El Pespunte – última hora",
-     "url": "https://www.elpespunte.es/espana/ultima-hora-tiroteo-explosion-oviedo-policia-mantiene-busqueda-sospechoso-muerte-agente-explosion-mochila-bomba/20261110163522161312.html"
-    },
-    {
-     "n": "León 24 Horas – atrincherado en un bar (sin confirmar)",
-     "url": "https://www.leon24horas.net/sucesos/actualizacion-policia-muerto-tedax-herido-critico-pierna-amputada-estallar-mochila-bomba-oviedo-operacion-tiroteo/20261110132738214117.html"
-    },
-    {
-     "n": "Telemadrid – localizado y atrincherado con armas",
-     "url": "https://www.telemadrid.es/noticias/sociedad/policia-busca-hombre-tiroteo-mochila_1_2804210.html"
     }
    ],
    "vigilar": [
@@ -56,43 +48,42 @@
     "Avisos de la Policía Nacional y del 112 Asturias",
     "Controles en los accesos a Oviedo"
    ],
-   "fiabilidad": "Confirmado por el portavoz de la Policía Nacional en Asturias: un agente muerto, el TEDAX grave pero estable y el sospechoso identificado. Sin confirmar: que esté atrincherado en un bar de Las Campas con rehenes (lo publican León 24 Horas y sindicatos policiales) y que su pareja esté detenida (lo dice el sindicato JUPOL). Algunos medios anunciaron su detención por error. Corrección: en la actualización de las 12:30 di por muerto al segundo agente, con datos del sindicato SUP; la Policía lo desmintió."
+   "fiabilidad": "Confirmado por la Policía: un agente muerto, el TEDAX estable y el sospechoso identificado. La detención de la pareja la publican varios medios. No he encontrado confirmación de la detención del autor; la noticia de su detención del martes era errónea."
   },
   {
    "id": "iran-reanudacion",
-   "titulo": "Irán: ataques «menores» de EE. UU. y decisión pendiente sobre una guerra a gran escala",
-   "resumen": "Siguen los ataques «menores» de EE. UU. en Qeshm (2–3 y 6–7 nov) y la decisión sobre una guerra a gran escala sigue abierta. El domingo 8 nov Rubio dijo que las conversaciones no avanzan, que las exigencias de Irán son «inaceptables» y que no hay un acuerdo cerca. Según el NYT, miles de efectivos de EE. UU. están listos para reanudar los combates si Trump lo ordena. Irán sigue atacando petroleros en Ormuz: el 8 nov dijo que otros dos chocaron con minas.",
+   "titulo": "Irán: EE. UU. aparca por ahora los ataques, pero Ormuz sigue cerrado",
+   "resumen": "El 10 nov Trump dijo que no hace falta atacar Irán «por ahora» y mantendrá el «statu quo». Rubio, tras la reunión del G7 en París, dijo que no ve necesidad de reanudar las operaciones de combate. El petróleo bajó (Brent hacia 92 $). Pero Ormuz sigue prácticamente cerrado: la Guardia Revolucionaria dice que dos petroleros ardieron tras explosiones, un buque de la petrolera emiratí ADNOC fue dañado en aguas de Emiratos y Rezaei (seguridad iraní) dice que no hay negociaciones en curso.",
    "dominio": "belico",
    "region": "Oriente Medio",
    "lat": 32.4,
    "lon": 53.7,
    "S": 8,
    "nivel": "oficial",
-   "P": 0.5,
-   "tendencia": "escala",
+   "P": 0.35,
+   "tendencia": "estable",
    "cadena": "iran",
-   "fecha": "2026-11-08",
+   "fecha": "2026-11-10",
    "fuentes": [
     {
-     "n": "Jerusalem Post – Rubio: conversaciones estancadas, 9 nov",
-     "url": "http://www.jpost.com/middle-east/iran-news/article-914276"
+     "n": "CBS News – Rubio: «no hace falta» reanudar combates",
+     "url": "https://www.cbsnews.com/live-updates/iran-war-us-trump-deal-negotiations/"
     },
     {
-     "n": "CBS News – directo guerra de Irán, 8 nov",
-     "url": "https://www.cbsnews.com/live-updates/iran-war-trump-us-strait-hormuz-persian-gulf/"
+     "n": "Khaleej Times – directo 10 nov",
+     "url": "https://www.khaleejtimes.com/world/mena/us-israel-iran-saudi-arabia-yemen-war-live-updates-november-10-2026"
     },
     {
-     "n": "Al Jazeera – Trump confirma ataques en Qeshm, 7 nov",
-     "url": "https://aljazeera.com/news/2026/11/7/trump-confirms-new-us-strikes-on-irans-qeshm-island"
+     "n": "Straits Daily Brief – estado de Ormuz",
+     "url": "https://straits.live/briefs/2026-11-10"
     }
    ],
    "vigilar": [
-    "Anuncio de la Casa Blanca o del Pentágono",
-    "Avisos de evacuación de embajadas en el Golfo",
-    "Cierre de espacio aéreo en Irán, Irak o el Golfo",
-    "Reunión del G7 en Francia esta semana"
+    "Cualquier cambio de postura de la Casa Blanca",
+    "Ataques a buques en Ormuz",
+    "Amenazas iraníes contra bases de EE. UU. en Europa"
    ],
-   "fiabilidad": "Los ataques los confirmó Trump y las declaraciones de Rubio son públicas. Lo del NYT viene de fuentes anónimas del Pentágono. Lo de las minas lo afirma la Guardia Revolucionaria y no está verificado.",
+   "fiabilidad": "Las declaraciones de Trump y Rubio son públicas. Los ataques a petroleros los reivindica la Guardia Revolucionaria; ninguna autoridad marítima los ha confirmado.",
    "zona": "oriente",
    "origen": "analista"
   },
@@ -159,7 +150,7 @@
   {
    "id": "energia-precios",
    "titulo": "Petróleo volátil y gasóleo caro en España",
-   "resumen": "El Brent cayó con fuerza el 4 nov (hacia 93,5 $) tras la victoria demócrata en ambas cámaras de EE. UU. y volvió a superar los 96 $ al día siguiente. Sigue muy por encima de hace un año: el riesgo de Ormuz mantiene caros el gasóleo y la luz.",
+   "resumen": "El Brent bajó con fuerza el 10 nov (hacia 92 $, un 6 % menos en 24 h) cuando Trump aparcó los ataques a Irán. Ormuz sigue casi cerrado, así que los precios pueden volver a subir con cualquier incidente.",
    "dominio": "energia",
    "region": "España",
    "lat": 43.36,
@@ -167,10 +158,14 @@
    "S": 4,
    "nivel": "confirmado",
    "P": 1.0,
-   "tendencia": "estable",
+   "tendencia": "baja",
    "cadena": "iran",
-   "fecha": "2026-11-05",
+   "fecha": "2026-11-10",
    "fuentes": [
+    {
+     "n": "Straits Daily Brief – Brent y tráfico en Ormuz",
+     "url": "https://straits.live/briefs/2026-11-10"
+    },
     {
      "n": "Admiral Markets – Brent tras las elecciones",
      "url": "https://admiralmarkets.com/es/analytics/traders-blog/precio-petroleo-brent-elecciones-medio-mandato"
@@ -253,7 +248,7 @@
   {
    "id": "ucrania",
    "titulo": "Guerra en Ucrania y conversaciones de paz",
-   "resumen": "Rusia sigue atacando la red eléctrica, con cortes programados en Kiev desde mediados de octubre, y Ucrania ataca refinerías rusas. Hoy y mañana (10 y 11 nov) EE. UU. reúne a delegaciones de Ucrania y Rusia en Abu Dabi, la primera ronda desde febrero. Se hablará de un alto el fuego energético y marítimo, de canje de prisioneros y de los niños ucranianos llevados a Rusia. Merz (Alemania) dice que no ve a Rusia negociando en serio.",
+   "resumen": "Las conversaciones entre Ucrania, Rusia y EE. UU. siguen hoy en Abu Dabi, el segundo y último día. Se tratan las garantías de seguridad, un posible alto el fuego energético y marítimo y el canje de prisioneros; asesores de Francia, Alemania y Reino Unido participan en parte de las reuniones. Aún no hay resultados públicos. Rusia sigue atacando la red eléctrica ucraniana.",
    "dominio": "belico",
    "region": "Ucrania",
    "lat": 48.5,
@@ -263,8 +258,12 @@
    "P": 0.6,
    "tendencia": "estable",
    "cadena": null,
-   "fecha": "2026-11-08",
+   "fecha": "2026-11-11",
    "fuentes": [
+    {
+     "n": "Meduza – conversaciones en Abu Dabi",
+     "url": "https://meduza.io/en/feature/2026/11/10/russia-ukraine-and-the-u-s-to-hold-peace-talks-in-abu-dhabi-on-november-10-their-first-trilateral-meeting-since-february-with-security-issues-expected-to-top-the-agenda"
+    },
     {
      "n": "Kyiv Post – conversaciones en Abu Dabi 10–11 nov",
      "url": "https://www.kyivpost.com/post/88971"
@@ -631,7 +630,7 @@
   {
    "id": "iran-amenaza-europa",
    "titulo": "Irán amenaza con atacar bases de EE. UU. en Europa si se reanuda la guerra",
-   "resumen": "Un diputado de la Comisión de Seguridad Nacional iraní dijo el 4 nov a Euronews que Irán lanzaría misiles contra Europa si EE. UU. usa bases europeas (cita Italia y Alemania). En marzo el embajador iraní en Madrid nombró Rota y Morón. España no permite usar esas bases contra Irán.",
+   "resumen": "Un diputado de la Comisión de Seguridad Nacional iraní dijo el 4 nov a Euronews que Irán lanzaría misiles contra Europa si EE. UU. usa bases europeas (cita Italia y Alemania). En marzo el embajador iraní en Madrid nombró Rota y Morón. España no permite usar esas bases contra Irán. Nuevo (10 nov): según el Wall Street Journal, EE. UU. sacó aviones de una segunda base británica por una amenaza iraní (la primera fue Fairford, en octubre), y Francia promete una respuesta dura a un ciberataque que atribuye a Irán.",
    "dominio": "belico",
    "region": "Europa",
    "lat": 42.7,
@@ -641,7 +640,7 @@
    "nivel": "oficial",
    "tendencia": "escala",
    "cadena": "iran",
-   "fecha": "2026-11-04",
+   "fecha": "2026-11-10",
    "origen": "analista",
    "fuentes": [
     {
@@ -658,7 +657,7 @@
     "Cambios en el nivel de alerta de bases en España (Rota, Morón)",
     "Sabotajes a cables submarinos"
    ],
-   "fiabilidad": "Declaración real pero de un diputado, no del Gobierno iraní. No hay indicios de preparativos contra España."
+   "fiabilidad": "Declaración real pero de un diputado, no del Gobierno iraní. No hay indicios de preparativos contra España. Lo de la segunda base británica viene de un solo medio (WSJ, citado por Khaleej Times); sin confirmar."
   },
   {
    "id": "qeshm-explosiones",
@@ -695,7 +694,7 @@
   {
    "id": "huelga-11n",
    "titulo": "Huelga general en España el miércoles 11 de noviembre",
-   "resumen": "Huelga general de 24 h el miércoles 11 nov, convocada por CCOO, UGT, CGT, CNT y otras organizaciones (vivienda, salarios, jornada). Se esperan cancelaciones de vuelos y problemas en el transporte. Los servicios mínimos los fija cada comunidad: Cataluña ya los ha publicado (25 % en hora punta). Los de Asturias aún no los he podido comprobar.",
+   "resumen": "Hoy, 11 nov, huelga general de 24 h. Los sindicatos hablan de amplio seguimiento, con paros en la automoción y gran efecto en la costa. Hay cortes de carreteras por piquetes (casi 30 en Cataluña, A-42 y accesos a Madrid), cargas en Mercamadrid con un detenido, metro y autobuses de Barcelona sin servicio hasta las 16 h y AVE cancelados. No he encontrado datos concretos de Asturias.",
    "dominio": "social",
    "region": "España",
    "lat": 43.36,
@@ -709,16 +708,16 @@
    "origen": "analista",
    "fuentes": [
     {
-     "n": "Ara – servicios mínimos en Cataluña, 5 nov",
-     "url": "https://es.ara.cat/sociedad/movilidad/seran-servicios-minimos-durante-huelga-11-n_1_5901577.html"
+     "n": "elEconomista – directo",
+     "url": "https://www.eleconomista.es/actualidad/noticias/d8432/11/26/ultima-hora-de-la-huelga-general-del-11-de-noviembre-2026-en-directo-piquetes-carreteras-cortadas-y-transporte.html"
     },
     {
-     "n": "Demócrata – claves de la huelga",
-     "url": "https://www.democrata.es/actualidad/huelga-general-11-noviembre-quien-convoca-cuanto-dura-cuales-son-motivos/"
+     "n": "COPE – directo",
+     "url": "https://www.cope.es/actualidad/espana/al-minuto/huelga-general-11-noviembre-sigue-directo-jornada-paro-espana-20261111_3472630.html"
     },
     {
-     "n": "Majorca Daily Bulletin – vuelos afectados",
-     "url": "https://www.majorcadailybulletin.com/news/local/2026/10/31/146955/spain-november-general-strike-will-cause-flight-cancellations-and-transport-delays.html"
+     "n": "elDiario.es – directo",
+     "url": "https://www.eldiario.es/economia/huelga-general-11-noviembre-ultima-hora-directo-arranca-gran-paro-vivienda_133_13653845.html"
     }
    ],
    "vigilar": [
@@ -758,7 +757,7 @@
   {
    "id": "oviedo",
    "titulo": "Oviedo: tiroteo y mochila bomba en Villafría",
-   "estado": "Sospechoso identificado, no detenido; controles en Oviedo",
+   "estado": "Autor identificado y huido; su pareja, detenida",
    "pasos": [
     {
      "fecha": "2026-11-10 07:30",
@@ -784,6 +783,11 @@
      "fecha": "2026-11-10 tarde",
      "texto": "Medios y sindicatos dicen que está atrincherado y armado, quizá en un bar de Las Campas, y que su pareja ha sido detenida. Oviedo decreta dos días de luto.",
      "nivel": "rumor"
+    },
+    {
+     "fecha": "2026-11-11",
+     "texto": "El autor sigue en busca y captura. Su pareja, detenida, habría dado datos falsos para que ganara tiempo.",
+     "nivel": "varios_medios"
     }
    ],
    "siguiente": [
@@ -794,7 +798,7 @@
   {
    "id": "iran",
    "titulo": "Guerra de Irán → Ormuz → energía en España",
-   "estado": "Ataques limitados de EE. UU.; negociaciones estancadas; decisión sobre una guerra mayor pendiente",
+   "estado": "EE. UU. aparca los ataques «por ahora»; Ormuz sigue cerrado",
    "pasos": [
     {
      "fecha": "2026-02-28",
@@ -840,6 +844,11 @@
      "fecha": "2026-11-08",
      "texto": "Rubio: no hay un acuerdo cerca y las exigencias de Irán son «inaceptables». Irán dice que otros dos petroleros chocaron con minas en Ormuz.",
      "nivel": "oficial"
+    },
+    {
+     "fecha": "2026-11-10",
+     "texto": "Trump: no hace falta atacar «por ahora». Rubio: no ve necesidad de reanudar los combates. El Brent baja un 6 %. Siguen los ataques a buques en Ormuz.",
+     "nivel": "oficial"
     }
    ],
    "siguiente": [
@@ -851,7 +860,7 @@
   {
    "id": "ucrania-paz",
    "titulo": "Ucrania: negociaciones de paz",
-   "estado": "Nueva ronda en Abu Dabi el 10 y 11 nov",
+   "estado": "Negociación en Abu Dabi (10–11 nov), sin resultados aún",
    "pasos": [
     {
      "fecha": "2026-01/02",
@@ -872,6 +881,11 @@
      "fecha": "2026-11-02",
      "texto": "Witkoff anuncia una nueva ronda en Abu Dabi el 10 y 11 nov. Mientras, Rusia sigue atacando la red eléctrica ucraniana.",
      "nivel": "oficial"
+    },
+    {
+     "fecha": "2026-11-10",
+     "texto": "Empiezan en Abu Dabi las primeras conversaciones a tres desde febrero.",
+     "nivel": "confirmado"
     }
    ],
    "siguiente": [
@@ -965,7 +979,7 @@
   },
   {
    "titulo": "Acuerdo con Irán y reapertura de Ormuz",
-   "prob": "Sin estimación verificada. El 8 nov Rubio dijo que no hay acuerdo cerca.",
+   "prob": "Sin estimación verificada. EE. UU. aparca los ataques, pero Irán dice que no hay negociaciones en curso.",
    "impacto": "Bajada del petróleo y alivio de precios en semanas.",
    "senales": [
     "Respuesta de EE. UU. a la propuesta vía Catar",
