@@ -38,8 +38,30 @@ if [ -n "$B" ]; then
   adb shell dumpsys notification --noredact | grep -A3 "pkg=$P" | grep -E "channel=|android.title" | head -8
   adb shell cmd statusbar expand-notifications; sleep 2; adb exec-out screencap -p > capturas/5-notificaciones.png; adb shell cmd statusbar collapse
 else echo "FALLO: no encuentro el botón «Avisos y mando»"; fallo=1; fi
+echo "== Recibir un aviso real por ntfy (como los del NAS)"
+TEMA="brujula-prueba-$RANDOM$RANDOM$RANDOM"
+for i in 1 2 3 4 5 6; do   # sube hasta ver el campo del tema
+  adb shell uiautomator dump /sdcard/u.xml >/dev/null; adb shell cat /sdcard/u.xml > capturas/u.xml
+  grep -q 'text="Tema de ntfy' capturas/u.xml && break; adb shell input swipe $((ANCHO/2)) $((ALTO/3)) $((ANCHO/2)) $((ALTO*2/3)) 400; sleep 1
+done
+B=$(grep -o 'class="android.widget.EditText"[^>]*bounds="\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]"' capturas/u.xml | grep -o '\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]' | head -1)
+if [ -n "$B" ]; then
+  read x1 y1 x2 y2 <<<"$(echo "$B" | tr -c '0-9' ' ')"; adb shell input tap $(((x1+x2)/2)) $(((y1+y2)/2)); sleep 1
+  adb shell input text "$TEMA"; sleep 1; adb shell input keyevent 4; sleep 1
+  pulsar "Guardar ajustes"; sleep 12
+  curl -s -H "Title: PRUEBA-EMULADOR alerta" -H "Priority: 4" -d "Aviso de prueba enviado como lo haria el NAS." "https://ntfy.sh/$TEMA" >/dev/null
+  curl -s -H "Title: PRUEBA-EMULADOR emergencia" -H "Priority: 5" -d "Emergencia de prueba." "https://ntfy.sh/$TEMA" >/dev/null
+  sleep 12
+  R=$(adb shell dumpsys notification --noredact | grep -c "PRUEBA-EMULADOR")
+  [ "$R" -ge 2 ] && echo "OK: los avisos enviados por ntfy llegan como notificaciones ($R menciones)" || { echo "FALLO: el aviso enviado por ntfy no ha llegado"; fallo=1; }
+  adb shell dumpsys notification --noredact | grep -B1 -A2 "PRUEBA-EMULADOR" | grep -oE "channel=[a-z]+" | sort | uniq -c
+  adb shell dumpsys activity services $P | grep -m2 -E "ServiceRecord|isForeground"
+  adb shell cmd statusbar expand-notifications; sleep 2; adb exec-out screencap -p > capturas/6-avisos-ntfy.png; adb shell cmd statusbar collapse; sleep 1
+  adb shell am start -n $P/.MainActivity >/dev/null; sleep 3
+else echo "FALLO: no encuentro el campo del tema"; fallo=1; fi
 adb shell pidof $P >/dev/null && echo "OK: la app sigue viva al final" || { echo "FALLO: la app se ha cerrado"; fallo=1; }
 echo "== Errores graves en el registro"
-adb logcat -d | grep -E "FATAL EXCEPTION|AndroidRuntime: (Process|java|Caused)" | grep -B2 -A12 "$P" | head -40 && fallo=1 || echo "OK: ninguno"
-adb logcat -d | grep -iE "chromium.*(Uncaught|error)" | head -8
+E=$(adb logcat -d | grep -A14 "FATAL EXCEPTION" | grep -B3 -A12 "$P" | head -40)
+if [ -n "$E" ]; then echo "$E"; fallo=1; else echo "OK: ninguno"; fi
+[ $fallo -eq 0 ] && echo "RESULTADO: todo correcto" || echo "RESULTADO: hay fallos"
 exit $fallo
