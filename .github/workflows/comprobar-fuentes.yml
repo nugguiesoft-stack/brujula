@@ -14,3 +14,4 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
       - run: node nas/prueba/fuentes.mjs
+        env: { DETALLE: "1" }

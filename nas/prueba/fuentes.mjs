@@ -115,4 +115,27 @@ const lista = F.filter((f) => !soloIds.length || soloIds.includes(f[0]));
 for (let i = 0; i < lista.length; i += 6) out.push(...await Promise.all(lista.slice(i, i + 6).map(una)));
 for (const r of out) console.log(`${r.ok ? "OK " : "MAL"} ${r.id.padEnd(22)} ${String(r.http ?? "-").padEnd(4)} ua=${r.ua || "-"} cors=${r.cors || "no"} ${r.tipo || ""} ${r.bytes ?? ""}b${r.redir ? " → " + r.redir : ""}\n      ${r.ok ? r.info : [r.err_nas && "nas: " + r.err_nas, r.err_nav && "nav: " + r.err_nav].filter(Boolean).join(" | ")}${r.ok && r.err_nas ? `\n      (con el identificador del NAS falla: ${r.err_nas})` : ""}`);
 console.log(`\n${out.filter((r) => r.ok).length}/${out.length} responden.`);
+// Detalle en crudo de unas pocas fuentes (para revisar formatos a mano): DETALLE=1 node nas/prueba/fuentes.mjs
+if (process.env.DETALLE) {
+  const crudo = async (u, ua = UA_NAV) => { try { const r = await fetch(u, { headers: { "User-Agent": ua }, signal: AbortSignal.timeout(25000) }); return await r.text(); } catch (e) { return "ERROR " + e.message; } };
+  const bloque = (t, n = 2) => (t.match(/<(item|entry)[\s>][\s\S]*?<\/(item|entry)>/gi) || [t.slice(0, 600)]).slice(0, n).map((x) => x.replace(/\s+/g, " ").slice(0, 900)).join("\n   ");
+  console.log("\n===== DETALLE =====");
+  for (const u of ["https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/rss/CAP_AFAE_wah_RSS.xml", "https://www.rtpa.es/rss", "https://www.ign.es/ign/RssTools/sismologia.xml", "https://www.tsunami.gov/events/xml/PAAQAtom.xml", "https://www.incibe.es/incibe-cert/alerta-temprana/avisos-sci/feed", "https://www.gdacs.org/xml/rss.xml", "https://www.lne.es/rss/", "https://www.dsn.gob.es/es/rss.xml"])
+    console.log("\n-- " + u + "\n   " + bloque(await crudo(u)));
+  const aemet = await crudo("https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/rss/CAP_AFAE_wah_RSS.xml");
+  console.log("\n-- AEMET: zonas distintas en títulos:\n   " + [...new Set(rss(aemet).map((i) => i.title.split(". ").slice(3).join(". ")))].join(" | ").slice(0, 3000));
+  console.log("   niveles en títulos: " + [...new Set(rss(aemet).map((i) => i.title.split(". ")[1]))].join(" | ") + " · «red» aparece en: " + (aemet.match(/.{20}\bred\b.{20}/i) || ["(solo dentro de otras palabras)"])[0]);
+  const io = JSON.parse(await crudo(`https://api.ioda.inetintel.cc.gatech.edu/v2/outages/events?from=${s - 86400}&until=${s}&entityType=country&limit=200`));
+  console.log("\n-- IODA 24 h: país · puntuación · duración(min) · fuente\n   " + (io.data || []).sort((a, b) => b.score - a.score).map((e) => `${e.location.split("/").pop()} ${Math.round(e.score)} ${Math.round(e.duration / 60)} ${e.datasource}`).join(" | ").slice(0, 2500));
+  const co = JSON.parse(await crudo("https://mapping.emergency.copernicus.eu/activations/api/activations/?limit=12"));
+  console.log("\n-- Copernicus EMS: " + (co.results || []).map((a) => `${a.code} ${a.activationTime} ${a.category?.name} ${a.countries?.map((c) => c.short_name).join("+")} «${a.name}» ${a.centroid} cerrada=${a.closed}`).join("\n   ") + "\n   claves: " + Object.keys(co.results?.[0] || {}).join(","));
+  for (const [n, u] of [["Europa Press · índice de canales RSS", "https://www.europapress.es/rss/"], ["112 Asturias portada", "https://www.112asturias.es/"], ["Telegram proteccioncivil", "https://t.me/s/proteccioncivil"], ["Telegram AEMET", "https://t.me/s/AEMET_Esp"], ["EFE", "https://efe.com/"], ["RTVE", "https://www.rtve.es/noticias/"], ["CHC SAI", "https://www.chcantabrico.es/web/guest/sai-sistema-automatico-de-informacion"], ["EURDEP", "https://remap.jrc.ec.europa.eu/Advanced.aspx"]]) {
+    const t = await crudo(u);
+    console.log(`\n-- ${n} (${t.length} b): título «${corta((t.match(/<title>([^<]*)/i) || [])[1], 80)}»`);
+    if (/europapress/.test(u)) console.log("   " + [...t.matchAll(/href="([^"]*rss\.aspx[^"]*)"[^>]*>([^<]*)/gi)].filter((m) => /astur|nacional|sociedad|sucesos|última|ultima|portada/i.test(m[2] + m[1])).map((m) => `${m[2].trim()} → ${m[1]}`).slice(0, 14).join(" | "));
+    else if (/t\.me/.test(u)) console.log("   canal «" + corta(t.replace(/<[^>]+>/g, " ").match(/tgme_channel_info_header_title[^]*?/) ? (t.match(/tgme_channel_info_header_title"[^>]*>\s*<span[^>]*>([^<]*)/) || [])[1] : "", 80) + "» · último: " + corta((t.split('tgme_widget_message_text').at(-1) || "").replace(/<[^>]+>/g, " "), 240));
+    else console.log("   rss/json: " + ([...new Set([...t.matchAll(/(?:href|src|url)["=:\s]+["']?([^"' >]*(?:rss|feed|atom|\.json|\.xml|api\/)[^"' >]*)/gi)].map((m) => m[1]))].slice(0, 14).join(" , ") || "nada") + "\n   enlaces a noticias: " + [...new Set([...t.matchAll(/href="([^"]*(?:noticia|actualidad|avisos|alerta)[^"]*)"/gi)].map((m) => m[1]))].slice(0, 8).join(" , "));
+  }
+}
 if (process.env.GITHUB_STEP_SUMMARY) fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, "| Fuente | ¿Responde? | CORS | Detalle |\n|---|---|---|---|\n" + out.map((r) => `| ${r.id} | ${r.ok ? "✅" : "❌ " + (r.http || "")} | ${r.cors || "—"} | ${(r.ok ? r.info : r.err_nas || r.err_nav || "").replace(/\|/g, "/").slice(0, 200)} |`).join("\n") + "\n");
+process.exit(0);
