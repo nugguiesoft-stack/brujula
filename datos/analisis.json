@@ -1,59 +1,62 @@
 {
  "estado": {
-  "actualizado": "2026-11-11T10:45:00+01:00",
+  "actualizado": "2026-11-12T23:59:00+01:00",
   "lugar": "Asturias (España)",
-  "resumen": "En Asturias, el autor de la mochila bomba de Oviedo (un policía y su perro muertos) sigue huido y su pareja está detenida. Si sabes algo, llama al 091. En España, hoy hay huelga general, con cortes de carreteras y problemas en el transporte. Fuera: Trump aparca por ahora los ataques a Irán y el petróleo baja, pero Ormuz sigue cerrado y hay avisos de amenazas iraníes en Europa. Siguen las conversaciones sobre Ucrania en Abu Dabi.",
+  "resumen": "En Asturias, «El Ruso», autor de la mochila bomba de Villafría (Oviedo), sigue huido tres días después. La Policía lo busca con más de cien agentes, cree que puede ir armado y no descarta que tenga más explosivos. Si sabes algo, llama al 091. En España, el temporal de Bruna y Charles se retira, aunque en el norte siguen los chubascos. La huelga general del 11-N terminó con 53 detenidos y disturbios en Barcelona. Fuera: Trump aparta a Vance de la negociación con Irán y dice que «no necesita» un acuerdo; Ormuz sigue cerrado. Las conversaciones de Abu Dabi sobre Ucrania acabaron con un canje de prisioneros, pero sin acuerdo de paz.",
   "notas": [
-   "Oviedo: no he encontrado confirmación de la detención del autor. El martes algunos medios la anunciaron por error.",
-   "Huelga: no he encontrado datos de seguimiento en Asturias.",
-   "Irán: los ataques a petroleros que reivindica la Guardia Revolucionaria no están confirmados por ninguna autoridad marítima. Lo de la segunda base británica viene de un solo medio (WSJ).",
-   "No he podido comprobar los avisos actuales de AEMET para Asturias; la Brújula los lee en cada escaneo."
+   "Oviedo: hoy solo he visto titulares (La Nueva España, El País, 20minutos): despedida civil al policía fallecido, búsqueda sin novedades y una nueva alarma por una mochila sospechosa. No he leído los artículos; no sé en qué quedó esa alarma.",
+   "Irán: lo de Vance está confirmado por varios medios a partir de un mensaje del propio Trump. Que Irán atacaría cualquier base usada en un nuevo ataque lo dijo el general Rezaei (citado por un medio mexicano); no lo he visto en fuentes iraníes.",
+   "Huelga 11-N: el seguimiento es una guerra de cifras (CCOO habla de 70–84 % en varias comunidades; CEOE, de menos del 5 %). No he encontrado datos de Asturias.",
+   "Tiempo: no he encontrado avisos naranjas ni rojos para Asturias. La Brújula los lee de AEMET en cada escaneo."
   ],
   "metodo": 1
  },
  "eventos": [
   {
    "id": "oviedo-explosion",
-   "titulo": "Oviedo: sigue huido el autor de la mochila bomba que mató a un policía",
-   "resumen": "El martes 10 nov un hombre disparó a una joven de 17 años en Villafría (calle Rafael Urrusti) y dejó en el portal una mochila con una bomba casera, que explotó hacia las 8:45. Murieron el subinspector de Guías Caninos Juan José Rodríguez y su perro Deny; un agente de los TEDAX perdió una pierna y está grave pero estable. El sospechoso, Manuel Ferrero Álvarez, «El Ruso» (64–65 años, antecedentes por delitos comunes), seguía huido en las últimas informaciones. Su pareja está detenida y, según El Mundo, dio datos falsos para darle tiempo. La Policía pide llamar al 091 si alguien sabe dónde está.",
-   "dominio": "belico",
+   "titulo": "Oviedo: «El Ruso», autor de la mochila bomba, sigue huido",
+   "resumen": "El martes 10 nov Manuel Ferrero, «El Ruso» (65 años, diez antecedentes policiales), disparó a una joven de 17 años en su bloque de Villafría y dejó en el portal una mochila con una bomba casera con temporizador y metralla. Al explotar mató al subinspector de Guías Caninos Juan José Rodríguez y a su perro Deny, e hirió de gravedad a un agente TEDAX. Según vecinos y fuentes policiales, quería volar el edificio por conflictos vecinales. Sigue huido: la Policía mantiene la búsqueda con más de cien agentes (también GEO), dice que puede ir armado y no descarta que lleve más explosivos. La alerta se extiende a toda España. Su pareja está detenida. Si sabes algo, llama al 091.",
+   "dominio": "seguridad",
    "region": "Oviedo (Asturias)",
    "lat": 43.372,
    "lon": -5.836,
    "zona": "asturias",
    "S": 6,
-   "nivel": "varios_medios",
+   "nivel": "oficial",
    "P": 0.9,
    "tendencia": "estable",
    "cadena": "oviedo",
-   "fecha": "2026-11-11",
+   "fecha": "2026-11-12",
    "origen": "analista",
    "fuentes": [
     {
+     "n": "Telecinco – sigue en busca y captura, puede ir armado (11 nov)",
+     "url": "https://www.telecinco.es/noticias/sucesos/20261111/el-ruso-tiroteo-explosion-oviedo-podria-ir-armado-alerta-todo-territorio-nacional_18_020684446.html"
+    },
+    {
+     "n": "The Objective – la bomba llevaba temporizador (11 nov)",
+     "url": "https://theobjective.com/espana/2026-11-11/bomba-rusopolicia-temporizador/"
+    },
+    {
+     "n": "El Español – perfil y antecedentes (11 nov)",
+     "url": "https://www.elespanol.com/reportajes/20261111/siniestra-vida-ruso-asesino-oviedo-sumaba-detenciones-vivia-obsesionado-muerte-madre/1003744453015_0.html"
+    },
+    {
      "n": "Telecinco – la pareja dio datos erróneos",
      "url": "https://telecinco.es/noticias/sucesos/20261111/interrogatorio-mujer-ruso-explosion-mortal-oviedo-datos-erroneos_18_020676360.html"
-    },
-    {
-     "n": "The Objective – el autor sigue en busca",
-     "url": "https://theobjective.com/espana/2026-11-11/indignacion-policia-muerte-subinspector-oviedo-mochila-bomba/"
-    },
-    {
-     "n": "La Nueva Crónica – la Policía desmiente la muerte del TEDAX",
-     "url": "https://www.lanuevacronica.com/sucesos/controles-por-todo-oviedo-identificar-autor-muerte-policia-en-oviedo_206237_102.html"
     }
    ],
    "vigilar": [
-    "Detención o fin del atrincheramiento",
-    "Nuevos artefactos o desalojos en Oviedo",
-    "Avisos de la Policía Nacional y del 112 Asturias",
-    "Controles en los accesos a Oviedo"
+    "Detención del autor (confírmala en la Policía Nacional, no en redes)",
+    "Hallazgo de más explosivos",
+    "Avisos de la Policía a los vecinos de Oviedo"
    ],
-   "fiabilidad": "Confirmado por la Policía: un agente muerto, el TEDAX estable y el sospechoso identificado. La detención de la pareja la publican varios medios. No he encontrado confirmación de la detención del autor; la noticia de su detención del martes era errónea."
+   "fiabilidad": "La Policía Nacional confirma que la búsqueda sigue activa. Lo del temporizador, la metralla y su intención de volar el edificio viene de fuentes policiales citadas por varios medios. La detención del autor anunciada el martes era falsa."
   },
   {
    "id": "iran-reanudacion",
-   "titulo": "Irán: EE. UU. aparca por ahora los ataques, pero Ormuz sigue cerrado",
-   "resumen": "El 10 nov Trump dijo que no hace falta atacar Irán «por ahora» y mantendrá el «statu quo». Rubio, tras la reunión del G7 en París, dijo que no ve necesidad de reanudar las operaciones de combate. El petróleo bajó (Brent hacia 92 $). Pero Ormuz sigue prácticamente cerrado: la Guardia Revolucionaria dice que dos petroleros ardieron tras explosiones, un buque de la petrolera emiratí ADNOC fue dañado en aguas de Emiratos y Rezaei (seguridad iraní) dice que no hay negociaciones en curso.",
+   "titulo": "Irán: Trump da por cerrada la vía del acuerdo; Ormuz sigue cerrado",
+   "resumen": "El 12 nov Trump apartó al vicepresidente Vance de la negociación con Irán y escribió que «no necesitamos un acuerdo con Irán». Vance había atribuido a la guerra la derrota republicana en las elecciones del 3 nov. Dos días antes Trump había aparcado los ataques «por ahora». No hay negociación en marcha y Ormuz sigue prácticamente cerrado. El general iraní Rezaei advierte que cualquier base de EE. UU. usada en un nuevo ataque será un objetivo.",
    "dominio": "belico",
    "region": "Oriente Medio",
    "lat": 32.4,
@@ -61,21 +64,25 @@
    "S": 8,
    "nivel": "oficial",
    "P": 0.35,
-   "tendencia": "estable",
+   "tendencia": "escala",
    "cadena": "iran",
-   "fecha": "2026-11-10",
+   "fecha": "2026-11-12",
    "fuentes": [
     {
-     "n": "CBS News – Rubio: «no hace falta» reanudar combates",
+     "n": "Washington Times – Trump aparta a Vance (12 nov)",
+     "url": "https://www.washingtontimes.com/news/2026/nov/12/trump-pulling-jd-vance-iran-talks/"
+    },
+    {
+     "n": "El Diario de Sonora – «No necesitamos un acuerdo» y advertencia de Rezaei",
+     "url": "https://eldiariodesonora.com.mx/internacional/2026/11/12/trump-retira-jd-vance-negociaciones-iran.html"
+    },
+    {
+     "n": "Moncloa.com – contexto en español",
+     "url": "https://www.moncloa.com/2026/11/12/trump-vance-iran-fraude-democrata-3466673"
+    },
+    {
+     "n": "CBS News – Rubio: «no hace falta» reanudar combates (10 nov)",
      "url": "https://www.cbsnews.com/live-updates/iran-war-us-trump-deal-negotiations/"
-    },
-    {
-     "n": "Khaleej Times – directo 10 nov",
-     "url": "https://www.khaleejtimes.com/world/mena/us-israel-iran-saudi-arabia-yemen-war-live-updates-november-10-2026"
-    },
-    {
-     "n": "Straits Daily Brief – estado de Ormuz",
-     "url": "https://straits.live/briefs/2026-11-10"
     }
    ],
    "vigilar": [
@@ -83,7 +90,7 @@
     "Ataques a buques en Ormuz",
     "Amenazas iraníes contra bases de EE. UU. en Europa"
    ],
-   "fiabilidad": "Las declaraciones de Trump y Rubio son públicas. Los ataques a petroleros los reivindica la Guardia Revolucionaria; ninguna autoridad marítima los ha confirmado.",
+   "fiabilidad": "El mensaje de Trump es público y lo recogen varios medios. Que no haya acuerdo no significa que vaya a atacar: Trump ya cambió de postura varias veces esta semana.",
    "zona": "oriente",
    "origen": "analista"
   },
@@ -248,7 +255,7 @@
   {
    "id": "ucrania",
    "titulo": "Guerra en Ucrania y conversaciones de paz",
-   "resumen": "Las conversaciones entre Ucrania, Rusia y EE. UU. siguen hoy en Abu Dabi, el segundo y último día. Se tratan las garantías de seguridad, un posible alto el fuego energético y marítimo y el canje de prisioneros; asesores de Francia, Alemania y Reino Unido participan en parte de las reuniones. Aún no hay resultados públicos. Rusia sigue atacando la red eléctrica ucraniana.",
+   "resumen": "Las conversaciones de Abu Dabi (10–11 nov), las primeras a tres desde febrero, acabaron sin acuerdo de paz. El único resultado concreto es un canje de prisioneros a gran escala. EE. UU. dice que falta confianza y que siguen las diferencias sobre territorio. Rusia no quiso reunirse con los europeos. Los enviados de Trump irán a Moscú. Mientras, los dos países se atacaron con cientos de drones.",
    "dominio": "belico",
    "region": "Ucrania",
    "lat": 48.5,
@@ -261,26 +268,26 @@
    "fecha": "2026-11-11",
    "fuentes": [
     {
-     "n": "Meduza – conversaciones en Abu Dabi",
-     "url": "https://meduza.io/en/feature/2026/11/10/russia-ukraine-and-the-u-s-to-hold-peace-talks-in-abu-dhabi-on-november-10-their-first-trilateral-meeting-since-february-with-security-issues-expected-to-top-the-agenda"
+     "n": "Kyiv Independent – canje de prisioneros (11 nov)",
+     "url": "https://kyivindependent.com/large-scale-prisoner-exchange-agreed-as-2nd-day-of-abu-dhabi-talks-concludes-umerov-says/"
     },
     {
-     "n": "Kyiv Post – conversaciones en Abu Dabi 10–11 nov",
-     "url": "https://www.kyivpost.com/post/88971"
+     "n": "US News/Reuters – algún avance, falta confianza (11 nov)",
+     "url": "https://www.usnews.com/news/world/articles/2026-11-11/us-russia-and-ukraine-start-second-day-of-abu-dhabi-peace-talks"
     },
     {
-     "n": "Al Jazeera – Zelenski y Merz, 3 nov",
-     "url": "https://www.aljazeera.com/news/2026/11/3/zelenskyy-hopes-abu-dhabi-talks-will-open-way-to-meeting-with-putin"
+     "n": "Euronews – enviados de EE. UU. a Moscú",
+     "url": "https://www.euronews.com/2026/11/11/abu-dhabi-peace-talks-end-with-prisoner-exchange-agreement-as-us-envoys-prepare-to-meet-pu"
     },
     {
-     "n": "Al Jazeera – ataques a infraestructuras, 5 nov",
-     "url": "https://www.aljazeera.com/news/2026/11/5/russia-says-it-hit-ukrainian-postal-hub-and-ship-as-ukraine-strikes-ryazan"
+     "n": "ABC News – drones durante las conversaciones",
+     "url": "https://abcnews.com/International/ukraine-russia-exchange-hundreds-drones-day-2-abu/story?id=138038984"
     }
    ],
    "vigilar": [
-    "Resultado de Abu Dabi (10–11 nov)",
-    "Ataques masivos justo antes o después de la reunión",
-    "Posible encuentro Trump–Xi–Putin en la cumbre APEC (18–19 nov, sin confirmar)"
+    "Viaje de Witkoff y Kushner a Moscú",
+    "Fecha y tamaño del canje de prisioneros",
+    "Ataques masivos a la red eléctrica con la llegada del frío"
    ],
    "fiabilidad": "Varias fuentes oficiales y de agencias.",
    "zona": "europa",
@@ -318,7 +325,7 @@
   {
    "id": "vuelos-amenazas",
    "titulo": "Oleada de amenazas de bomba en vuelos europeos, también en España",
-   "resumen": "Al menos 18 vuelos en Europa recibieron amenazas de bomba, con aterrizajes de emergencia y escoltas militares. El 3 nov un Ryanair Manchester–Murcia activó los protocolos en España y el aeropuerto de Murcia suspendió operaciones dos horas. Ninguna amenaza resultó real. Polonia lo trata como amenaza híbrida.",
+   "resumen": "Al menos 18 vuelos en Europa recibieron amenazas de bomba, con aterrizajes de emergencia y escoltas militares. El 3 nov un Ryanair Manchester–Murcia activó los protocolos en España y el aeropuerto de Murcia suspendió operaciones dos horas. Ninguna amenaza resultó real. Polonia lo trata como amenaza híbrida. El 12 nov, según un titular de 20minutos, Policía y Guardia Civil investigan una ola de falsos avisos de bomba en España (no he leído el artículo).",
    "dominio": "ciber",
    "region": "Europa y España",
    "lat": 37.8,
@@ -693,38 +700,33 @@
   },
   {
    "id": "huelga-11n",
-   "titulo": "Huelga general en España el miércoles 11 de noviembre",
-   "resumen": "Hoy, 11 nov, huelga general de 24 h. Los sindicatos hablan de amplio seguimiento, con paros en la automoción y gran efecto en la costa. Hay cortes de carreteras por piquetes (casi 30 en Cataluña, A-42 y accesos a Madrid), cargas en Mercamadrid con un detenido, metro y autobuses de Barcelona sin servicio hasta las 16 h y AVE cancelados. No he encontrado datos concretos de Asturias.",
+   "titulo": "Huelga general del 11-N: balance",
+   "resumen": "La huelga general por la vivienda del 11 nov terminó con 53 detenidos y 1.044 incidencias en toda España, según Interior. Hubo escaparates destrozados y saqueos en Barcelona. Sobre el seguimiento, cada parte da su cifra: CCOO habla del 70 % en Madrid, Andalucía y Aragón y del 84 % en Cataluña; CEOE y Cepyme, de menos del 5 %. No he encontrado datos de Asturias.",
    "dominio": "social",
    "region": "España",
    "lat": 43.36,
    "lon": -5.85,
    "zona": "espana",
-   "S": 3,
+   "S": 2,
    "nivel": "confirmado",
-   "tendencia": "estable",
+   "tendencia": "desescala",
    "cadena": null,
    "fecha": "2026-11-11",
    "origen": "analista",
    "fuentes": [
     {
-     "n": "elEconomista – directo",
-     "url": "https://www.eleconomista.es/actualidad/noticias/d8432/11/26/ultima-hora-de-la-huelga-general-del-11-de-noviembre-2026-en-directo-piquetes-carreteras-cortadas-y-transporte.html"
+     "n": "elEconomista – balance de Interior y cifras de seguimiento",
+     "url": "https://www.eleconomista.es/actualidad/noticias/d8433/11/26/Ultima-hora-de-la-manifestacion-de-la-huelga-general-del-11-de-noviembre-2026-en-directo-calles-cortadas-recorrido-e-incidentes.html"
     },
     {
-     "n": "COPE – directo",
-     "url": "https://www.cope.es/actualidad/espana/al-minuto/huelga-general-11-noviembre-sigue-directo-jornada-paro-espana-20261111_3472630.html"
-    },
-    {
-     "n": "elDiario.es – directo",
-     "url": "https://www.eldiario.es/economia/huelga-general-11-noviembre-ultima-hora-directo-arranca-gran-paro-vivienda_133_13653845.html"
+     "n": "El Nacional – seguimiento desigual",
+     "url": "https://www.elnacional.cat/es/sociedad/huelga-general-en-catalunya-estado-en-directo-minuto-minuto-movilizaciones-11n-hoy_13346_126.html"
     }
    ],
    "vigilar": [
-    "Servicios mínimos en Asturias",
-    "Cortes de carreteras y transporte el 11-N"
+    "Nuevas convocatorias"
    ],
-   "fiabilidad": "Convocatoria registrada ante el Ministerio de Trabajo."
+   "fiabilidad": "Las cifras de detenidos e incidencias son de Interior. Las de seguimiento son de parte."
   },
   {
    "id": "elecciones-29n",
@@ -751,13 +753,48 @@
     "Ciberataques a webs oficiales"
    ],
    "fiabilidad": "Hecho oficial (Real Decreto de convocatoria)."
+  },
+  {
+   "id": "temporal-bruna-charles",
+   "titulo": "Las borrascas Bruna y Charles se retiran",
+   "resumen": "Las borrascas Bruna y Charles dejaron desde el 8 nov lluvias muy fuertes, rachas de viento muy fuertes y temporal marítimo, sobre todo en el oeste y el sur peninsular y en Canarias, con avisos rojos en algunas zonas. AEMET prevé una mejoría progresiva desde el jueves 12, aunque en Galicia, el Cantábrico y los Pirineos siguen los chubascos, localmente fuertes. No he encontrado avisos naranjas ni rojos para Asturias.",
+   "dominio": "natural",
+   "region": "España",
+   "lat": 40.4,
+   "lon": -3.7,
+   "zona": "espana",
+   "S": 3,
+   "nivel": "oficial",
+   "tendencia": "desescala",
+   "cadena": null,
+   "fecha": "2026-11-12",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "AEMET – aviso especial 38/2026 (9 nov)",
+     "url": "https://www.aemet.es/es/eltiempo/prediccion/destacados/p5_t/pdf/20261109182820_p52tesp1.pdf"
+    },
+    {
+     "n": "Protección Civil – alerta por Bruna y Charles",
+     "url": "https://www.interior.gob.es/opencms/ca/detalle/articulo/Proteccion-Civil-y-Emergencias-mantiene-la-alerta-por-lluvias-fuertes-y-persistentes-rachas-muy-fuertes-de-viento-y-temporal-maritimo-en-el-sur-y-oeste-peninsulares-y-Canarias/"
+    },
+    {
+     "n": "OKDiario – mejoría desde el jueves 12",
+     "url": "https://okdiario.com/sociedad/aemet-pone-fecha-cambio-tiempo-espana-borrascas-dejan-lluvias-fuertes-rachas-viento-descenso-temperaturas-20751196"
+    }
+   ],
+   "vigilar": [
+    "Avisos de AEMET para Asturias (la Brújula los lee sola)",
+    "Crecidas de ríos tras días de lluvia"
+   ],
+   "fiabilidad": "Avisos oficiales de AEMET y Protección Civil."
   }
  ],
  "cadenas": [
   {
    "id": "oviedo",
    "titulo": "Oviedo: tiroteo y mochila bomba en Villafría",
-   "estado": "Autor identificado y huido; su pareja, detenida",
+   "estado": "Autor huido y buscado en toda España; su pareja, detenida",
    "pasos": [
     {
      "fecha": "2026-11-10 07:30",
@@ -786,8 +823,13 @@
     },
     {
      "fecha": "2026-11-11",
-     "texto": "El autor sigue en busca y captura. Su pareja, detenida, habría dado datos falsos para que ganara tiempo.",
-     "nivel": "varios_medios"
+     "texto": "La Policía confirma que la búsqueda sigue activa en Oviedo y alrededores, que puede ir armado y que la alerta es nacional. La bomba llevaba temporizador y metralla. Su pareja, detenida, habría dado datos falsos para que ganara tiempo.",
+     "nivel": "oficial"
+    },
+    {
+     "fecha": "2026-11-12",
+     "texto": "Acto civil de despedida al subinspector fallecido. La búsqueda sigue sin novedades; según La Nueva España, hubo un nuevo rastreo cerca de su casa y otra alarma por una mochila sospechosa (sin detalles).",
+     "nivel": "medios_locales"
     }
    ],
    "siguiente": [
@@ -798,7 +840,7 @@
   {
    "id": "iran",
    "titulo": "Guerra de Irán → Ormuz → energía en España",
-   "estado": "EE. UU. aparca los ataques «por ahora»; Ormuz sigue cerrado",
+   "estado": "Sin negociación: Trump dice que no necesita un acuerdo; Ormuz sigue cerrado",
    "pasos": [
     {
      "fecha": "2026-02-28",
@@ -849,6 +891,11 @@
      "fecha": "2026-11-10",
      "texto": "Trump: no hace falta atacar «por ahora». Rubio: no ve necesidad de reanudar los combates. El Brent baja un 6 %. Siguen los ataques a buques en Ormuz.",
      "nivel": "oficial"
+    },
+    {
+     "fecha": "2026-11-12",
+     "texto": "Trump aparta a Vance de la negociación y dice que «no necesitamos un acuerdo con Irán». Irán advierte que las bases usadas en un nuevo ataque serán objetivo.",
+     "nivel": "oficial"
     }
    ],
    "siguiente": [
@@ -860,7 +907,7 @@
   {
    "id": "ucrania-paz",
    "titulo": "Ucrania: negociaciones de paz",
-   "estado": "Negociación en Abu Dabi (10–11 nov), sin resultados aún",
+   "estado": "Abu Dabi acaba sin acuerdo; canje de prisioneros pactado",
    "pasos": [
     {
      "fecha": "2026-01/02",
@@ -885,6 +932,11 @@
     {
      "fecha": "2026-11-10",
      "texto": "Empiezan en Abu Dabi las primeras conversaciones a tres desde febrero.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-11-11",
+     "texto": "Fin de las conversaciones: canje de prisioneros a gran escala, sin avance en territorio ni alto el fuego. Los enviados de EE. UU. irán a Moscú.",
      "nivel": "confirmado"
     }
    ],
@@ -969,7 +1021,7 @@
  "escenarios": [
   {
    "titulo": "EE. UU. reanuda los ataques contra Irán",
-   "prob": "80 % según Rapidan Energy (5 nov, opinión de un analista); desde entonces EE. UU. ha hecho dos ataques limitados",
+   "prob": "Sin estimación verificada. El 12 nov Trump dice que no necesita un acuerdo, pero dos días antes había aparcado los ataques «por ahora».",
    "impacto": "Indirecto en Asturias: más subidas de combustible, electricidad y transporte. Sin riesgo militar directo previsto en las fuentes revisadas.",
    "senales": [
     "Ultimátum público",
@@ -979,10 +1031,10 @@
   },
   {
    "titulo": "Acuerdo con Irán y reapertura de Ormuz",
-   "prob": "Sin estimación verificada. EE. UU. aparca los ataques, pero Irán dice que no hay negociaciones en curso.",
+   "prob": "Baja a corto plazo: el 12 nov Trump aparta a su negociador y dice que no necesita un acuerdo (no es una estimación numérica).",
    "impacto": "Bajada del petróleo y alivio de precios en semanas.",
    "senales": [
-    "Respuesta de EE. UU. a la propuesta vía Catar",
+    "Que la Casa Blanca nombre un nuevo negociador",
     "Aumento del tráfico de petroleros en Ormuz"
    ]
   },
@@ -1207,6 +1259,18 @@
   "descartadas": []
  },
  "verificaciones": [
+  {
+   "cuenta": "Mensajes en redes y algunos medios (10 nov)",
+   "dice": "«El Ruso», autor de la explosión de Oviedo, ha sido detenido.",
+   "veredicto": "falso",
+   "explica": "A 12 nov sigue huido. La Policía Nacional confirmó el 11 nov que la búsqueda sigue activa y que la alerta es nacional. Quien está detenida es su pareja. Cuando lo detengan, lo anunciará la Policía Nacional; desconfía de capturas o vídeos que circulen antes.",
+   "fuentes": [
+    {
+     "n": "Telecinco – sigue en busca y captura (11 nov)",
+     "url": "https://www.telecinco.es/noticias/sucesos/20261111/el-ruso-tiroteo-explosion-oviedo-podria-ir-armado-alerta-todo-territorio-nacional_18_020684446.html"
+    }
+   ]
+  },
   {
    "cuenta": "Publicación en X sobre el Sol (8 nov, 17:16, 341 000 visualizaciones)",
    "dice": "«URGENTE»: una llamarada solar de nivel X podría ser inminente; el grupo de manchas 4566 lleva 6 llamaradas M y «está a punto de estallar».",
