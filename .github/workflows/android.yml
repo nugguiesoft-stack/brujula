@@ -1,0 +1,54 @@
+# Compila la app Android y la publica en «Releases» para descargarla desde el móvil.
+# Se lanza al cambiar algo en android/ o a mano (Actions → «App Android» → Run workflow). No hay nada programado.
+name: App Android
+on:
+  push:
+    branches: [main]
+    paths: ["android/**", ".github/workflows/android.yml"]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency: { group: android, cancel-in-progress: true }
+jobs:
+  compilar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - uses: gradle/actions/setup-gradle@v4
+        with: { gradle-version: "8.10.2" }
+      - name: Clave de firma
+        env:
+          CLAVES_B64: ${{ secrets.ANDROID_CLAVES_B64 }}
+        run: |
+          if [ -n "$CLAVES_B64" ]; then
+            echo "$CLAVES_B64" | base64 -d > "$RUNNER_TEMP/brujula.jks"
+            echo "ALMACEN_CLAVES=$RUNNER_TEMP/brujula.jks" >> "$GITHUB_ENV"
+            echo "Firmando con la clave guardada en los secretos del repositorio."
+          else
+            echo "Firmando con la clave pública del repositorio (android/firma/). Ver android/LEEME.md."
+          fi
+      - name: Compilar
+        working-directory: android
+        env:
+          NUMERO_VERSION: ${{ github.run_number }}
+          ALMACEN_CLAVE: ${{ secrets.ANDROID_CLAVES_CLAVE }}
+        run: gradle --no-daemon assembleRelease
+      - name: Comprobar la APK
+        run: |
+          cp android/app/build/outputs/apk/release/app-release.apk brujula.apk
+          ls -l brujula.apk
+          BT=$(ls -d "$ANDROID_HOME"/build-tools/* | sort -V | tail -1)
+          "$BT/apksigner" verify --print-certs brujula.apk | head -4
+          "$BT/aapt2" dump badging brujula.apk | head -6
+      - uses: actions/upload-artifact@v4
+        with: { name: brujula-apk, path: brujula.apk }
+      - name: Publicar en Releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete app --yes --cleanup-tag 2>/dev/null || true
+          gh release create app brujula.apk --title "Brújula para Android (compilación ${{ github.run_number }})" --latest \
+            --notes "Descarga **brujula.apk** desde el móvil y ábrela para instalarla. Instrucciones: android/LEEME.md. Compilada automáticamente a partir del código de este repositorio (${GITHUB_SHA::7})."

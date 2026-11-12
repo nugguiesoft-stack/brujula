@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app">Brújula</string>
+    <string name="panel">Avisos y mando</string>
+    <string name="widget">Brújula · índice de Asturias</string>
+    <color name="fondo">#0D1318</color>
+    <color name="panel">#151E26</color>
+    <color name="tinta">#E8EEF2</color>
+    <color name="tenue">#8FA3B0</color>
+    <color name="acento">#F2A93B</color>
+    <style name="Tema" parent="android:Theme.Material.NoActionBar">
+        <item name="android:colorPrimary">@color/fondo</item>
+        <item name="android:colorPrimaryDark">@color/fondo</item>
+        <item name="android:colorAccent">@color/acento</item>
+        <item name="android:windowBackground">@color/fondo</item>
+        <item name="android:statusBarColor">@color/fondo</item>
+        <item name="android:navigationBarColor">@color/fondo</item>
+    </style>
+</resources>

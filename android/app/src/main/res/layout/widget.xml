@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/w_raiz"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="horizontal"
+    android:background="@drawable/widget_fondo" android:padding="10dp" android:gravity="center_vertical">
+    <TextView android:id="@+id/w_num" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:text="–" android:textSize="34sp" android:textStyle="bold" android:textColor="#E8EEF2" android:paddingEnd="10dp" android:paddingStart="4dp" />
+    <LinearLayout android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content" android:orientation="vertical">
+        <TextView android:id="@+id/w_nivel" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Brújula" android:textSize="15sp" android:textStyle="bold" android:textColor="#E8EEF2" android:maxLines="1" />
+        <TextView android:id="@+id/w_otros" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="Abre la app para calcular" android:textSize="12sp" android:textColor="#B8C6CF" android:maxLines="1" />
+        <TextView android:id="@+id/w_hora" android:layout_width="wrap_content" android:layout_height="wrap_content"
+            android:text="" android:textSize="11sp" android:textColor="#8FA3B0" android:maxLines="1" />
+    </LinearLayout>
+</LinearLayout>

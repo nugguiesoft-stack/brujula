@@ -192,3 +192,4 @@ button.enlace:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .gauges>*{min-width:0}
 .cols>div{grid-template-columns:minmax(0,1fr)}.cols>div>*,.cols>section>*{min-width:0}.timeline li{min-width:0}.timeline .t{min-width:0;overflow-wrap:anywhere}
 #chains{grid-template-columns:minmax(0,1fr)}#chains>div{min-width:0}
+html,body{overflow-x:clip}

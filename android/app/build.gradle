@@ -1,0 +1,34 @@
+plugins { id "com.android.application" }
+// Sin dependencias externas: solo el SDK de Android. Así la app pesa poco y es fácil de mantener.
+def numero = (System.getenv("NUMERO_VERSION") ?: "1") as Integer
+// Firma: por defecto, la clave que va en el repositorio (android/firma/). Es pública a propósito: permite actualizar la app
+// sin desinstalar y sin configurar nada. Si prefieres una clave privada, guárdala como secreto (ver android/LEEME.md).
+def almacen = System.getenv("ALMACEN_CLAVES") ?: rootProject.file("firma/brujula-publica.jks").path
+def claveAlmacen = System.getenv("ALMACEN_CLAVES") ? System.getenv("ALMACEN_CLAVE") : "brujula"
+android {
+    namespace "es.nugguie.brujula"
+    compileSdk 35
+    defaultConfig {
+        applicationId "es.nugguie.brujula"
+        minSdk 26
+        targetSdk 34
+        versionCode numero
+        versionName "1.0." + numero
+    }
+    signingConfigs {
+        propia {
+            storeFile file(almacen)
+            storePassword claveAlmacen
+            keyAlias "brujula"
+            keyPassword claveAlmacen
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            signingConfig signingConfigs.propia
+        }
+    }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+    lint { checkReleaseBuilds false; abortOnError false }
+}
