@@ -2,6 +2,7 @@
 # Prueba de humo en el emulador (la lanza el workflow «App Android · prueba en emulador»).
 set -u
 P=es.nugguie.brujula; mkdir -p capturas; fallo=0
+read ANCHO ALTO <<<"$(adb shell wm size | tr -c '0-9' ' ')"; echo "Pantalla: ${ANCHO}x${ALTO}"
 adb install -r android/app/build/outputs/apk/release/app-release.apk || exit 1
 adb shell pm grant $P android.permission.POST_NOTIFICATIONS
 adb logcat -c
@@ -26,7 +27,7 @@ if [ -n "$B" ]; then
       adb shell uiautomator dump /sdcard/u.xml >/dev/null; adb shell cat /sdcard/u.xml > capturas/u.xml
       B=$(grep -o "text=\"$1[^\"]*\"[^>]*bounds=\"\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]\"" capturas/u.xml | grep -o '\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]' | head -1)
       if [ -n "$B" ]; then read x1 y1 x2 y2 <<<"$(echo "$B" | tr -c '0-9' ' ')"; adb shell input tap $(((x1+x2)/2)) $(((y1+y2)/2)); sleep 3; echo "pulsado: $1"; return 0; fi
-      adb shell input swipe 500 1500 500 700 400; sleep 1
+      adb shell input swipe $((ANCHO/2)) $((ALTO*3/4)) $((ANCHO/2)) $((ALTO/3)) 400; sleep 1
     done; echo "AVISO: no encuentro el botón «$1»"; return 1
   }
   pulsar "Probar un aviso normal"; pulsar "Probar la alarma"

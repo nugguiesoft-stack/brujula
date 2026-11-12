@@ -122,6 +122,14 @@ if (process.env.DETALLE) {
   console.log("\n===== DETALLE =====");
   for (const u of ["https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/rss/CAP_AFAE_wah_RSS.xml", "https://www.rtpa.es/rss", "https://www.ign.es/ign/RssTools/sismologia.xml", "https://www.tsunami.gov/events/xml/PAAQAtom.xml", "https://www.incibe.es/incibe-cert/alerta-temprana/avisos-sci/feed", "https://www.gdacs.org/xml/rss.xml", "https://www.lne.es/rss/", "https://www.dsn.gob.es/es/rss.xml"])
     console.log("\n-- " + u + "\n   " + bloque(await crudo(u)));
+  // Titulares reales de hoy pasados por el clasificador: sirve para cazar falsas alarmas
+  const { clasifica, ALARMA } = await import("../lib/clasifica.js"); const { senalesDe } = await import("../lib/titulares.js");
+  console.log("\n-- TITULARES REALES QUE EL VIGILANTE CONSIDERARÍA GRAVES (medio · tema · gravedad · lugar · marcas)");
+  for (const [n, u, local] of [["El Comercio", "https://www.elcomercio.es/rss/2.0/?section=asturias", 1], ["La Nueva España", "https://www.lne.es/rss/", 1], ["RTPA", "https://www.rtpa.es/rss", 1], ["Europa Press", "https://www.europapress.es/rss/rss.aspx?ch=94"], ["ABC", "https://www.abc.es/rss/feeds/abc_ultima.xml"], ["El País", "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada"], ["El Mundo", "https://e00-elmundo.uecdn.es/elmundo/rss/portada.xml"], ["20minutos", "https://www.20minutos.es/rss"], ["El Debate", "https://www.eldebate.com/rss/home.xml"], ["BBC", "https://feeds.bbci.co.uk/news/world/rss.xml"], ["Guardian", "https://www.theguardian.com/world/rss"]]) {
+    const its = rss(await crudo(u)); const [ss] = senalesDe(its, n, "prensa", { clasifica, ALARMA }, { horas: 24, local: !!local });
+    console.log(`   ${n}: ${its.length} titulares, ${ss.length} graves`);
+    for (const x of ss) console.log(`      ${x.tema} S${x.S} ${x.lugar.nombre || "-"}/${x.lugar.zona}${x.desmiente ? " DESMIENTE" : ""}${x.atribuido ? " ATRIBUIDO" : ""} · ${x.titulo.slice(0, 150)}`);
+  }
   const aemet = await crudo("https://www.aemet.es/documentos_d/eltiempo/prediccion/avisos/rss/CAP_AFAE_wah_RSS.xml");
   console.log("\n-- AEMET: zonas distintas en títulos:\n   " + [...new Set(rss(aemet).map((i) => i.title.split(". ").slice(3).join(". ")))].join(" | ").slice(0, 3000));
   console.log("   niveles en títulos: " + [...new Set(rss(aemet).map((i) => i.title.split(". ")[1]))].join(" | ") + " · «red» aparece en: " + (aemet.match(/.{20}\bred\b.{20}/i) || ["(solo dentro de otras palabras)"])[0]);
