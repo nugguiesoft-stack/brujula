@@ -6,20 +6,22 @@ export function fechaDe(it) {
   return t || 0;
 }
 // Convierte los titulares de un medio en señales. Devuelve [señales, leídos].
-export function senalesDe(its, medio, tipo, { clasifica, ALARMA }, { horas = 6, local = false } = {}) {
+export function senalesDe(its, medio, tipo, { clasifica, ALARMA, lugar }, { horas = 6, local = false } = {}) {
   const out = []; let leidos = 0;
   for (const it of its) {
     leidos++; const t = fechaDe(it);
     if (t && (Date.now() - t > horas * 36e5 || t - Date.now() > 2 * 36e5)) continue;   // viejo, o con fecha futura (agenda de actos)
     if (/\/(agenda|club|opinion|deportes|cultura|ocio|gastronomia|motor|tecnologia|gente|sociedad\/famosos)\//i.test(it.url || "")) continue;
-    const txt = it.title + ". " + (it.desc || "").slice(0, 200); const k = clasifica(txt), kt = clasifica(it.title);
+    // Se clasifica SOLO el titular: las entradillas mencionan de pasada «guerra», «OTAN» o «nuclear» en noticias que no van de eso
+    // (comprobado con titulares reales el 12 nov 2026). La entradilla solo se usa para situar el suceso si el titular no nombra el lugar.
+    const kt = clasifica(it.title), k = { ...kt, lugar: kt.lugar.nombre || !lugar ? kt.lugar : lugar((it.desc || "").slice(0, 160)) };
     const deAqui = local && !k.lugar.nombre && !/nacional|internacional|espana|mundo|economia|politica|deportes/i.test(it.url || "");
-    const lugar = deAqui ? { nombre: "Asturias", lat: 43.36, lon: -5.85, zona: "asturias" } : k.lugar;
-    const zona = lugar.zona, umbral = zona === "asturias" ? 3 : zona === "espana" ? 4 : 5;
+    const sitio = deAqui ? { nombre: "Asturias", lat: 43.36, lon: -5.85, zona: "asturias" } : k.lugar;
+    const zona = sitio.zona, umbral = zona === "asturias" ? 3 : zona === "espana" ? 4 : 5;
     // Un desmentido interesa aunque su «gravedad» sea baja, si es de aquí
-    if (k.S < umbral && !(kt.desmiente && (lugar.zona === "asturias" || lugar.zona === "espana"))) continue;
+    if (k.S < umbral && !(kt.desmiente && (sitio.zona === "asturias" || sitio.zona === "espana"))) continue;
     out.push({ clave: "pr:" + medio + ":" + (it.id || it.url || it.title), fuente: "pr:" + medio, fuenteNombre: medio, tipo, tema: k.tema,
-      S: Math.min(10, k.S + (ALARMA.test(it.title) ? 1 : 0)), lugar, titulo: it.title, url: it.url, detalle: (it.desc || "").slice(0, 280),
+      S: Math.min(10, k.S + (ALARMA.test(it.title) ? 1 : 0)), lugar: sitio, titulo: it.title, url: it.url, detalle: (it.desc || "").slice(0, 280),
       desmiente: kt.desmiente, atribuido: kt.atribuido && !kt.desmiente });
   }
   return [out, leidos];

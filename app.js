@@ -520,7 +520,9 @@ async function scanPrensaDirecta(g) {
     .filter((it) => (!it.t || (Date.now() - it.t < 24 * 36e5 && it.t - Date.now() < 2 * 36e5)) && !/\/(agenda|club|opinion|deportes|cultura|ocio|gastronomia)\//i.test(it.url || ""));
   const sel = [];
   for (const it of items) {
-    const c = classifyPost(it.title + " " + (g.oficial ? "" : it.desc.slice(0, 200))), ct = classifyPost(it.title);
+    // Se clasifica SOLO el titular: las entradillas mencionan de pasada «guerra», «OTAN» o «nuclear» en noticias que no van de eso.
+    // La entradilla solo se usa para situar el suceso si el titular no nombra el lugar.
+    const ct = classifyPost(it.title), c = { ...ct, pl: ct.pl.lat != null || g.oficial ? ct.pl : placeOf(it.desc.slice(0, 160), "") };
     // Un medio asturiano que no nombra el lugar habla, casi siempre, de Asturias
     const pl = g.local && c.pl.lat == null && !/nacional|internacional|espana|mundo|economia|politica/i.test(it.url || "") ? PLACES[0] : c.pl;
     const min = g.oficial ? 2 : pl.zona === "asturias" ? 3 : pl.zona === "espana" ? 4 : 5;
@@ -1259,11 +1261,14 @@ const DESMIENTE = /desmient|desmentid|\bniega\b|\bniegan\b|no es cierto|es falso
 const ATRIBUIDO = /seg[uú]n (un|el|los|fuentes|medios|testigos|vecinos|redes)|\bsindicato|fuentes (policiales|sindicales|cercanas|no oficiales|sin confirmar)|da por (muerto|fallecid|hecho)|dan por (muerto|fallecid|hecho)|habr[ií]a(n)? (muerto|fallecido|sido)|podr[ií]a(n)? haber|sin confirmar|no confirmad|al parecer|presunt|supuest|reportedly|unconfirmed|allegedly|rumou?rs?\b/i;
 const RUIDO = /\b(liga|champions|gol(es)?|partido de (f[uú]tbol|baloncesto)|fichaje|entrenador|pel[ií]cula|estreno|festival|concierto|videojuego|novela|documental|aniversario|hace \d+ a[ñn]os|opini[oó]n|editorial|hor[oó]scopo|receta|bomba de (calor|agua|humo)|bombazo|bomba informativa|ataque (de risa|al coraz[oó]n|de ansiedad|card[ií]aco)|guerra (comercial|de precios|de audiencias|arancelaria))\b/gi;
 const DOMKW = [
-  ["nuclear", 8, /nuclear|yodo|iodine|radiac|radiation|atómic|atomic/i],
+  ["nuclear", 8, /ataque nuclear|nuclear (strike|attack|war|accident|alert)|guerra nuclear|arma(s)? nuclear(es)? t[aá]ctica|detonaci[oó]n nuclear|fuga radiactiva|escape radiactivo|radiation leak|nube radiactiva|alerta nuclear|accidente nuclear|pastillas de yodo|iodine tablets|emergencia nuclear|nuclear emergency/i],
+  ["nuclear", 4, /nuclear|radiac|radiation|atómic|atomic|yodo|iodine/i],
   ["seguridad", 6, /atentado|terroris|tiroteo|tirotead|disparos|shooting|gunman|pistolero|artefacto explosivo|mochila bomba|coche bomba|car bomb|paquete bomba|\bbomba\b|explosivos?\b|rehenes|hostage|(polic[ií]as?|agentes?|guardias? civil(es)?) (muert|herid|fallec|tirotead|abatid)\w*|da(n)? por muert\w+|yihadis|jihadi|amenaza de bomba|bomb threat/i],
-  ["banca", 5, /\bbanc|\bbank|corralito|efectivo|cash|cajero|atm\b|pánico bancario|bank run|depósit/i],
+  ["banca", 5, /corralito|bank run|retirada masiva de dep[oó]sitos|fuga de dep[oó]sitos|quiebra (de|del|de la) (banco|caja|entidad)|bank (collapse|failure|failed)|rescate bancario|crisis bancaria|banking crisis|p[aá]nico bancario|suspensi[oó]n de pagos|\bdefault\b|impago de (la )?deuda|control(es)? de capital(es)?|capital controls|cierre de bancos|bancos cerrados|sin efectivo|cajeros (vac[ií]os|sin)|ca[ií]da (del|de la) (sistema de pagos|bizum)|colapso (financiero|burs[aá]til)|market crash|bolsa se desploma/i],
   ["ciber", 5, /hack|ciber|cyber|ransomware|ddos|malware|infraestructura crítica|critical infrastructure/i],
-  ["belico", 6, /misil|missile|ataque|attack|strike|bombard|guerra|\bwar\b|invasi|tropas|troops|ejército|army|dron|drone|otan|nato|militar|military|evacua/i],
+  // Solo es grave un ataque o movimiento militar en curso; la simple mención de «OTAN», «guerra» o «militares» es política (comprobado con titulares reales)
+  ["belico", 6, /misil|missile|bombarde|bombing|airstrikes?|air strikes?|(missile|drone|military|israeli|russian|us|u\.s\.) strikes?|strikes? (on|in|against|hit|kill)|ataque (a[eé]reo|con drones|con misiles|militar|nuclear|ruso|israel[ií]|iran[ií]|ucraniano|de ee\.? ?uu)|ataca (a|con)|atacan (a|con)|drone attack|invasi[oó]n|invade|interceptad|intercepted|shot down|derrib(a|an|ó|ado) |air raid|sirenas antia[eé]reas|shelling|artiller[ií]a|declara(n)? la guerra|declares? war|estado de guerra|movilizaci[oó]n (general|militar|de reservistas)|cierra(n)? (el |su )?espacio a[eé]reo|art[ií]culo 5|article 5|buque de guerra|warship/i],
+  ["belico", 3, /guerra|\bwar\b|otan|\bnato\b|tropas|troops|ej[eé]rcito|\barmy\b|militar|military|\bdrones?\b|ataque|attack/i],
   ["energia", 4, /petróleo|\boil\b|\bgas\b|apagón|blackout|combustible|fuel|electricidad|power outage|gasolina|diésel/i],
   ["social", 3, /huelga|general strike|protesta|protest|disturbios|riots|manifestaci/i],
   ["sanitario", 4, /virus|brote|outbreak|pandemi|epidemi|contagio/i],
@@ -1334,6 +1339,7 @@ function classifyPost(text) {
   for (const [re, v] of BOOST) if (re.test(limpio)) S = v >= 6 ? Math.max(S, v) : Math.min(10, S + v);
   if (S > 2) for (const [re, v] of SUBE_LOCAL) if (re.test(limpio)) S = Math.max(S, v);
   if (/simulacro|ejercicio de (emergencia|evacuaci[oó]n)|\bdrill\b/i.test(text)) S = Math.min(S, 2);
+  if (dominio === "seguridad" && /amenaza de bomba|bomb threat|avisos? de bomba|falsos? avisos?|falsa (alarma|amenaza)|hoax|(mochila|paquete|objeto|maleta) sospechos|exterrorista|juicio|condena|sentencia|aniversario|acto civil|funeral|despide|homenaje|luto/i.test(text) && !/estalla|explota|explosi[oó]n|nuevo tiroteo/i.test(text)) S = Math.min(S, 4);
   if (/(detenid|arrestad|desarticulad)\w* .*(planeaba|preparaba|pretend[ií]a)|missile test|prueba de misil/i.test(text)) S = Math.min(S, 4);
   const desmiente = DESMIENTE.test(text), atribuido = ATRIBUIDO.test(text) && !desmiente;
   const pl = placeOf(text, "");
@@ -1348,6 +1354,8 @@ function classifyPost(text) {
     for (const t of tk) if (et.has(t)) sc += 0.5;
     if (sc > bestScore) { bestScore = sc; best = e; }
   }
+  // Una explosión o un ataque aquí, sin nada militar de por medio, es un asunto de seguridad, no una guerra
+  if ((dominio === "belico" || dominio === "natural") && /explosi[oó]n|ataque|attack/i.test(text) && ["asturias", "espana"].includes(pl.zona) && !/misil|militar|ej[eé]rcito|\bdron|otan|bombarde|invasi|buque|a[eé]reo|gas|qu[ií]mica|f[aá]brica|incendio/i.test(text)) { dominio = "seguridad"; S = Math.max(S, 6); }
   return { dominio, S, pl, flags, desmiente, atribuido, match: bestScore >= 3.5 ? best : null };
 }
 

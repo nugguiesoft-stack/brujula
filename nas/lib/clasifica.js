@@ -64,11 +64,13 @@ export const ATRIBUIDO = /seg[uú]n (un|el|los|fuentes|medios|testigos|vecinos|r
 const TEMAS = [
   ["nuclear", 8, /nuclear|yodo|iodine|radiac|radiation|radiolog|at[oó]mic|atomic|ядерн/i],
   ["industrial", 5, /planta qu[ií]mica|petroqu[ií]mica|refiner[ií]a|fuga (de gas|t[oó]xica|qu[ií]mica)|nube t[oó]xica|escape de (gas|amon[ií]aco|cloro)|vertido t[oó]xico|chemical (plant|leak|spill)|toxic (cloud|leak|gas)|gas leak|derrumbe|collapse/i],
-  ["seguridad", 6, /atentado|terroris|tiroteo|tirotead|disparos|shooting|gunman|pistolero|francotirador|artefacto explosivo|mochila bomba|coche bomba|car bomb|paquete bomba|bomba casera|\bbomba\b|explosivos?\b|toma de rehenes|rehenes|hostage|(polic[ií]as?|agentes?|guardias? civil(es)?) (muert|herid|fallec|tirotead|abatid)\w*|da(n)? por muert\w+|apu[ñn]alamiento m[uú]ltiple|atropello m[uú]ltiple|yihadis|jihadi|c[eé]lula terrorista|amenaza de bomba|bomb threat|nivel de alerta antiterrorista/i],
-  ["belico", 6, /misil|missile|ataque|attack|strike|bombard|guerra|\bwar\b|invasi|tropas|troops|ej[eé]rcito|army|\bdrones?\b|otan|nato|militar|military|interceptad|intercepted|air raid|sirenas|sirens|explosi[oó]n|explosion/i],
+  ["seguridad", 6, /atentado|(^|[^a-zñ])terroris|tiroteo|tirotead|disparos|shooting|gunman|pistolero|francotirador|artefacto explosivo|mochila bomba|coche bomba|car bomb|paquete bomba|bomba casera|\bbomba\b|explosivos?\b|toma de rehenes|rehenes|hostage|(polic[ií]as?|agentes?|guardias? civil(es)?) (muert|herid|fallec|tirotead|abatid)\w*|da(n)? por muert\w+|apu[ñn]alamiento m[uú]ltiple|atropello m[uú]ltiple|yihadis|jihadi|c[eé]lula terrorista|amenaza de bomba|bomb threat|nivel de alerta antiterrorista/i],
+  // Bélico: solo es grave un ataque o un movimiento militar en curso. La simple mención de «OTAN», «guerra» o «militares» es política, no peligro.
+  ["belico", 6, /misil|missile|bombarde|bombing|airstrikes?|air strikes?|(missile|drone|military|israeli|russian|us|u\.s\.) strikes?|strikes? (on|in|against|hit|kill)|ataque (a[eé]reo|con drones|con misiles|militar|nuclear|ruso|israel[ií]|iran[ií]|ucraniano|de ee\.? ?uu)|ataca (a|con)|atacan (a|con)|drone attack|invasi[oó]n|invade|interceptad|intercepted|shot down|derrib(a|an|ó|ado) |air raid|sirenas antia[eé]reas|shelling|artiller[ií]a|declara(n)? la guerra|declares? war|estado de guerra|movilizaci[oó]n (general|militar|de reservistas)|cierra(n)? (el |su )?espacio a[eé]reo|art[ií]culo 5|article 5|explosi[oó]n|explosion|buque de guerra|warship/i],
+  ["belico", 3, /guerra|\bwar\b|otan|\bnato\b|tropas|troops|ej[eé]rcito|\barmy\b|militar|military|\bdrones?\b|ataque|attack/i],
   ["energia", 4, /apag[oó]n|blackout|power outage|corte (de luz|el[eé]ctrico)|sin luz|red el[eé]ctrica|petr[oó]leo|\boil\b|combustible|fuel|gasolina|di[eé]sel|gasoducto|pipeline/i],
   ["ciber", 5, /hack|ciber|cyber|ransomware|ddos|malware|ca[ií]da (de|del) (sistema|servicio)|outage|infraestructura cr[ií]tica/i],
-  ["banca", 5, /\bbanc|\bbank|corralito|cajero|\batm\b|p[aá]nico bancario|bank run|dep[oó]sit|bolsa se desploma|market crash/i],
+  ["banca", 5, /corralito|bank run|retirada masiva de dep[oó]sitos|fuga de dep[oó]sitos|quiebra (de|del|de la) (banco|caja|entidad)|bank (collapse|failure|failed)|rescate bancario|crisis bancaria|banking crisis|p[aá]nico bancario|intervenid[oa] (el|la) (banco|caja)|suspensi[oó]n de pagos|\bdefault\b|impago de (la )?deuda|control(es)? de capital(es)?|capital controls|cierre de bancos|bancos cerrados|ca[ií]da (del|de la) (sistema de pagos|bizum)|colapso (financiero|burs[aá]til)|crash burs[aá]til|market crash|bolsa se desploma|prima de riesgo se dispara/i],
   ["natural", 4, /terremoto|sismo|earthquake|tsunami|inundaci|flood|incendio|wildfire|temporal|hurac[aá]n|hurricane|erupci[oó]n|eruption|dana\b|riada/i],
   ["sanitario", 4, /virus|brote|outbreak|pandemi|epidemi|contagio|cuarentena|quarantine/i],
   ["social", 3, /huelga|strike|protesta|protest|disturbios|riots|manifestaci|toque de queda|curfew/i]
@@ -97,9 +99,15 @@ export function clasifica(texto = "") {
   const limpio = texto.replace(RUIDO, " ");
   for (const [t, base, re] of TEMAS) if (re.test(limpio)) { tema = t; S = base; break; }
   if (tema === "otros") for (const [t, base, re] of TEMAS) if (re.test(texto)) { tema = t; S = Math.min(base, 3); break; }
+  // Una explosión o un ataque aquí, sin nada militar de por medio, es un asunto de seguridad, no una guerra
+  if (tema === "belico" && S >= 6 && ["asturias", "espana"].includes(lugar(texto).zona) && !/misil|militar|ej[eé]rcito|\bdron|otan|bombarde|invasi|buque|a[eé]reo/i.test(texto)) tema = "seguridad";
   const desmiente = DESMIENTE.test(texto), atribuido = ATRIBUIDO.test(texto);
   if (tema === "otros") return { tema, S: 0, lugar: lugar(texto), desmiente, atribuido };
   if (S > 3) for (const [re, v] of SUBE) if (re.test(texto)) S = Math.max(S, v);
   if (/simulacro|ejercicio de (emergencia|evacuaci[oó]n)|\bdrill\b/i.test(texto)) S = Math.min(S, 2);
+  // Amenazas, falsas alarmas, objetos sospechosos, juicios y efemérides: se siguen, pero no son un ataque en curso
+  if (tema === "seguridad" && /amenaza de bomba|bomb threat|avisos? de bomba|falsos? avisos?|falsa (alarma|amenaza)|hoax|(mochila|paquete|objeto|maleta) sospechos|exterrorista|ex terrorista|juicio|condena|sentencia|aniversario|acto civil|funeral|despide|homenaje|luto/i.test(texto) && !/estalla|explota|explosi[oó]n|nuevo tiroteo/i.test(texto)) S = Math.min(S, 4);
+  // Detenciones preventivas y pruebas anunciadas: son noticia, no peligro en curso
+  if (/(detenid|arrestad|desarticulad|arrested)\w* .*(planeaba|preparaba|pretend[ií]a|plotting|planned)|(planeaba|preparaba) (un )?atentado|missile test|prueba de misil|ensayo (bal[ií]stico|de misil)/i.test(texto)) S = Math.min(S, 4);
   return { tema, S, lugar: lugar(texto), desmiente, atribuido };
 }
