@@ -1,6 +1,6 @@
 {
  "estado": {
-  "actualizado": "2026-11-12T23:59:00+01:00",
+  "actualizado": "2026-11-13T00:45:00+01:00",
   "lugar": "Asturias (España)",
   "resumen": "En Asturias, «El Ruso», autor de la mochila bomba de Villafría (Oviedo), sigue huido tres días después. La Policía lo busca con más de cien agentes, cree que puede ir armado y no descarta que tenga más explosivos. Si sabes algo, llama al 091. En España, el temporal de Bruna y Charles se retira, aunque en el norte siguen los chubascos. La huelga general del 11-N terminó con 53 detenidos y disturbios en Barcelona. Fuera: Trump aparta a Vance de la negociación con Irán y dice que «no necesita» un acuerdo; Ormuz sigue cerrado. Las conversaciones de Abu Dabi sobre Ucrania acabaron con un canje de prisioneros, pero sin acuerdo de paz.",
   "notas": [
@@ -788,6 +788,59 @@
     "Crecidas de ríos tras días de lluvia"
    ],
    "fiabilidad": "Avisos oficiales de AEMET y Protección Civil."
+  },
+  {
+   "id": "mochilas-falsas-alarmas",
+   "titulo": "Oleada de falsas alarmas por mochilas y maletas en toda España",
+   "resumen": "Desde la explosión de Oviedo (10 nov) se han multiplicado los avisos por mochilas, maletas y paquetes abandonados: al menos diez en 24 h en Sevilla, Marbella, Córdoba, Zaragoza, Madrid y Las Palmas, además de Guadarrama, Arganda del Rey, Málaga y San Pedro Alcántara. Hubo desalojos (una parroquia en Córdoba, la sede de Podemos en Sevilla, la avenida de la Constitución, la estación de Delicias en Zaragoza) y detonaciones controladas (Plaza de España de Madrid y Guadarrama). Todas han sido falsas alarmas: ningún objeto llevaba explosivos. La única bomba real fue la de Oviedo, y la Policía no la relaciona con estos avisos. Policía y Guardia Civil investigan además una cadena de falsas amenazas contra instalaciones policiales y transportes, en medio de una oleada europea (aviones, trenes en Francia, cientos de colegios en Italia).",
+   "dominio": "seguridad",
+   "region": "España",
+   "lat": 40.4,
+   "lon": -3.7,
+   "zona": "espana",
+   "S": 3,
+   "nivel": "varios_medios",
+   "tendencia": "escala",
+   "cadena": "mochilas",
+   "fecha": "2026-11-12",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "elDiario.es – al menos 10 falsas alarmas en 24 h (12 nov)",
+     "url": "https://www.eldiario.es/politica/siete-falsas-alarmas-paquetes-sospechosos-sevilla-marbella-zaragoza-madrid_1_13658740.html"
+    },
+    {
+     "n": "Telecinco – Tedax en Madrid, Sevilla, Málaga, Arganda y Guadarrama (12 nov)",
+     "url": "https://www.telecinco.es/noticias/sucesos/20261112/falsos-avisos-mochilas-sospechosas-madrid-sevilla-movilizan-tedax_18_020692206.html"
+    },
+    {
+     "n": "Gacetín Madrid – maleta en Plaza de España y mochila en Guadarrama (12 nov)",
+     "url": "https://gacetinmadrid.com/2026/11/12/tedax-detonan-maleta-plaza-espana-oleada-avisos-bomba-madrid/"
+    },
+    {
+     "n": "Europa Press vía Teleprensa – falsa alarma en una parroquia de Córdoba (12 nov)",
+     "url": "https://www.teleprensa.com/andalucia/cordoba/queda-falsa-alarma-hallazgo-mochila-sospechosa-que-obligo-desalojar-parroquia/202611122147292556389.html"
+    },
+    {
+     "n": "La Voz del Sur – Sevilla: Constitución y sede de Podemos (12 nov)",
+     "url": "https://www.lavozdelsur.es/ediciones/sevilla/falsa-alarma-tras-el-temor-a-explosivos-en-la-sede-de-podemos-sevilla-la-mochila-era-de-una-persona-del-entorno.html"
+    },
+    {
+     "n": "Official Press – investigación de una cadena de falsas amenazas (12 nov)",
+     "url": "https://officialpress.es/alertas-bomba-espana/"
+    },
+    {
+     "n": "ESdiario – contexto europeo de falsos avisos (12 nov)",
+     "url": "https://www.esdiario.com/nacional/261112/202726/avisos-bomba-guadarrama-espana-europa.html"
+    }
+   ],
+   "vigilar": [
+    "Que algún objeto resulte llevar explosivos de verdad",
+    "Detenciones por avisos falsos o una autoría común",
+    "Casos en Asturias",
+    "Que el Ministerio del Interior eleve el nivel de alerta antiterrorista (no consta)"
+   ],
+   "fiabilidad": "Cada caso lo confirman la Policía Nacional, la Guardia Civil o ayuntamientos, citados por varios medios. Que sea una «cadena» coordinada no está demostrado: muchos avisos son de ciudadanos que, tras lo de Oviedo, avisan de bultos olvidados. La cifra exacta de alarmas varía según el medio."
   }
  ],
  "cadenas": [
@@ -1015,6 +1068,43 @@
    "siguiente": [
     "Atribución oficial (los gobiernos europeos apuntan a operaciones híbridas de Rusia o Irán, sin confirmar)",
     "Amenazas en aeropuertos del norte de España"
+   ]
+  },
+  {
+   "id": "mochilas",
+   "titulo": "Mochilas y maletas sospechosas tras Oviedo",
+   "estado": "Muchas alarmas, todas falsas; investigación abierta sobre avisos falsos",
+   "pasos": [
+    {
+     "fecha": "2026-11-05",
+     "texto": "Oleada de falsas amenazas de bomba en vuelos europeos; tres vuelos afectados en España.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-11-10",
+     "texto": "Oviedo: la mochila con bomba casera de «El Ruso» mata a un policía. Es la única bomba real de toda la serie.",
+     "nivel": "oficial"
+    },
+    {
+     "fecha": "2026-11-10 noche",
+     "texto": "Madrid: aviso falso junto a la Dirección General de la Guardia Civil (Guzmán el Bueno); perímetro y desalojo preventivo durante una hora.",
+     "nivel": "varios_medios"
+    },
+    {
+     "fecha": "2026-11-11",
+     "texto": "Madrid: detonación controlada de una maleta en Plaza de España. Guadarrama: dos avisos y detonación de una mochila junto a una gasolinera. Sin explosivos.",
+     "nivel": "varios_medios"
+    },
+    {
+     "fecha": "2026-11-12",
+     "texto": "Más de diez avisos en 24 h (Sevilla, Marbella, Córdoba, Zaragoza, Madrid, Las Palmas, Arganda, San Pedro Alcántara). Desalojos en Córdoba y Sevilla. Todos falsos.",
+     "nivel": "varios_medios"
+    }
+   ],
+   "siguiente": [
+    "Si aparece un artefacto real fuera de Oviedo: subiría con fuerza el riesgo en España",
+    "Si detienen a autores de avisos falsos: probablemente bajen los casos",
+    "Lo normal en estas oleadas es que se apaguen en días o semanas, sobre todo cuando detengan a «El Ruso»"
    ]
   }
  ],
@@ -1259,6 +1349,22 @@
   "descartadas": []
  },
  "verificaciones": [
+  {
+   "cuenta": "Mensajes en redes y titulares (11–12 nov)",
+   "dice": "Hay mochilas bomba por toda España.",
+   "veredicto": "parcial",
+   "explica": "Ha habido muchas alarmas por mochilas y maletas en varias ciudades, y algunas obligaron a desalojar y a detonar el objeto. Pero todas han resultado falsas: no llevaban explosivos. La única bomba real fue la de Oviedo, obra de una persona concreta por un conflicto vecinal. Si ves un bulto abandonado: no lo toques, apártate y llama al 091, al 062 o al 112. No difundas fotos ni rumores.",
+   "fuentes": [
+    {
+     "n": "elDiario.es – al menos 10 falsas alarmas en 24 h (12 nov)",
+     "url": "https://www.eldiario.es/politica/siete-falsas-alarmas-paquetes-sospechosos-sevilla-marbella-zaragoza-madrid_1_13658740.html"
+    },
+    {
+     "n": "Telecinco – Tedax en Madrid, Sevilla, Málaga, Arganda y Guadarrama (12 nov)",
+     "url": "https://www.telecinco.es/noticias/sucesos/20261112/falsos-avisos-mochilas-sospechosas-madrid-sevilla-movilizan-tedax_18_020692206.html"
+    }
+   ]
+  },
   {
    "cuenta": "Mensajes en redes y algunos medios (10 nov)",
    "dice": "«El Ruso», autor de la explosión de Oviedo, ha sido detenido.",
