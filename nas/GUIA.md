@@ -85,7 +85,7 @@ Sin tiempo (`apaga`, `silencio`), dura hasta que lo vuelvas a cambiar. El vigila
 
 - **De día**: cada **30 min** (`INTERVALO_DIA`).
 - **De noche** (horario de `SILENCIO`): cada **60 min** (`INTERVALO_NOCHE`).
-- **Excepción, `RAPIDOS`**: terremotos, tsunamis y apagón siguen revisándose cada 2–5 min. Son consultas diminutas y son las que dan minutos de ventaja. Si quieres que todo vaya lento, pon `RAPIDOS: ""`.
+- **Excepción, `RAPIDOS`**: terremotos, tsunamis, apagón y **prensa asturiana** (`local`) siguen revisándose cada 2–5 min. Son consultas diminutas y son las que dan minutos de ventaja. Si quieres que todo vaya lento, pon `RAPIDOS: ""`; si solo quieres quitar la prensa asturiana, deja `"sismos,tsunami,electricidad"`.
 - **Wikipedia en directo** escucha de forma continua. Gasta muy poco; si prefieres quitarla, añade `wikipedia` a `DESACTIVAR`.
 - **Disco**: el vigilante escribe como mucho cada 10 min, para que los discos del NAS puedan dormir.
 
@@ -166,3 +166,15 @@ export default {
 El motor se encarga de lo demás: agrupar con otras fuentes, calcular la confianza, decidir el nivel y avisar.
 
 **Prueba sin internet:** `node prueba/ensayo.mjs` simula un día normal y después un suceso grave, y muestra los avisos que se enviarían y la memoria usada.
+
+## Novedades de la versión 1.3 (12 nov 2026)
+
+- **Sin confirmar frente a hecho.** Lo que solo cuenta una fuente no oficial llega como «SEÑAL TEMPRANA (sin confirmar)» y nunca como alerta. Un dato atribuido a una parte («según un sindicato…») cuenta como una sola voz aunque lo repitan muchos medios. Si una fuente oficial lo desmiente, recibes una «CORRECCIÓN» y, si no estaba confirmado, se retira.
+- **Cada aviso trae una línea de «Qué hacer»**, prudente y remitiendo siempre a ES-Alert y al 112.
+- **EMERGENCIA** queda reservada para peligro general (gravedad 8 o más y bien confirmado): gran terremoto cerca, apagón, aviso rojo en Asturias, ataque masivo. Un suceso grave pero localizado llega como ALERTA.
+- **Asturias, lo primero:** módulo `local` (El Comercio, La Nueva España, RTPA y notas del 112 Asturias) cada 5 min.
+- **Módulos nuevos:** `copernicus` (activaciones de emergencia de la UE en España y vecinos) y `salud` (brotes de la OMS y del ECDC).
+- **Arreglos:** el detector de apagón leía datos con 1–2 h de retraso; los boletines informativos de tsunami contaban como alerta; los avisos de AEMET en zonas asturianas no se reconocían; IODA generaba cortes de internet fantasma; fuga de memoria en la caché de descargas.
+- **App Android propia** (opcional, en lugar de la app ntfy o junto a ella): ver [`android/LEEME.md`](../android/LEEME.md).
+
+Sin verificar desde aquí (lo sabremos cuando esté instalado en tu NAS): que Google Noticias, GDELT e INCIBE respondan desde tu conexión de casa; y si la hora que da el IGN es local o UTC (el cruce entre redes sísmicas lo tolera).

@@ -4,7 +4,7 @@ name: App Android · prueba en emulador
 on:
   workflow_dispatch:
 permissions:
-  contents: read
+  contents: write
 jobs:
   emulador:
     runs-on: ubuntu-latest
@@ -33,3 +33,9 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with: { name: capturas-emulador, path: capturas/ }
+      - name: Guardar las capturas en la rama «capturas-emulador»
+        if: always()
+        run: |
+          cd capturas && rm -f *.xml && git init -q -b capturas-emulador && git add -A
+          git -c user.name="github-actions" -c user.email="actions@github.com" commit -qm "Capturas de la prueba en emulador (${GITHUB_SHA::7})"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" capturas-emulador

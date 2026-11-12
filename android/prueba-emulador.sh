@@ -21,13 +21,16 @@ if [ -n "$B" ]; then
   adb exec-out screencap -p > capturas/3-panel.png
   adb shell dumpsys activity activities | grep -m1 "ResumedActivity" | grep -q PanelActivity && echo "OK: se abre la pantalla de avisos y mando" || { echo "FALLO: no se abrió la pantalla de avisos y mando"; fallo=1; }
   echo "== Probar un aviso y la alarma"
-  adb shell uiautomator dump /sdcard/ui2.xml >/dev/null; adb shell cat /sdcard/ui2.xml > capturas/ui2.xml
-  adb shell input swipe 500 1800 500 300 300; adb shell input swipe 500 1800 500 300 300; sleep 1
-  adb shell uiautomator dump /sdcard/ui3.xml >/dev/null; adb shell cat /sdcard/ui3.xml > capturas/ui3.xml
-  for t in "Probar un aviso normal" "Probar la alarma"; do
-    B=$(grep -o "text=\"$t[^\"]*\"[^>]*bounds=\"\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]\"" capturas/ui3.xml | grep -o '\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]' | head -1)
-    if [ -n "$B" ]; then read x1 y1 x2 y2 <<<"$(echo "$B" | tr -c '0-9' ' ')"; adb shell input tap $(((x1+x2)/2)) $(((y1+y2)/2)); sleep 3; else echo "AVISO: no encuentro el botón «$t»"; fi
-  done
+  pulsar() {   # busca un botón por su texto bajando por la pantalla y lo pulsa
+    for i in 1 2 3 4 5 6 7; do
+      adb shell uiautomator dump /sdcard/u.xml >/dev/null; adb shell cat /sdcard/u.xml > capturas/u.xml
+      B=$(grep -o "text=\"$1[^\"]*\"[^>]*bounds=\"\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]\"" capturas/u.xml | grep -o '\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]' | head -1)
+      if [ -n "$B" ]; then read x1 y1 x2 y2 <<<"$(echo "$B" | tr -c '0-9' ' ')"; adb shell input tap $(((x1+x2)/2)) $(((y1+y2)/2)); sleep 3; echo "pulsado: $1"; return 0; fi
+      adb shell input swipe 500 1500 500 700 400; sleep 1
+    done; echo "AVISO: no encuentro el botón «$1»"; return 1
+  }
+  pulsar "Probar un aviso normal"; pulsar "Probar la alarma"
+  echo "Textos en pantalla: $(grep -o 'text="[^"]\{3,50\}"' capturas/u.xml | tr '\n' ' ' | cut -c1-900)"
   adb exec-out screencap -p > capturas/4-panel-abajo.png
   N=$(adb shell dumpsys notification --noredact | grep -c "pkg=$P")
   echo "Notificaciones de la app en el sistema: $N"; [ "$N" -ge 1 ] || { echo "FALLO: no aparece ninguna notificación"; fallo=1; }
