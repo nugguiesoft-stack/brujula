@@ -14,7 +14,7 @@ El vigilante es un pequeño programa que corre en el NAS 24 horas. Lee fuentes p
 
 1. Instala la app **ntfy** (gratis, Android o iPhone).
 2. Pulsa **+** → **Suscribirse a un tema**.
-3. Inventa un nombre de tema largo y difícil de adivinar (cualquiera que lo sepa puede leer tus avisos), por ejemplo `brujula-nacho-7Kq29xZ`. Apúntalo.
+3. Inventa un nombre de tema largo y difícil de adivinar (cualquiera que lo sepa puede leer tus avisos), por ejemplo `brujula-` seguido de 12 letras y números al azar. **No copies ningún ejemplo de esta guía**: es pública. Apúntalo.
 4. Servidor: déjalo en `ntfy.sh`.
 5. En Android, entra en el tema → ajustes → activa **Instant delivery**. Si quieres que las EMERGENCIAS suenen aunque tengas el modo No molestar, permite que ntfy lo salte (Ajustes del móvil → Notificaciones → ntfy → No molestar).
 
