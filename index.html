@@ -8,13 +8,14 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="estilo.css?v=1794084346&x=1794013855">
+<link rel="stylesheet" href="estilo.css?v=1794486019">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icono-192.png">
 <link rel="apple-touch-icon" href="icono-192.png">
 </head>
 <body>
-<main class="wrap">
+<a class="salto" href="#h-ev">Saltar a los sucesos</a>
+<main class="wrap" id="inicio">
   <header class="head">
     <div>
       <h1>Brújula de Emergencia</h1>
@@ -28,7 +29,14 @@
 
   <div class="progress" id="progress" aria-hidden="true"><i></i></div>
 
+  <section class="semaforo panel" id="semaforo" aria-label="Semáforo del día" aria-live="polite"><p class="empty">Calculando…</p></section>
+
   <section class="alerts" id="alerts" aria-live="polite"></section>
+
+  <section class="panel cambios" id="cambios-panel" aria-labelledby="h-cmb" hidden>
+    <h2 id="h-cmb">Desde tu última visita <span class="small muted" id="cambios-cuando" style="text-transform:none;letter-spacing:0"></span></h2>
+    <div id="cambios" class="cambios-lista"></div>
+  </section>
 
   <section class="gauges" aria-label="Índices de riesgo">
     <article class="panel gauge-box" data-scope="asturias">
@@ -59,7 +67,7 @@
   </section>
   <section class="panel" aria-labelledby="h-nas" style="display:grid;gap:12px" id="nas-panel" hidden>
     <h2 id="h-nas">Vigilante del NAS</h2>
-    <div id="nas"></div>
+    <div id="nas" style="display:grid;gap:10px"></div>
   </section>
   <section class="panel" style="display:grid;gap:14px" aria-labelledby="h-res">
     <h2 id="h-res">Análisis</h2>
@@ -69,7 +77,7 @@
     <ul class="notes" id="notes"></ul>
   </section>
 
-  <section class="panel" aria-labelledby="h-mapa">
+  <section class="panel" aria-labelledby="h-mapa" id="mapa">
     <h2 id="h-mapa" style="margin-bottom:10px">Mapa de focos</h2>
     <div class="map" id="map">
       <svg viewBox="0 0 1000 403" id="mapsvg" role="img" aria-label="Mapa mundial con los focos activos">
@@ -83,7 +91,7 @@
 
   <section class="panel rumors" aria-labelledby="h-rum">
     <h2 id="h-rum">Rumores sin contrastar</h2>
-    <p class="small warn-text">Noticias alarmantes publicadas por una o dos fuentes. Falta confirmarlas. No suben el índice hasta que otras fuentes las recojan.</p>
+    <p class="small warn-text">Lo que solo cuenta una fuente, o es un dato atribuido a una parte («según un sindicato…»). No cuenta para el índice hasta que lo confirme otro medio o una fuente oficial. Si una fuente oficial lo desmiente, queda marcado.</p>
     <div id="rumors" class="events"></div>
   </section>
 
@@ -137,13 +145,16 @@
     <ol id="log" class="log"></ol>
   </section>
 
-  <section class="panel" aria-labelledby="h-src" style="display:grid;gap:12px">
+  <section class="panel" aria-labelledby="h-src" style="display:grid;gap:12px" id="ajustes">
     <h2 id="h-src">Estado de las fuentes</h2>
     <div id="srcstatus" class="srcstatus"></div>
     <div style="display:grid;gap:6px">
       <label for="proxy-in" class="small">Dirección del intermediario de Cloudflare</label>
       <div class="row"><input id="proxy-in" type="url" placeholder="https://brujula-proxy.tu-cuenta.workers.dev" style="flex:1;min-width:200px;font:inherit;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px"><button type="button" id="proxy-save" class="btn-ghost">Guardar</button></div>
       <p id="proxy-msg" class="small muted"></p>
+      <label for="ntfy-in" class="small">Tema de ntfy del vigilante (opcional: activa el mando a distancia desde aquí)</label>
+      <div class="row"><input id="ntfy-in" type="password" autocomplete="off" placeholder="El mismo tema que pusiste en el NAS" style="flex:1;min-width:200px;font:inherit;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px"><button type="button" id="ntfy-save" class="btn-ghost">Guardar</button></div>
+      <p id="ntfy-msg" class="small muted">Se guarda solo en este móvil. No se sube a ningún sitio.</p>
       <label for="nas-in" class="small">Gist del vigilante del NAS (opcional, ver guía)</label>
       <div class="row"><input id="nas-in" type="text" placeholder="ID del Gist, p. ej. 3f2a…" style="flex:1;min-width:200px;font:inherit;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px"><button type="button" id="nas-save" class="btn-ghost">Guardar</button></div>
     </div>
@@ -161,20 +172,30 @@
         <p>Cada suceso puntúa: <b>gravedad × confianza × cercanía × tendencia</b>.</p>
         <table>
           <tr><th>Factor</th><th>Valores</th></tr>
-          <tr><td>Gravedad</td><td>0–10. Uso nuclear 10, guerra entre potencias 9, bombardeos 6–8, ciberataque a banca o infraestructura 5, amenazas falsas 3.</td></tr>
+          <tr><td>Gravedad</td><td>0–10. Uso nuclear 10, guerra entre potencias 9, bombardeos 6–8, atentado con víctimas 7, ciberataque a banca o infraestructura 5, amenazas falsas 3.</td></tr>
           <tr><td>Confianza</td><td>Rumor 0,15 · Fuente única 0,35 · Medios locales 0,45 · Varios medios 0,65 · Oficial 0,85 · Confirmado 1. En la capa automática depende de cuántos medios distintos lo publican y de si hay webs oficiales.</td></tr>
           <tr><td>Cercanía</td><td>Asturias: Asturias 1 · resto de España 0,85 · UE 0,7 · Europa 0,6 · Mediterráneo 0,5 · Oriente Medio 0,4 · resto 0,2. España: igual, con España 1 y UE 0,75. Escalada global: siempre 1.</td></tr>
           <tr><td>Tendencia</td><td>Escala 1,15 · Estable 1 · Se calma 0,85.</td></tr>
           <tr><td>Antigüedad</td><td>Hasta 3 días 1 · hasta 2 semanas 0,85 · hasta 45 días 0,7 · más 0,5.</td></tr>
         </table>
         <p>Cada índice suma el suceso más fuerte, el 35 % del segundo, el 15 % del tercero y, a partir de ahí, cada suceso la mitad que el anterior (máximo 12). Así, muchos titulares sobre lo mismo no disparan el índice. El resultado se comprime a una escala de 0 a 10. Un rumor aislado aporta como mucho 1 punto.</p><p><b>Convergencia:</b> si en 48 h al menos tres tipos de fuente independientes (sensores, organismos oficiales, prensa, tus aportaciones o el analista) señalan el mismo lugar, la Brújula crea un aviso de convergencia. <b>Aceleración:</b> si los titulares sobre un lugar triplican su media de escaneos anteriores, el suceso se marca como «escala».</p>
+        <p><b>Suelo local:</b> un suceso situado en Asturias (o en España, para el índice de España) y confirmado por varios medios o por una fuente oficial marca un mínimo: gravedad × confianza (varios medios 0,85 · oficial 0,95 · confirmado 1) × cercanía × tendencia. Así, un atentado en Oviedo no queda diluido entre noticias de Oriente Medio. No se aplica a sucesos lejanos, aunque tengan «impacto en España»: una semana tensa fuera no dispara los índices de aquí.</p>
+        <p><b>Sin confirmar:</b> lo que solo cuenta un medio no oficial va al cuadro de rumores y no cuenta. Un dato atribuido a una parte sigue siendo una sola voz aunque lo repitan muchos medios. Un desmentido oficial retira el rumor o deja anotada la corrección.</p>
         <p>Suelos automáticos: un suceso confirmado de gravedad 9 o más cerca (UE o más cerca) pone el índice de España y Asturias en 9 como mínimo; uno de gravedad 8 en España, en 8.</p>
         <p class="muted">Escala: 0–2 Calma · 2–4 Vigilancia · 4–6 Tensión · 6–8 Alerta · 8–10 Emergencia. Es una herramienta de orientación. Ante una emergencia, sigue siempre a ES-Alert, el 112 y Protección Civil.</p>
       </div>
     </details>
   </section>
 </main>
+<nav class="barra" aria-label="Secciones">
+  <a href="#inicio"><span aria-hidden="true">◉</span>Inicio</a>
+  <a href="#mapa"><span aria-hidden="true">◎</span>Mapa</a>
+  <a href="#h-ev"><span aria-hidden="true">≡</span>Sucesos</a>
+  <a href="#nas-panel"><span aria-hidden="true">⌂</span>Vigilante</a>
+  <a href="#ajustes"><span aria-hidden="true">⚙</span>Ajustes</a>
+</nav>
 <script src="land.js"></script>
-<script src="app.js?v=1794182874"></script>
+<script src="nucleo.js?v=1794486019"></script>
+<script src="app.js?v=1794486019"></script>
 </body>
 </html>
