@@ -28,9 +28,9 @@ export default {
       try {
         for (const m of leer(await pedir(`https://t.me/s/${c.replace(/^@|https?:\/\/t\.me\/(s\/)?/g, "")}`))) {
           if (Date.now() - m.t > 3 * 36e5) continue;
-          const k = clasifica(m.texto); if (k.S < 5) continue;
+          const k = clasifica(m.texto); if (k.S < 5 && !k.desmiente) continue;
           out.push({ clave: "tg:" + m.post, fuente: "tg:" + c, fuenteNombre: "Telegram @" + c, tipo: "social", tema: k.tema, S: k.S, lugar: k.lugar,
-            titulo: m.texto.split("\n")[0].slice(0, 140), url: "https://t.me/" + m.post, detalle: m.texto.slice(0, 400) });
+            titulo: m.texto.split("\n")[0].slice(0, 140), url: "https://t.me/" + m.post, detalle: m.texto.slice(0, 400), desmiente: k.desmiente, atribuido: k.atribuido });
         }
       } catch (e) { msgs.push(`@${c}: ${e.message}`); }
     }

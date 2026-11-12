@@ -1,32 +1,32 @@
 // Detector de apagón: demanda eléctrica peninsular (Red Eléctrica). Una caída brusca = corte masivo.
-// Dos vías: la API oficial (horaria, compara real con prevista) y el visor de demanda (cada 10 min, detecta desplomes).
+// La API oficial da un valor cada 10 min con la demanda real, la prevista y la programada.
+// (v1.3) Las fechas se piden en hora de Madrid: antes se pedían en UTC y el dato llegaba con 1–2 h de retraso.
+// El antiguo «visor de demanda» dejó de servir datos en este formato (comprobado el 12 nov 2026) y se ha quitado.
+import { isoMadrid } from "../lib/util.js";
 export default {
   id: "electricidad", nombre: "Red eléctrica (detector de apagón)", cada: 5,
   async run({ pedir }) {
-    const out = [], datos = {};
-    const f = (d) => d.toISOString().slice(0, 16);
-    try {
-      const d = await pedir(`https://apidatos.ree.es/es/datos/demanda/demanda-tiempo-real?start_date=${f(new Date(Date.now() - 4 * 36e5))}&end_date=${f(new Date())}&time_trunc=hour`, { json: true });
-      const s = (d.included || []).map((x) => ({ t: (x.attributes?.title || x.type || "").toLowerCase(), v: x.attributes?.values || [] }));
-      const real = s.find((x) => /real/.test(x.t)), prev = s.find((x) => /prevista/.test(x.t)) || s.find((x) => /programada/.test(x.t));
-      if (real?.v.length && prev) { const u = real.v.at(-1), p = prev.v.find((x) => x.datetime === u.datetime) || prev.v.at(-1); datos.real = u.value; datos.prevista = p?.value; datos.ratio = p?.value ? u.value / p.value : 1; }
-    } catch (e) { datos.errApi = e.message; }
-    try { // visor de demanda (formato JSONP); si cambia de formato se ignora sin romper nada
-      const hoy = new Date().toLocaleDateString("sv-SE", { timeZone: "Europe/Madrid" });
-      const txt = await pedir(`https://demanda.ree.es/WSvisionaMovilesPeninsulaRest/resources/demandaGeneracionPeninsula?callback=cb&curva=DEMANDA&fecha=${hoy}`, { condicional: false });
-      const j = JSON.parse(txt.slice(txt.indexOf("(") + 1, txt.lastIndexOf(")")));
-      const v = (j.valoresHorariosGeneracion || []).filter((x) => x.dem > 0);
-      if (v.length >= 3) { const a = v.at(-1).dem, b = v.at(-3).dem; datos.dem10 = a; datos.caida10 = b ? a / b : 1; datos.ts10 = v.at(-1).ts; }
-    } catch (e) { datos.errVisor = e.message; }
-    if (datos.ratio == null && datos.caida10 == null) throw new Error(datos.errApi || datos.errVisor || "sin datos");
-    const r = Math.min(datos.ratio ?? 1, datos.caida10 ?? 1);
+    const d = await pedir(`https://apidatos.ree.es/es/datos/demanda/demanda-tiempo-real?start_date=${isoMadrid(Date.now() - 3 * 36e5)}&end_date=${isoMadrid(Date.now() + 10 * 60000)}&time_trunc=hour`, { json: true, condicional: false });
+    const s = (d.included || []).map((x) => ({ t: (x.attributes?.title || x.type || "").toLowerCase(), v: (x.attributes?.values || []).filter((y) => y.value != null) }));
+    const real = s.find((x) => /^real|demanda real/.test(x.t)), prev = s.find((x) => /prevista/.test(x.t)) || s.find((x) => /^programada$|demanda programada/.test(x.t));
+    if (!real?.v.length) throw new Error("formato no reconocido (sin serie «Real»)");
+    const u = real.v.at(-1), edad = (Date.now() - Date.parse(u.datetime)) / 60000;
+    const p = prev?.v.find((x) => x.datetime === u.datetime) || prev?.v.at(-1);
+    const datos = { real: u.value, prevista: p?.value, hora: u.datetime, edadMin: Math.round(edad) };
+    datos.ratio = p?.value ? u.value / p.value : 1;
+    // Caída respecto a la demanda real de hace 20–30 min (la demanda normal nunca cambia más de un 5–8 % en ese tiempo)
+    const antes = real.v.at(-3) || real.v.at(-2); datos.caida = antes?.value ? u.value / antes.value : 1;
+    // Si REE deja de publicar (dato viejo), no se puede saber nada: se dice, no se inventa
+    if (!(edad < 90)) return { senales: [], msg: `Sin dato reciente de REE (último de hace ${Math.round(edad)} min)`, datos };
+    const r = Math.min(datos.ratio, datos.caida), out = [];
     if (r < 0.85) {
       const S = r < 0.6 ? 9 : r < 0.75 ? 7 : 5;
       out.push({ clave: "ree:" + Math.floor(Date.now() / 18e5), grupo: "apagon|España", fuente: "ree", fuenteNombre: "Red Eléctrica", tipo: "sensor", tema: "energia", S,
+        palabras: "apag[oó]n|blackout|sin luz|corte (de luz|el[eé]ctrico)|cero energ[eé]tico|red el[eé]ctrica",
         lugar: { nombre: "Península (incluida Asturias)", lat: 40.4, lon: -3.7, zona: "asturias" }, forzar: r < 0.6 ? 4 : undefined,
-        titulo: `Posible apagón: la demanda eléctrica cae al ${Math.round(r * 100)} %`, url: "https://demanda.ree.es/visiona/peninsula/demandaqh/tablas",
-        detalle: `Demanda ${Math.round(datos.dem10 || datos.real)} MW${datos.prevista ? ` (prevista ${Math.round(datos.prevista)} MW)` : ""}. Una caída así suele indicar un corte masivo. Ten a mano linterna, radio a pilas y el móvil cargado.` });
+        titulo: `Posible apagón: la demanda eléctrica cae al ${Math.round(r * 100)} %`, url: "https://demanda.ree.es/visiona/peninsula/demandaqh/total",
+        detalle: `Demanda ${Math.round(u.value)} MW${p?.value ? ` (prevista ${Math.round(p.value)} MW)` : ""}${antes ? `; hace 20 min eran ${Math.round(antes.value)} MW` : ""}. Una caída así suele indicar un corte masivo. Ten a mano linterna, radio a pilas y el móvil cargado.` });
     }
-    return { senales: out, msg: `Demanda ${Math.round(datos.dem10 || datos.real || 0)} MW · ${Math.round(r * 100)} % de lo esperado`, datos };
+    return { senales: out, msg: `Demanda ${Math.round(u.value)} MW · ${Math.round(datos.ratio * 100)} % de lo previsto (dato de hace ${Math.round(edad)} min)`, datos };
   }
 };

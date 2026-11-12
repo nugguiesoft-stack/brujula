@@ -27,7 +27,7 @@ export const CFG = {
   desactivar: lista(env.DESACTIVAR || (fichero.desactivar || []).join(",")),
   intervaloDia: num(env.INTERVALO_DIA, 30),                      // minutos entre consultas de día (fuentes normales)
   intervaloNoche: num(env.INTERVALO_NOCHE, 60),                  // minutos entre consultas de noche (horario de SILENCIO)
-  rapidos: (env.RAPIDOS ?? "sismos,tsunami,electricidad").split(",").map((x) => x.trim()).filter(Boolean), // sensores que siguen rápidos
+  rapidos: (env.RAPIDOS ?? "sismos,tsunami,electricidad,local").split(",").map((x) => x.trim()).filter(Boolean), // sensores que siguen rápidos
   ritmo: num(env.RITMO, 1),                                       // 2 = la mitad de consultas (más lento, menos red)
   mock: env.BRUJULA_MOCK || ""
 };

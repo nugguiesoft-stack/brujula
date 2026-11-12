@@ -1,5 +1,5 @@
 // Organismos oficiales: avisos de viaje (EE. UU., Reino Unido, Alemania) y webs oficiales vía Google Noticias.
-const SITIOS_ES = ["interior.gob.es", "proteccioncivil.es", "dsn.gob.es", "lamoncloa.gob.es", "defensa.gob.es", "exteriores.gob.es", "112asturias.es", "csn.es", "incibe.es"];
+const SITIOS_ES = ["interior.gob.es", "proteccioncivil.es", "lamoncloa.gob.es", "defensa.gob.es", "exteriores.gob.es", "policia.es", "guardiacivil.es", "csn.es", "asturias.es"];
 const SITIOS_INT = ["nato.int", "iaea.org", "who.int", "consilium.europa.eu", "whitehouse.gov", "defense.gov", "war.gov", "centcom.mil", "gov.uk", "auswaertiges-amt.de"];
 export default {
   id: "oficial", nombre: "Organismos oficiales y avisos de viaje", cada: 20,
@@ -17,14 +17,21 @@ export default {
         out.push({ clave: "uk:" + i.id + i.date, fuente: "fcdo", fuenteNombre: "Gobierno británico (FCDO)", tipo: "oficial", tema: "belico", S: 5, lugar: l, titulo: "Reino Unido endurece su aviso: " + i.title, url: i.url, detalle: i.desc.slice(0, 200) }); }
       msg.push(`R. Unido ${it.length}`);
     } catch (e) { msg.push("R. Unido: " + e.message); }
+    try { // Departamento de Seguridad Nacional (canal RSS propio, comprobado el 12 nov 2026; publica poco)
+      const it = rss(await pedir("https://www.dsn.gob.es/es/rss.xml"));
+      for (const i of it) { const f = Date.parse((i.desc.match(/datetime="([^"]+)"/) || [])[1] || i.date); if (!f || Date.now() - f > 48 * 36e5) continue; const k = clasifica(i.title); if (k.S < 4) continue;
+        out.push({ clave: "dsn:" + i.id, fuente: "dsn", fuenteNombre: "Seguridad Nacional (DSN)", tipo: "oficial", tema: k.tema, S: k.S, lugar: k.lugar.nombre ? k.lugar : { nombre: "España", zona: "espana" }, titulo: "DSN: " + i.title, url: i.url, desmiente: k.desmiente }); }
+      msg.push(`DSN ${it.length}`);
+    } catch (e) { msg.push("DSN: " + e.message); }
     // Webs oficiales (Google Noticias, última hora). Desde una conexión de casa Google no suele bloquear.
     for (const [nombre, sitios, lang] of [["España", SITIOS_ES, "es"], ["Internacional", SITIOS_INT, "en"]]) {
       try {
         const q = "(" + sitios.map((s) => "site:" + s).join(" OR ") + ") when:1h";
         const ed = lang === "es" ? "hl=es&gl=ES&ceid=ES:es" : "hl=en-US&gl=US&ceid=US:en";
         const it = rss(await pedir(`https://news.google.com/rss/search?q=${encodeURIComponent(q)}&${ed}`, { condicional: false }));
-        for (const i of it) { const k = clasifica(i.title); if (k.S < 4) continue;
-          out.push({ clave: "gof:" + i.id, fuente: "of:" + (i.url || "").split("/")[2], fuenteNombre: "Web oficial", tipo: "oficial", conf: 0.75, tema: k.tema, S: k.S, lugar: k.lugar, titulo: i.title, url: i.url }); }
+        for (const i of it) { const k = clasifica(i.title); if (k.S < 4 && !k.desmiente) continue;
+          const medio = (i.title.match(/\s-\s([^-]+)$/) || [])[1] || "Web oficial";
+          out.push({ clave: "gof:" + i.id, fuente: "of:" + medio.trim().toLowerCase(), fuenteNombre: medio.trim(), tipo: "oficial", conf: 0.75, tema: k.tema, S: k.S, lugar: k.lugar, titulo: i.title.replace(/\s+-\s+[^-]+$/, ""), url: i.url, desmiente: k.desmiente }); }
         msg.push(`Oficiales ${nombre} ${it.length}`);
       } catch (e) { msg.push(`Oficiales ${nombre}: ${e.message}`); }
     }

@@ -15,3 +15,5 @@ export function madrid(y, mo, d, h = 0, mi = 0, s = 0) {
   const off = (t) => { const p = new Intl.DateTimeFormat("en-US", { timeZone: "Europe/Madrid", hour12: false, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", second: "2-digit" }).formatToParts(new Date(t)); const g = (x) => +p.find((q) => q.type === x).value; return Date.UTC(g("year"), g("month") - 1, g("day"), g("hour") % 24, g("minute"), g("second")) - t; };
   return guess - off(guess);
 }
+// "2026-11-12T12:40" en hora de Madrid (Red Eléctrica interpreta así las fechas de sus consultas)
+export const isoMadrid = (t = Date.now()) => new Date(t).toLocaleString("sv-SE", { timeZone: "Europe/Madrid", hour12: false }).replace(" ", "T").slice(0, 16);

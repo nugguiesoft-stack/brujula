@@ -8,7 +8,7 @@ import { km, sleep, log, hora, horaLocal, madrid } from "./lib/util.js";
 import { clasifica, lugar, zonaDe, ALARMA } from "./lib/clasifica.js";
 import { mem, base, historial, guardar } from "./lib/store.js";
 import { avisar, retenidos, NIVEL, enSilencio } from "./lib/avisar.js";
-import { procesar, indices, vigilarIndices, top } from "./lib/motor.js";
+import { procesar, indices, vigilarIndices, top, confirmado, QUE_HACER } from "./lib/motor.js";
 import { escuchar, apagado, silenciado, temaControl } from "./lib/control.js";
 
 const INICIO = Date.now();
@@ -60,10 +60,13 @@ function estadoJSON() {
   const mu = process.memoryUsage();
   return {
     version: CFG.version, apagado: apagado(), silencio: silenciado(), generado: new Date().toISOString(), arranque: new Date(INICIO).toISOString(),
-    memoriaMB: Math.round(mu.rss / 1048576), indices: indices(), top: top(6),
+    memoriaMB: Math.round(mu.rss / 1048576), indices: indices(), top: top(6), queHacer: QUE_HACER,
     alertas: mem.alertas.filter((a) => !a.sistema).slice(-25).reverse(),
-    temas: Object.values(mem.temas).filter((t) => Date.now() - t.ultimo < 24 * 36e5 && t.nivel >= 1.5).sort((a, b) => b.ultimo - a.ultimo).slice(0, 20)
-      .map((t) => ({ titulo: t.titulo, url: t.url, nivel: t.nivel, conf: Math.round(t.conf * 100) / 100, S: t.maxS, lugar: t.lugar, zona: t.zona, fuentes: Object.keys(t.fuentes).length, primero: t.primero, ultimo: t.ultimo })),
+    temas: Object.values(mem.temas).filter((t) => Date.now() - t.ultimo < 24 * 36e5 && (t.nivel >= 1.5 || t.desmentido)).sort((a, b) => b.ultimo - a.ultimo).slice(0, 20)
+      .map((t) => ({ titulo: t.titulo, url: t.url, nivel: t.nivel, conf: Math.round(t.conf * 100) / 100, S: t.maxS, lugar: t.lugar, zona: t.zona, tema: t.tema, fuentes: Object.keys(t.fuentes).length, primero: t.primero, ultimo: t.ultimo,
+        confirmado: confirmado(t), ...(t.desmentido ? { desmentido: t.desmentido } : {}), ...(t.retirado ? { retirado: true } : {}),
+        // línea temporal del suceso: quién dijo qué y cuándo (lo usa la web)
+        pasos: (t.senales || []).slice(-8).map((x) => ({ t: x.t, fuente: x.fuente, titulo: (x.titulo || "").slice(0, 160), url: x.url, ...(x.desmiente ? { desmiente: true } : {}), ...(x.atribuido ? { atribuido: true } : {}) })) })),
     fuentes: Object.entries(ESTADO).map(([id, e]) => ({ id, nombre: e.nombre, ok: e.ok, msg: (e.msg || "").slice(0, 200), ultima: e.ultima, datos: e.datos })),
     historial: { asturias: mem.hist["idx:asturias"]?.slice(-48), espana: mem.hist["idx:espana"]?.slice(-48), global: mem.hist["idx:global"]?.slice(-48) }
   };

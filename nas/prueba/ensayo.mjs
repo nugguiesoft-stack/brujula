@@ -11,13 +11,13 @@ const item = (t, d = "", m = 5, extra = "") => `<item><title><![CDATA[${t}]]></t
 const canal = (...its) => `<?xml version="1.0"?><rss version="2.0" xmlns:georss="http://www.georss.org/georss"><channel><title>x</title>${its.join("")}</channel></rss>`;
 const madridTxt = (m) => { const p = new Intl.DateTimeFormat("es-ES", { timeZone: "Europe/Madrid", day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false }).formatToParts(new Date(now - m * 60000)); const g = (t) => p.find((x) => x.type === t).value; return `${g("day")}/${g("month")}/${g("year")} ${g("hour")}:${g("minute")}:${g("second")}`; };
 
+const ree = (reales) => ({ included: [{ attributes: { title: "Prevista", values: reales.map((_, i) => ({ value: 29500, datetime: iso((reales.length - 1 - i) * 10 + 5) })) } }, { attributes: { title: "Real", values: reales.map((v, i) => ({ value: v, datetime: iso((reales.length - 1 - i) * 10 + 5) })) } }] });
 function normal() {
   put("https://www.ign.es/ign/RssTools/sismologia.xml", canal(item("-Info.terremoto: 2.1 GOLFO DE CÁDIZ", `Se ha producido un terremoto de magnitud 2.1 en GOLFO DE CÁDIZ en la fecha ${madridTxt(30)} en la siguiente localización: 36.1N, 7.9W`, 30, "<geo:lat>36.1</geo:lat><geo:long>-7.9</geo:long>")));
   put("https://www.seismicportal.eu/fdsnws/event/1/query", { features: [{ properties: { mag: 2.8, lat: 38, lon: 20, flynn_region: "GREECE", time: iso(50), unid: "a1" } }] });
   put("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_hour.geojson", { features: [{ geometry: { coordinates: [140, 36, 10] }, properties: { mag: 4.9, place: "Japan", time: now - 3e6, url: "https://usgs" } }] });
   put("https://www.tsunami.gov/events/xml/PHEBAtom.xml", `<feed xmlns="http://www.w3.org/2005/Atom"></feed>`); put("https://www.tsunami.gov/events/xml/PAAQAtom.xml", `<feed xmlns="http://www.w3.org/2005/Atom"></feed>`);
-  put("https://apidatos.ree.es/es/datos/demanda/demanda-tiempo-real", { included: [{ attributes: { title: "Demanda real", values: [{ datetime: "x", value: 29000 }] } }, { attributes: { title: "Demanda prevista", values: [{ datetime: "x", value: 29500 }] } }] });
-  put("https://demanda.ree.es/WSvisionaMovilesPeninsulaRest/resources/demandaGeneracionPeninsula", `cb({"valoresHorariosGeneracion":[{"ts":"a","dem":29100},{"ts":"b","dem":29050},{"ts":"c","dem":29000}]});`);
+  put("https://apidatos.ree.es/es/datos/demanda/demanda-tiempo-real", ree([29100, 29050, 29000]));
   put("https://api.ioda.inetintel.cc.gatech.edu/v2/outages/events", { data: [{ location: "country/SY", start: now / 1000 - 3600, duration: 3600 }] });
   put("https://services.swpc.noaa.gov/products/noaa-scales.json", { 0: { G: { Scale: "1" }, R: { Scale: "0" } }, 1: { G: { Scale: "2" } }, 2: { G: { Scale: "1" } }, 3: { G: { Scale: "0" } } });
   put("https://services.swpc.noaa.gov/json/goes/primary/xray-flares-7-day.json", []);
@@ -31,8 +31,13 @@ function normal() {
   put("https://gamma-api.polymarket.com/events", [{ slug: "iran", title: "Iran", markets: [{ id: "m1", question: "US military strike on Iran by December?", outcomePrices: '["0.30","0.70"]', outcomes: '["Yes","No"]' }] }]);
   put("https://www.europapress.es/rss/rss.aspx", canal(item("El Gobierno aprueba el techo de gasto", "", 30), item("La Liga: resultados de la jornada", "", 40)));
   put("https://www.abc.es/rss/feeds/abc_ultima.xml", canal(item("La bolsa abre al alza", "", 20)));
-  put("https://www.elcomercio.es/rss/2.0/portada", canal(item("Gijón estrena nuevo carril bici", "", 25)));
+  put("https://www.elcomercio.es/rss/2.0/", canal(item("Gijón estrena nuevo carril bici", "", 25)));
   put("https://www.lne.es/rss/", canal(item("Oviedo celebra San Mateo", "", 35)));
+  put("https://www.rtpa.es/rss", canal(item("El Principado presenta los presupuestos", "", 45)));
+  put("https://mapping.emergency.copernicus.eu/activations/api/activations/", { results: [{ code: "EMSR900", countries: [{ short_name: "Greece" }], category: { name: "Flood" }, name: "Flood in Crete, Greece", centroid: "POINT (24.9 35.2)", activationTime: iso(600).slice(0, 19), closed: false }] });
+  put("https://www.who.int/api/news/diseaseoutbreaknews", { value: [{ Id: "1", Title: "Cholera - Sudan", PublicationDate: iso(3000), UrlName: "x" }] });
+  put("https://www.ecdc.europa.eu/en/taxonomy/term/1310/feed", canal(item("Epidemiological update: West Nile virus", "", 9000)));
+  put("https://www.dsn.gob.es/es/rss.xml", canal(item("XX Jornadas STIC", "jornadas", 9000)));
   put("https://feeds.bbci.co.uk/news/world/rss.xml", canal(item("Drone strike kills 3 in Kharkiv", "Ukraine", 40)));
   put("https://travel.state.gov/_res/rss/TAsTWs.xml", canal(item("France - Level 2: Exercise Increased Caution", "", 600)));
   put("https://www.gov.uk/foreign-travel-advice.atom", `<feed xmlns="http://www.w3.org/2005/Atom"><entry><title>Spain travel advice</title><updated>${iso(300)}</updated><link href="https://gov.uk/x"/><id>1</id><summary>Latest update: information on strikes</summary></entry></feed>`);
@@ -43,10 +48,11 @@ function suceso() {
   // Terremoto fuerte cerca de Asturias visto por IGN y EMSC + varios medios + apagón parcial
   put("https://www.ign.es/ign/RssTools/sismologia.xml", canal(item("-Info.terremoto: 5.9 CANTÁBRICO", `Se ha producido un terremoto de magnitud 5.9 en GOLFO DE VIZCAYA en la fecha ${madridTxt(3)} en la siguiente localización: 44.1N, 5.6W`, 3, "<geo:lat>44.1</geo:lat><geo:long>-5.6</geo:long>")));
   put("https://www.seismicportal.eu/fdsnws/event/1/query", { features: [{ properties: { mag: 5.8, lat: 44.12, lon: -5.62, flynn_region: "BAY OF BISCAY", time: iso(3), unid: "b2" } }] });
-  put("https://www.elcomercio.es/rss/2.0/portada", canal(item("Última hora: fuerte terremoto sacude Asturias, se siente en Gijón y Oviedo", "Vecinos desalojan edificios", 2)));
+  put("https://www.elcomercio.es/rss/2.0/", canal(item("Última hora: fuerte terremoto sacude Asturias, se siente en Gijón y Oviedo", "Vecinos desalojan edificios", 2)));
   put("https://www.lne.es/rss/", canal(item("Un terremoto de gran intensidad se siente en toda Asturias", "", 1)));
   put("https://www.europapress.es/rss/rss.aspx", canal(item("Explosión en una planta química de Tarragona obliga a confinar a la población", "Protección Civil activa el plan de emergencia", 4)));
-  put("https://demanda.ree.es/WSvisionaMovilesPeninsulaRest/resources/demandaGeneracionPeninsula", `cb({"valoresHorariosGeneracion":[{"ts":"a","dem":29100},{"ts":"b","dem":29050},{"ts":"c","dem":22500}]});`);
+  put("https://apidatos.ree.es/es/datos/demanda/demanda-tiempo-real", ree([29100, 29050, 22500]));
+  put("https://www.abc.es/rss/feeds/abc_ultima.xml", canal(item("Explosión en una planta química de Tarragona: confinada la población cercana", "", 3)));
   put("https://gamma-api.polymarket.com/events", [{ slug: "iran", title: "Iran", markets: [{ id: "m1", question: "US military strike on Iran by December?", outcomePrices: '["0.55","0.45"]', outcomes: '["Yes","No"]' }] }]);
 }
 

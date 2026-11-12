@@ -2,11 +2,11 @@
 import { km } from "./util.js";
 import { CFG } from "./config.js";
 const P = [
-  ["asturias|oviedo|gij[oó]n|avil[eé]s|carre[ñn]o|siero|langreo|mieres|llanes|cangas|navia|luarca", "Asturias", 43.36, -5.85, "asturias"],
+  ["asturias|asturian[oa]s?|oviedo|uvi[eé]u|gij[oó]n|xix[oó]n|avil[eé]s|carre[ñn]o|cand[aá]s|siero|pola de siero|lugones|langreo|mieres|llanes|cangas de on[ií]s|cangas del narcea|navia|luarca|ribadesella|villaviciosa|grado|pravia|llanera|castrill[oó]n|cudillero|tineo|lena|aller|lavi?ana|cabrales|covadonga|picos de europa|pajares|huerna|villafr[ií]a", "Asturias", 43.36, -5.85, "asturias"],
   ["cantabria|santander|le[oó]n|galicia|lugo|ourense|coru[ñn]a|vigo|bilbao|euskadi|pa[ií]s vasco", "Norte de España", 43.2, -4.5, "espana"],
   ["spain|españa|espagne|spanien|madrid|barcelona|valencia|sevilla|zaragoza|m[aá]laga|c[aá]diz|rota|mor[oó]n|canarias|baleares|ceuta|melilla|tarragona|lleida|l[eé]rida|girona|gerona|castell[oó]n|alicante|murcia|cartagena|almer[ií]a|granada|ja[eé]n|c[oó]rdoba|huelva|algeciras|gibraltar|badajoz|c[aá]ceres|extremadura|salamanca|zamora|valladolid|palencia|burgos|soria|segovia|[aá]vila|toledo|guadalajara|cuenca|albacete|ciudad real|teruel|huesca|navarra|pamplona|la rioja|logro[ñn]o|vitoria|[aá]lava|san sebasti[aá]n|donostia|guip[uú]zcoa|gipuzkoa|pontevedra|tenerife|gran canaria|las palmas|lanzarote|fuerteventura|la palma|mallorca|ibiza|menorca|andaluc[ií]a|catalu[ñn]a|catalonia|arag[oó]n|castilla", "España", 40.4, -3.7, "espana"],
   ["portugal|lisbon|lisboa|oporto|porto", "Portugal", 39.4, -8.2, "ue"], ["france|francia|par[ií]s|bordeaux|burdeos|toulouse|marseille", "Francia", 46.6, 2.4, "ue"],
-  ["germany|alemania|deutschland|berl[ií]n|ramstein", "Alemania", 51.2, 10.4, "ue"], ["italy|italia|roma|rome|sicil|aviano|sigonella", "Italia", 42.8, 12.6, "ue"],
+  ["germany|alemania|deutschland|berl[ií]n|ramstein", "Alemania", 51.2, 10.4, "ue"], ["italy|italia|roma|rome|sicilia|sicily|aviano|sigonella", "Italia", 42.8, 12.6, "ue"],
   ["poland|polonia|warsaw|varsovia|rzesz[oó]w", "Polonia", 52.1, 19.4, "ue"], ["lithuania|lituania|vilnius|suwa[lł]ki", "Lituania", 55.2, 23.9, "ue"],
   ["latvia|letonia|riga", "Letonia", 56.9, 24.6, "ue"], ["estonia|tallinn|narva", "Estonia", 58.6, 25.0, "ue"],
   ["finland|finlandia|helsinki", "Finlandia", 64.0, 26.0, "ue"], ["sweden|suecia|stockholm|gotland", "Suecia", 60.1, 18.6, "ue"],
@@ -32,12 +32,16 @@ const P = [
   ["taiwan|taiw[aá]n|taipei", "Taiwán", 23.7, 121.0, "mundo"], ["north korea|corea del norte|pyongyang", "Corea del Norte", 40.3, 127.5, "mundo"],
   ["japan|jap[oó]n|tokyo|tokio", "Japón", 36.2, 138.3, "mundo"], ["united states|estados unidos|ee\\.? ?uu|washington|pentagon|pent[aá]gono|white house|casa blanca", "EE. UU.", 38.9, -77.0, "mundo"],
   ["venezuela|caracas", "Venezuela", 6.4, -66.6, "mundo"], ["sudan|sud[aá]n", "Sudán", 15.5, 32.5, "mundo"]
-].map(([re, nombre, lat, lon, zona]) => ({ re: new RegExp("(^|[^\\p{L}])(" + re + ")", "iu"), nombre, lat, lon, zona }));
+].map(([re, nombre, lat, lon, zona]) => ({ re: new RegExp("(^|[^\\p{L}])(" + re + ")(?![\\p{L}]{3})", "iu"), nombre, lat, lon, zona }));
+// Falsos amigos: nombres que contienen el de otro lugar («Sierra Leona» no es León, «Nueva Delhi»…)
+const NO_LUGAR = /sierra leon[ae]|nuevo le[oó]n|porto alegre|puerto rico|costa rica|guinea ecuatorial|c[oó]rdoba \(argentina\)|cartagena de indias|santiago de chile|georgia|new mexico|nuevo m[eé]xico|valencia \(venezuela\)|m[eé]rida \(m[eé]xico\)|toledo \(ohio\)|guadalajara \(m[eé]xico\)|la roma\b|as roma|real madrid|atl[eé]tico de madrid|fc barcelona|bar[cç]a\b|sporting de gij[oó]n|real oviedo|valencia cf|sevilla fc|athletic|celta de vigo/giu;
 
 export function lugar(texto = "") {
+  texto = texto.replace(NO_LUGAR, " ");
   for (const p of P) { const m = texto.match(p.re); if (!m) continue;
     // En España se guarda la ciudad concreta ("Tarragona"), útil en los avisos
-    const nombre = /España/.test(p.nombre) && !/^(spain|españa|espagne|spanien)$/i.test(m[2]) ? m[2][0].toUpperCase() + m[2].slice(1).toLowerCase() : p.nombre;
+    const generico = /^(spain|españa|espagne|spanien|asturias|asturian[oa]s?)$/i.test(m[2]);
+    const nombre = /^(España|Asturias)$/.test(p.nombre) && !generico ? m[2].replace(/(^|\s)(\p{L})/gu, (x, a, b) => a + b.toUpperCase()).replace(/ De /g, " de ").replace(/ Del /g, " del ") : p.nombre;
     return { nombre, lat: p.lat, lon: p.lon, zona: p.zona }; }
   return { nombre: "", lat: null, lon: null, zona: "mundo" };
 }
@@ -52,10 +56,16 @@ export function zonaDe(lat, lon) {
   if (lat > 12 && lat < 42 && lon > 32 && lon < 63) return "oriente";
   return "mundo";
 }
+// Desmentidos y rectificaciones: un titular así NO confirma el suceso, lo corrige.
+export const DESMIENTE = /desmient|desmentid|\bniega\b|\bniegan\b|\bnegó\b|no es cierto|es falso|son falsos|falsa alarma|\bbulo\b|rectifica|no ha (muerto|fallecido)|no hay (ning[uú]n )?(muertos|v[ií]ctimas|heridos)|sigue con vida|est[aá] vivo|fake news|\bhoax\b|\bdenies\b|\bdenied\b|debunk|false alarm|not true|no se ha producido|sin confirmar oficialmente|descarta (que|el|la)|descartan (que|el|la)/i;
+// Dato atribuido a una parte interesada o sin confirmar: muchos medios repitiéndolo siguen siendo UNA sola fuente.
+export const ATRIBUIDO = /seg[uú]n (un|el|los|fuentes|medios|testigos|vecinos|redes)|\bsindicato|fuentes (policiales|sindicales|cercanas|no oficiales|sin confirmar)|da por (muerto|fallecid|hecho)|dan por (muerto|fallecid|hecho)|habr[ií]a(n)? (muerto|fallecido|sido)|podr[ií]a(n)? haber|sin confirmar|no confirmad|se investiga si|al parecer|presunt|supuest|reportedly|unconfirmed|allegedly|according to (sources|witnesses|local media)|rumou?rs?\b/i;
+
 const TEMAS = [
   ["nuclear", 8, /nuclear|yodo|iodine|radiac|radiation|radiolog|at[oó]mic|atomic|ядерн/i],
   ["industrial", 5, /planta qu[ií]mica|petroqu[ií]mica|refiner[ií]a|fuga (de gas|t[oó]xica|qu[ií]mica)|nube t[oó]xica|escape de (gas|amon[ií]aco|cloro)|vertido t[oó]xico|chemical (plant|leak|spill)|toxic (cloud|leak|gas)|gas leak|derrumbe|collapse/i],
-  ["belico", 6, /misil|missile|ataque|attack|strike|bombard|guerra|\bwar\b|invasi|tropas|troops|ej[eé]rcito|army|\bdrones?\b|otan|nato|militar|military|interceptad|intercepted|air raid|sirenas|sirens|explosi[oó]n|explosion|tiroteo|shooting|atentado|terror/i],
+  ["seguridad", 6, /atentado|terroris|tiroteo|tirotead|disparos|shooting|gunman|pistolero|francotirador|artefacto explosivo|mochila bomba|coche bomba|car bomb|paquete bomba|bomba casera|\bbomba\b|explosivos?\b|toma de rehenes|rehenes|hostage|(polic[ií]as?|agentes?|guardias? civil(es)?) (muert|herid|fallec|tirotead|abatid)\w*|da(n)? por muert\w+|apu[ñn]alamiento m[uú]ltiple|atropello m[uú]ltiple|yihadis|jihadi|c[eé]lula terrorista|amenaza de bomba|bomb threat|nivel de alerta antiterrorista/i],
+  ["belico", 6, /misil|missile|ataque|attack|strike|bombard|guerra|\bwar\b|invasi|tropas|troops|ej[eé]rcito|army|\bdrones?\b|otan|nato|militar|military|interceptad|intercepted|air raid|sirenas|sirens|explosi[oó]n|explosion/i],
   ["energia", 4, /apag[oó]n|blackout|power outage|corte (de luz|el[eé]ctrico)|sin luz|red el[eé]ctrica|petr[oó]leo|\boil\b|combustible|fuel|gasolina|di[eé]sel|gasoducto|pipeline/i],
   ["ciber", 5, /hack|ciber|cyber|ransomware|ddos|malware|ca[ií]da (de|del) (sistema|servicio)|outage|infraestructura cr[ií]tica/i],
   ["banca", 5, /\bbanc|\bbank|corralito|cajero|\batm\b|p[aá]nico bancario|bank run|dep[oó]sit|bolsa se desploma|market crash/i],
@@ -73,15 +83,23 @@ const SUBE = [
   [/airspace (closed|closure)|cierre del espacio a[eé]reo|espacio a[eé]reo cerrado/i, 6],
   [/fuerte terremoto|strong earthquake|major earthquake|powerful earthquake|gran intensidad|desaloj/i, 6],
   [/evacuaci[oó]n|evacuate|evacuation|abandonen/i, 5],
-  [/muertos|fallecidos|dead|killed|v[ií]ctimas/i, 5],
+  [/muertos?\b|fallecid|dead|killed|v[ií]ctimas|\bmuere|\bmata\b/i, 5],
+  [/(polic[ií]a|agente|guardia civil|militar)e?s? (muert|fallec|asesinad|abatid)|(muere|mata|matan|asesina) (a )?(un|una|dos|tres|varios) (polic|agente|guardia)|mochila bomba|coche bomba|artefacto explosivo|atentado (terrorista|yihadista)|terrorist attack|autor (sigue )?(huido|a la fuga)|sospechoso (huido|armado)/i, 7],
+  [/decenas de muertos|masacre|massacre|mass shooting|atentado m[uú]ltiple|ataque coordinado/i, 8],
   [/bank run|corralito|colapso bancario|bank collapse/i, 6]
 ];
 export const ALARMA = /breaking|just in|[uú]ltima hora|urgente|🚨|⚠️|alerta|alert|flash/i;
 
+// Lo que casi nunca es una emergencia aunque use palabras fuertes (deporte, cine, opinión, efemérides, simulacros).
+const RUIDO = /\b(liga|champions|gol(es)?|partido de (f[uú]tbol|baloncesto)|fichaje|entrenador|pel[ií]cula|serie de|estreno|festival|concierto|videojuego|novela|documental|aniversario|hace \d+ a[ñn]os|simulacro|ejercicio de (emergencia|evacuaci[oó]n)|opini[oó]n|editorial|hor[oó]scopo|receta|bomba de (calor|agua|humo)|bombazo|bomba informativa|una bomba (medi[aá]tica|sexual)|ataque (de risa|al coraz[oó]n|de ansiedad|card[ií]aco)|guerra (comercial|de precios|de audiencias|arancelaria)|strike (action|ballot)|huelga)\b/i;
 export function clasifica(texto = "") {
   let tema = "otros", S = 1;
-  for (const [t, base, re] of TEMAS) if (re.test(texto)) { tema = t; S = base; break; }
-  if (tema === "otros") return { tema, S: 0, lugar: lugar(texto) };
-  for (const [re, v] of SUBE) if (re.test(texto)) S = Math.max(S, v);
-  return { tema, S, lugar: lugar(texto) };
+  const limpio = texto.replace(RUIDO, " ");
+  for (const [t, base, re] of TEMAS) if (re.test(limpio)) { tema = t; S = base; break; }
+  if (tema === "otros") for (const [t, base, re] of TEMAS) if (re.test(texto)) { tema = t; S = Math.min(base, 3); break; }
+  const desmiente = DESMIENTE.test(texto), atribuido = ATRIBUIDO.test(texto);
+  if (tema === "otros") return { tema, S: 0, lugar: lugar(texto), desmiente, atribuido };
+  if (S > 3) for (const [re, v] of SUBE) if (re.test(texto)) S = Math.max(S, v);
+  if (/simulacro|ejercicio de (emergencia|evacuaci[oó]n)|\bdrill\b/i.test(texto)) S = Math.min(S, 2);
+  return { tema, S, lugar: lugar(texto), desmiente, atribuido };
 }

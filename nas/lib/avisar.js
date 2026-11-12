@@ -18,14 +18,15 @@ export function enSilencio() {
 const cola = [];         // avisos retenidos (silencio o exceso) para el resumen
 export const retenidos = () => cola.splice(0);
 
-export async function avisar({ nivel = 2, titulo, texto, url, forzar = false, soloRegistrar = false, sistema = false }) {
-  const N = NIVEL[nivel] || NIVEL[2];
+const CORRECCION = { n: "CORRECCIÓN", p: 3, tags: ["x"], ico: "✖️" };
+export async function avisar({ nivel = 2, titulo, texto, url, forzar = false, soloRegistrar = false, sistema = false, correccion = false }) {
+  const N = correccion ? CORRECCION : NIVEL[nivel] || NIVEL[2];
   // Primer arranque: lo que ya estaba pasando se anota, pero no suena (salvo emergencias)
-  if (soloRegistrar) { mem.alertas.push({ t: Date.now(), nivel, titulo, texto: (texto || "").slice(0, 400), url, previo: true }); guardar(); return false; }
+  if (soloRegistrar) { mem.alertas.push({ t: Date.now(), nivel, titulo, texto: (texto || "").slice(0, 400), url, previo: true, ...(correccion ? { correccion: true } : {}) }); guardar(); return false; }
   const ultimaHora = mem.alertas.filter((a) => Date.now() - a.t < 36e5 && a.nivel < 4 && !a.previo && !a.sistema).length;
   if (!sistema && apagado()) { log("(apagado) no se avisa:", titulo); return false; }
   if (!forzar && nivel < 4 && (enSilencio() || silenciado() || ultimaHora >= 8)) { cola.push({ nivel, titulo, texto, url, t: Date.now() }); log("retenido:", titulo); return false; }
-  mem.alertas.push({ t: Date.now(), nivel, titulo, texto: (texto || "").slice(0, 400), url, ...(sistema ? { sistema: true } : {}) }); guardar();
+  mem.alertas.push({ t: Date.now(), nivel, titulo, texto: (texto || "").slice(0, 400), url, ...(sistema ? { sistema: true } : {}), ...(correccion ? { correccion: true } : {}) }); guardar();
   const title = `${N.ico} ${N.n}: ${titulo}`.slice(0, 250);
   log("AVISO", title);
   const tareas = [];
