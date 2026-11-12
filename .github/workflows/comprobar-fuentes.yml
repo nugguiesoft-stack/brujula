@@ -1,0 +1,16 @@
+# Diagnóstico MANUAL: comprueba contra internet que cada fuente responde y con qué formato.
+# No se ejecuta solo (sin cron). Se lanza en GitHub → Actions → «Comprobar fuentes» → Run workflow.
+name: Comprobar fuentes
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  fuentes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node nas/prueba/fuentes.mjs
