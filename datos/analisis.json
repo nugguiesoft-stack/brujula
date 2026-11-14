@@ -1,21 +1,22 @@
 {
  "estado": {
-  "actualizado": "2026-11-13T00:45:00+01:00",
+  "actualizado": "2026-11-14T01:45:00+01:00",
   "lugar": "Asturias (España)",
-  "resumen": "En Asturias, «El Ruso», autor de la mochila bomba de Villafría (Oviedo), sigue huido tres días después. La Policía lo busca con más de cien agentes, cree que puede ir armado y no descarta que tenga más explosivos. Si sabes algo, llama al 091. En España, el temporal de Bruna y Charles se retira, aunque en el norte siguen los chubascos. La huelga general del 11-N terminó con 53 detenidos y disturbios en Barcelona. Fuera: Trump aparta a Vance de la negociación con Irán y dice que «no necesita» un acuerdo; Ormuz sigue cerrado. Las conversaciones de Abu Dabi sobre Ucrania acabaron con un canje de prisioneros, pero sin acuerdo de paz.",
+  "resumen": "En Asturias, «El Ruso» sigue huido y ya hay orden europea de búsqueda porque pudo salir de España. Si sabes algo, llama al 091. Aviación: no he encontrado nuevas amenazas de bomba a vuelos desde el 6 nov ni incidencias en el aeropuerto de Asturias. Fuera de España, EE. UU. paró todas sus salidas de vuelos el 13 nov por un fallo de comunicaciones (sin indicios de ataque), Moscú cerró sus aeropuertos por drones y hubo drones sobre una base británica. Microsoft 365 sufrió una caída mundial. Irán: choque en Baréin, sin negociaciones; Trump aplaza ataques mayores.",
   "notas": [
-   "Oviedo: hoy solo he visto titulares (La Nueva España, El País, 20minutos): despedida civil al policía fallecido, búsqueda sin novedades y una nueva alarma por una mochila sospechosa. No he leído los artículos; no sé en qué quedó esa alarma.",
-   "Irán: lo de Vance está confirmado por varios medios a partir de un mensaje del propio Trump. Que Irán atacaría cualquier base usada en un nuevo ataque lo dijo el general Rezaei (citado por un medio mexicano); no lo he visto en fuentes iraníes.",
-   "Huelga 11-N: el seguimiento es una guerra de cifras (CCOO habla de 70–84 % en varias comunidades; CEOE, de menos del 5 %). No he encontrado datos de Asturias.",
-   "Tiempo: no he encontrado avisos naranjas ni rojos para Asturias. La Brújula los lee de AEMET en cada escaneo."
+   "Oviedo: que el sospechoso saliera de España es una hipótesis de los investigadores, no un hecho.",
+   "Aviación: las cifras de vuelos amenazados entre el 2 y el 6 nov varían entre medios (de 35 a más de 50). No he comprobado si la FAA levantó del todo la parada ni cuántos vuelos de España se vieron afectados.",
+   "Moscú: el cierre de aeropuertos viene de un medio ucraniano; la cifra de drones no está verificada.",
+   "Irán: lo del radar de Baréin lo afirma Irán y lo niega EE. UU.",
+   "No he encontrado avisos de AEMET naranja o rojo para Asturias en lo revisado; la Brújula los lee en cada escaneo."
   ],
   "metodo": 1
  },
  "eventos": [
   {
    "id": "oviedo-explosion",
-   "titulo": "Oviedo: «El Ruso», autor de la mochila bomba, sigue huido",
-   "resumen": "El martes 10 nov Manuel Ferrero, «El Ruso» (65 años, diez antecedentes policiales), disparó a una joven de 17 años en su bloque de Villafría y dejó en el portal una mochila con una bomba casera con temporizador y metralla. Al explotar mató al subinspector de Guías Caninos Juan José Rodríguez y a su perro Deny, e hirió de gravedad a un agente TEDAX. Según vecinos y fuentes policiales, quería volar el edificio por conflictos vecinales. Sigue huido: la Policía mantiene la búsqueda con más de cien agentes (también GEO), dice que puede ir armado y no descarta que lleve más explosivos. La alerta se extiende a toda España. Su pareja está detenida. Si sabes algo, llama al 091.",
+   "titulo": "Oviedo: «El Ruso» sigue huido; orden europea de búsqueda",
+   "resumen": "Cuatro días después, Manuel Ferrero «El Ruso», autor del tiroteo y de la mochila bomba de Villafría que mató al subinspector Juan José Rodríguez y a su perra Deny, sigue sin aparecer. El 13 nov la jueza emitió una orden europea de búsqueda porque los investigadores creen que pudo salir de España. Su pareja quedó en libertad sin medidas el 12 nov. La mochila llevaba metralla y amonal. Ha habido varias pistas falsas y registros sin resultado. Si sabes algo, llama al 091.",
    "dominio": "seguridad",
    "region": "Oviedo (Asturias)",
    "lat": 43.372,
@@ -26,24 +27,20 @@
    "P": 0.9,
    "tendencia": "estable",
    "cadena": "oviedo",
-   "fecha": "2026-11-12",
+   "fecha": "2026-11-13",
    "origen": "analista",
    "fuentes": [
     {
-     "n": "Telecinco – sigue en busca y captura, puede ir armado (11 nov)",
-     "url": "https://www.telecinco.es/noticias/sucesos/20261111/el-ruso-tiroteo-explosion-oviedo-podria-ir-armado-alerta-todo-territorio-nacional_18_020684446.html"
+     "n": "Telecinco – orden europea de búsqueda (13 nov)",
+     "url": "https://www.telecinco.es/noticias/sucesos/20261113/jueza-oviedo-lanza-orden-europea-busqueda-localizar-ruso-responsable-bomba_18_020703453.html"
     },
     {
-     "n": "The Objective – la bomba llevaba temporizador (11 nov)",
-     "url": "https://theobjective.com/espana/2026-11-11/bomba-rusopolicia-temporizador/"
+     "n": "Telecinco – libertad de su pareja y contenido de la mochila",
+     "url": "https://www.telecinco.es/noticias/sucesos/20261113/advertencias-tatiana-explosion-tiroteo-oviedo-pareja-el-ruso-miedo-vecinos_18_020699747.html"
     },
     {
-     "n": "El Español – perfil y antecedentes (11 nov)",
-     "url": "https://www.elespanol.com/reportajes/20261111/siniestra-vida-ruso-asesino-oviedo-sumaba-detenciones-vivia-obsesionado-muerte-madre/1003744453015_0.html"
-    },
-    {
-     "n": "Telecinco – la pareja dio datos erróneos",
-     "url": "https://telecinco.es/noticias/sucesos/20261111/interrogatorio-mujer-ruso-explosion-mortal-oviedo-datos-erroneos_18_020676360.html"
+     "n": "Nuevaradio – pistas falsas y registros",
+     "url": "https://www.nuevaradio.org/2026/11/13/varias-pistas-incorrectas-y-alarmas-falsas-marcaron-la-busqueda-de-el-ruso-fugitivo-tras-la-explosion-que-causo-la-muerte-de-un-policia-en-oviedo/"
     }
    ],
    "vigilar": [
@@ -51,12 +48,12 @@
     "Hallazgo de más explosivos",
     "Avisos de la Policía a los vecinos de Oviedo"
    ],
-   "fiabilidad": "La Policía Nacional confirma que la búsqueda sigue activa. Lo del temporizador, la metralla y su intención de volar el edificio viene de fuentes policiales citadas por varios medios. La detención del autor anunciada el martes era falsa."
+   "fiabilidad": "La orden europea la publica El Comercio y la recogen otros medios. Que fuera legionario (publicado por El Mundo) es falso según CharryTV y The Objective. Que pudo salir de España es una hipótesis de los investigadores."
   },
   {
    "id": "iran-reanudacion",
-   "titulo": "Irán: Trump da por cerrada la vía del acuerdo; Ormuz sigue cerrado",
-   "resumen": "El 12 nov Trump apartó al vicepresidente Vance de la negociación con Irán y escribió que «no necesitamos un acuerdo con Irán». Vance había atribuido a la guerra la derrota republicana en las elecciones del 3 nov. Dos días antes Trump había aparcado los ataques «por ahora». No hay negociación en marcha y Ormuz sigue prácticamente cerrado. El general iraní Rezaei advierte que cualquier base de EE. UU. usada en un nuevo ataque será un objetivo.",
+   "titulo": "Irán: choque en Baréin y sin negociaciones; Trump aguanta por ahora",
+   "resumen": "El 12 nov Trump apartó a Vance de la negociación y dijo que «no necesita» un acuerdo. El 13 nov la Guardia Revolucionaria dijo haber destruido un radar de EE. UU. en Baréin tras un ataque de EE. UU. a una antena en Sirik; EE. UU. lo niega y dice que derribó los dos drones iraníes. Trump aplaza nuevos ataques tras la petición de los aliados del Golfo y hablará de Irán con Putin y Xi la próxima semana en China. Ormuz sigue cerrado; el petróleo encadena su segunda semana de bajada.",
    "dominio": "belico",
    "region": "Oriente Medio",
    "lat": 32.4,
@@ -64,25 +61,25 @@
    "S": 8,
    "nivel": "oficial",
    "P": 0.35,
-   "tendencia": "escala",
+   "tendencia": "estable",
    "cadena": "iran",
-   "fecha": "2026-11-12",
+   "fecha": "2026-11-13",
    "fuentes": [
     {
-     "n": "Washington Times – Trump aparta a Vance (12 nov)",
-     "url": "https://www.washingtontimes.com/news/2026/nov/12/trump-pulling-jd-vance-iran-talks/"
+     "n": "Just Security – resumen 13 nov",
+     "url": "https://www.justsecurity.org/164357/early-edition-november-13-2026/"
     },
     {
-     "n": "El Diario de Sonora – «No necesitamos un acuerdo» y advertencia de Rezaei",
-     "url": "https://eldiariodesonora.com.mx/internacional/2026/11/12/trump-retira-jd-vance-negociaciones-iran.html"
+     "n": "ABC News – EE. UU. niega lo del radar",
+     "url": "https://abcnews.com/International/live-updates/iran-live-updates-americans-tired-forever-wars-araghchi/?id=137967256"
     },
     {
-     "n": "Moncloa.com – contexto en español",
-     "url": "https://www.moncloa.com/2026/11/12/trump-vance-iran-fraude-democrata-3466673"
+     "n": "Khaleej Times – directo 13 nov",
+     "url": "https://www.khaleejtimes.com/world/mena/us-israel-iran-saudi-arabia-yemen-war-live-updates-november-13-2026"
     },
     {
-     "n": "CBS News – Rubio: «no hace falta» reanudar combates (10 nov)",
-     "url": "https://www.cbsnews.com/live-updates/iran-war-us-trump-deal-negotiations/"
+     "n": "NPR – Trump aplaza la acción militar",
+     "url": "https://www.npr.org/2026/11/13/nx-s1-6040038/the-news-roundup-for-november-13-2026"
     }
    ],
    "vigilar": [
@@ -90,7 +87,7 @@
     "Ataques a buques en Ormuz",
     "Amenazas iraníes contra bases de EE. UU. en Europa"
    ],
-   "fiabilidad": "El mensaje de Trump es público y lo recogen varios medios. Que no haya acuerdo no significa que vaya a atacar: Trump ya cambió de postura varias veces esta semana.",
+   "fiabilidad": "Lo del radar lo afirma Irán y lo niega EE. UU.; lo de los drones derribados lo dice EE. UU. La reunión con Putin y Xi la anuncia un alto cargo estadounidense.",
    "zona": "oriente",
    "origen": "analista"
   },
@@ -323,39 +320,146 @@
    "origen": "analista"
   },
   {
+   "id": "faa-parada",
+   "titulo": "EE. UU. paraliza todas las salidas de vuelos por un fallo de comunicaciones del control aéreo",
+   "resumen": "El 13 nov (hacia las 22:00 en España) la FAA ordenó parar todas las salidas en EE. UU. por un fallo de comunicaciones que afectó a los 22 centros de control en ruta. Unos 3.100 aviones estaban en el aire hacia EE. UU. El Gobierno dice que fue un fallo de telecomunicaciones (routers de red), sin indicios de ataque, y que no está ligado a la caída de Microsoft. Los vuelos se iban reanudando de forma gradual; cuenta con retrasos y cancelaciones en vuelos entre España y EE. UU.",
+   "dominio": "ciber",
+   "region": "Estados Unidos",
+   "lat": 38.9,
+   "lon": -77.0,
+   "zona": "mundo",
+   "S": 4,
+   "nivel": "oficial",
+   "P": 1.0,
+   "tendencia": "desescala",
+   "cadena": "aviacion",
+   "fecha": "2026-11-13",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "CNBC – parada nacional",
+     "url": "https://www.cnbc.com/2026/11/13/faa-ground-stop.html"
+    },
+    {
+     "n": "ABC News – sin indicios de ataque",
+     "url": "https://abcnews.com/US/nationwide-ground-stop-ordered-airports-faa/story?id=138121848"
+    },
+    {
+     "n": "AeroTime – 3.100 aviones en ruta",
+     "url": "https://www.aerotime.aero/articles/faa-nationwide-ground-stop-atc-communications-november-2026"
+    },
+    {
+     "n": "CNN – causa: routers de red",
+     "url": "https://www.cnn.com/2026/11/13/us/live-news/flights-ground-stop-faa"
+    }
+   ],
+   "vigilar": [
+    "Causa definitiva (fallo técnico o ciberataque)",
+    "Retrasos en vuelos España–EE. UU."
+   ],
+   "fiabilidad": "Confirmado por la FAA y el Gobierno de EE. UU. La causa es provisional: el Gobierno no descarta nada mientras investiga. No he confirmado la hora exacta en que se levantó la parada."
+  },
+  {
+   "id": "microsoft-caida",
+   "titulo": "Caída mundial de Microsoft 365 (12–13 nov)",
+   "resumen": "Una caída de Outlook y otras aplicaciones de Microsoft afectó a gobiernos, juzgados, hospitales (incluido el NHS británico) y universidades de varios países el 12 y 13 nov. El servicio se fue restableciendo de forma parcial el 13 nov. No consta que fuera un ciberataque.",
+   "dominio": "ciber",
+   "region": "Mundo",
+   "lat": 47.6,
+   "lon": -122.1,
+   "zona": "mundo",
+   "S": 3,
+   "nivel": "varios_medios",
+   "P": 1.0,
+   "tendencia": "desescala",
+   "fecha": "2026-11-13",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "Yahoo News – instituciones afectadas",
+     "url": "https://www.yahoo.com/news/us/articles/microsoft-outage-impacts-governments-courts-235526511.html"
+    }
+   ],
+   "vigilar": [
+    "Causa oficial",
+    "Efectos en servicios públicos españoles"
+   ],
+   "fiabilidad": "La caída la confirman muchas instituciones. No he encontrado la causa oficial ni datos concretos de España."
+  },
+  {
+   "id": "drones-aerodromos",
+   "titulo": "Drones sobre aeropuertos y bases: Moscú cerrado, Lakenheath en alerta",
+   "resumen": "Desde la noche del 12 nov los cuatro aeropuertos de Moscú estuvieron cerrados por un ataque masivo de drones ucranianos (canales OSINT ucranianos hablan de unos 700, cifra sin verificar). El 13 nov la base de RAF Lakenheath (Reino Unido, con aviones de EE. UU.) respondió a una sospecha de drones no autorizados, sin daños. A finales de octubre ya hubo cierres por drones en Jersey.",
+   "dominio": "seguridad",
+   "region": "Europa",
+   "lat": 52.4,
+   "lon": 0.56,
+   "zona": "europa",
+   "S": 3,
+   "nivel": "varios_medios",
+   "P": 0.9,
+   "tendencia": "escala",
+   "cadena": "aviacion",
+   "fecha": "2026-11-13",
+   "origen": "analista",
+   "fuentes": [
+    {
+     "n": "US News/Reuters – drones en Lakenheath",
+     "url": "https://www.usnews.com/news/world/articles/2026-11-13/us-military-responds-to-suspected-drone-activity-at-raf-lakenheath-base-in-uk-sky-news-reports"
+    },
+    {
+     "n": "Ukraine Today – aeropuertos de Moscú cerrados",
+     "url": "https://ukrainetoday.org/record-drone-attack-all-airports-in-moscow-closed-again/"
+    },
+    {
+     "n": "ITV – drones en Jersey",
+     "url": "https://www.itv.com/news/channel/2026-10-31/flights-diverted-for-second-night-after-drone-sighting"
+    }
+   ],
+   "vigilar": [
+    "Drones sobre aeropuertos o bases en España (Rota, Morón, Torrejón)",
+    "Nuevos cierres en aeropuertos europeos"
+   ],
+   "fiabilidad": "Lakenheath: confirmado por la Fuerza Aérea de EE. UU. y el Ministerio de Defensa británico. Moscú: de un medio ucraniano que cita al alcalde de Moscú; la cifra de 700 drones no está verificada."
+  },
+  {
    "id": "vuelos-amenazas",
-   "titulo": "Oleada de amenazas de bomba en vuelos europeos, también en España",
-   "resumen": "Al menos 18 vuelos en Europa recibieron amenazas de bomba, con aterrizajes de emergencia y escoltas militares. El 3 nov un Ryanair Manchester–Murcia activó los protocolos en España y el aeropuerto de Murcia suspendió operaciones dos horas. Ninguna amenaza resultó real. Polonia lo trata como amenaza híbrida. El 12 nov, según un titular de 20minutos, Policía y Guardia Civil investigan una ola de falsos avisos de bomba en España (no he leído el artículo).",
+   "titulo": "Amenazas de bomba en vuelos europeos: sin casos nuevos desde el 6 nov",
+   "resumen": "Entre el 2 y el 6 nov decenas de vuelos europeos recibieron amenazas de bomba por correo (las cifras van de 35 a más de 50 según el medio), con desvíos y escoltas de cazas. En España: Ryanair Manchester–Murcia (3 nov) y tres vuelos de Iberia y Air Europa en Barajas (5 nov). Todas falsas. Los correos, firmados como «Mensaje a Occidente», llegaron también a redacciones y colegios. Albares lo ve como agresión híbrida; nadie ha probado la autoría. El 12 nov la patronal de aeropuertos europeos (ACI Europe) presentó un plan contra amenazas híbridas. No he encontrado amenazas nuevas a vuelos desde el 6 nov.",
    "dominio": "ciber",
    "region": "Europa y España",
    "lat": 37.8,
    "lon": -1.1,
    "S": 3,
-   "nivel": "confirmado",
+   "nivel": "varios_medios",
    "P": 1.0,
-   "tendencia": "escala",
+   "tendencia": "estable",
    "cadena": "aviacion",
-   "fecha": "2026-11-05",
+   "fecha": "2026-11-13",
    "fuentes": [
     {
-     "n": "Anadolu – Morning Briefing 6 nov",
-     "url": "https://www.aa.com.tr/en/world/morning-briefing-nov-6-2026/4113576"
+     "n": "Foreign Policy – la campaña de miedo",
+     "url": "https://foreignpolicy.com/2026/11/12/europe-bomb-threats-russia-hybrid-war-nato-deterrence-ukraine-military/"
     },
     {
-     "n": "Catalan News – avión desviado a Murcia",
-     "url": "https://www.catalannews.com/society-science/item/at-least-seven-planes-across-europe-receive-bomb-threats-one-lands-in-murcia"
+     "n": "The Week – más de 50 vuelos (2–6 nov)",
+     "url": "https://www.theweek.in/news/world/2026/11/12/european-schools-aviation-bomb-threats.html"
     },
     {
-     "n": "Aviation24 – vuelos afectados",
-     "url": "https://www.aviation24.be/airlines/multiple-bomb-threats-target-european-passenger-flights-prompting-diversions-and-fighter-jet-escort/amp/"
+     "n": "Fly News – vuelos afectados en España",
+     "url": "https://fly-news.es/aviacion-comercial/una-oleada-de-amenazas-de-bomba-sacude-la-aviacion-europea-y-afecta-a-vuelos-de-iberia-air-europa-y-ryanair/"
+    },
+    {
+     "n": "Middle East Observer – plan de ACI Europe",
+     "url": "https://meobserver.news/aviation/2026/11/13/europe-faces-suspected-cyber-enabled-disruption-campaign-as-airports-strengthen-defences/"
     }
    ],
    "vigilar": [
-    "Atribución a un Estado o grupo",
-    "Amenazas en el aeropuerto de Asturias",
-    "Amenaza que resulte real"
+    "Nuevas amenazas a vuelos o aeropuertos españoles (incluido Asturias)",
+    "Atribución oficial",
+    "Que alguna amenaza resulte real"
    ],
-   "fiabilidad": "Confirmado por autoridades de varios países. Autoría desconocida.",
+   "fiabilidad": "Los vuelos afectados en España los confirma Aena. La cifra total varía según el medio. Autoría sin probar: algunos correos invocan a un grupo prohibido en Rusia y Rusia niega estar detrás.",
    "zona": "espana",
    "origen": "analista"
   },
@@ -847,7 +951,7 @@
   {
    "id": "oviedo",
    "titulo": "Oviedo: tiroteo y mochila bomba en Villafría",
-   "estado": "Autor huido y buscado en toda España; su pareja, detenida",
+   "estado": "Huido; orden europea de búsqueda",
    "pasos": [
     {
      "fecha": "2026-11-10 07:30",
@@ -883,6 +987,11 @@
      "fecha": "2026-11-12",
      "texto": "Acto civil de despedida al subinspector fallecido. La búsqueda sigue sin novedades; según La Nueva España, hubo un nuevo rastreo cerca de su casa y otra alarma por una mochila sospechosa (sin detalles).",
      "nivel": "medios_locales"
+    },
+    {
+     "fecha": "2026-11-13",
+     "texto": "La jueza emite una orden europea de búsqueda: creen que pudo salir de España. Su pareja, en libertad sin medidas desde el 12 nov.",
+     "nivel": "varios_medios"
     }
    ],
    "siguiente": [
@@ -893,7 +1002,7 @@
   {
    "id": "iran",
    "titulo": "Guerra de Irán → Ormuz → energía en España",
-   "estado": "Sin negociación: Trump dice que no necesita un acuerdo; Ormuz sigue cerrado",
+   "estado": "Sin negociaciones; choques puntuales; Trump aplaza ataques mayores",
    "pasos": [
     {
      "fecha": "2026-02-28",
@@ -949,6 +1058,11 @@
      "fecha": "2026-11-12",
      "texto": "Trump aparta a Vance de la negociación y dice que «no necesitamos un acuerdo con Irán». Irán advierte que las bases usadas en un nuevo ataque serán objetivo.",
      "nivel": "oficial"
+    },
+    {
+     "fecha": "2026-11-13",
+     "texto": "Irán dice que destruyó un radar de EE. UU. en Baréin; EE. UU. lo niega y derriba dos drones. Trump aplaza nuevos ataques por petición del Golfo.",
+     "nivel": "varios_medios"
     }
    ],
    "siguiente": [
@@ -1026,8 +1140,8 @@
   },
   {
    "id": "aviacion",
-   "titulo": "Amenazas híbridas en la aviación europea",
-   "estado": "En aumento; la UE coordina la respuesta",
+   "titulo": "Aviación y aeropuertos: amenazas híbridas y fallos",
+   "estado": "Sin amenazas nuevas a vuelos desde el 6 nov; drones y fallos técnicos en otros países",
    "pasos": [
     {
      "fecha": "2026-09-30",
@@ -1063,11 +1177,32 @@
      "fecha": "2026-11-06",
      "texto": "Irlanda habla de una «probable campaña coordinada». Más alertas: 11 vuelos de Praga, 4 hacia Madrid y 1 Lisboa–Roma. Todas falsas.",
      "nivel": "varios_medios"
+    },
+    {
+     "fecha": "2026-11-12",
+     "texto": "ACI Europe (aeropuertos europeos) presenta un plan contra amenazas híbridas: drones, ciberataques y coordinación.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-11-12/13",
+     "texto": "Cierran los cuatro aeropuertos de Moscú por un ataque masivo de drones ucranianos.",
+     "nivel": "fuente_unica"
+    },
+    {
+     "fecha": "2026-11-13",
+     "texto": "Drones sospechosos en la base de RAF Lakenheath (Reino Unido); sin daños.",
+     "nivel": "confirmado"
+    },
+    {
+     "fecha": "2026-11-13",
+     "texto": "EE. UU. para todas las salidas de vuelos por un fallo de comunicaciones del control aéreo; sin indicios de ataque.",
+     "nivel": "oficial"
     }
    ],
    "siguiente": [
-    "Atribución oficial (los gobiernos europeos apuntan a operaciones híbridas de Rusia o Irán, sin confirmar)",
-    "Amenazas en aeropuertos del norte de España"
+    "Amenazas o drones en aeropuertos españoles, incluido el de Asturias",
+    "Atribución de la campaña de correos",
+    "Si el fallo de la FAA resultara un ciberataque, subiría el riesgo para la aviación"
    ]
   },
   {
